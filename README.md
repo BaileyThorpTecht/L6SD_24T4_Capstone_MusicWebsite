@@ -5,3 +5,7 @@
 - Type ">Python: Create Enviroment..."
 - Select venv
 - Select your python installation
+
+Pip install packages
+- django
+- bootstrap-py
