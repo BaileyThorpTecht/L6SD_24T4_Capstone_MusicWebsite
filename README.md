@@ -8,4 +8,6 @@
 
 Pip install packages
 - django
-- bootstrap-py
+- django-bootstrap5
+- pillow
+- django-crispy-forms
