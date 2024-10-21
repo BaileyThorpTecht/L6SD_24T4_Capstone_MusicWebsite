@@ -1,14 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-</head>
-<body>
-    <h1>heading baybee</h1>
-    <p>also text</p>
+  <title>Chordial</title>
+  {% load django_bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
 
-    <main>
-        {% block content %}
-        <h3>{{context_name}}</h3>
-        {% endblock%}
-    </main>
+  <!-- Header -->
+  <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <div class="container-fluid">
+      {% load static %}
+      <a><img src="{% static 'placeholder.png' %}" height="100px" alt="image"></a>
+      <h1>Chordial</h1>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <button class="btn">
+        <h4>Account</h4>
+      </button>
+      </div>
+    </div>
+  </nav>    
+</head>
+<body>    
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="container text-center" style="margin-top:3%;">
+          <div class="col text-center d-flex justify-content-center">
+            <div class="card" style="width: 64rem;">
+              <h5 class="card-title">Guide Section</h5>
+              <div class="card-body">
+                <!-- Content here -->
+              </div>
+            </div>
+          </div>
+          <div class="row float-end" style="margin-inline:3%">
+            <button class="btn btn-sm">
+              <p>Button</p>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="container text-center" style="margin-top:3%;">
+          <div class="col text-center d-flex justify-content-center">
+            <div class="card" style="width: 64rem;">
+              <h5 class="card-title">Chord Section</h5>
+              <div class="card-body">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>      
+      <div class="row">
+        <div class="container text-center" style="margin-top:3%;">
+          <div class="row">
+            <div class="col">
+              <div class="text-center d-flex justify-content-center">
+                <div class="card" style="width: 29rem;">
+                  <h5 class="card-title">Chord Identidication</h5>
+                  <div class="card-body">
+                    <!-- Content here -->
+                  </div>
+                </div>
+              </div>
+              <div style="margin-inline:3%">
+                <button class="btn btn-lg">
+                  <p>Button</p>
+                </button>
+              </div>
+            </div>
+            <div class="col">
+              <div class="text-center d-flex justify-content-center">
+                <div class="card" style="width: 29rem;">
+                  <h5 class="card-title">Chord Saving</h5>
+                  <div class="card-body">
+                    <!-- Content here -->
+                  </div>
+                </div>
+              </div>
+              <div style="margin-inline:3%">
+                <button class="btn btn-sm">
+                  <p>Button</p>
+                </button>
+                <button class="btn btn-sm">
+                  <p>Button</p>
+                </button>
+                <button class="btn btn-sm">
+                  <p>Button</p>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="container text-center" style="margin-top:3%;">
+          <div class="col text-center d-flex justify-content-center">
+            <div class="card" style="width: 64rem;">
+              <h5 class="card-title">Guide Section</h5>
+              <div class="card-body">
+                <!-- Content here -->
+              </div>
+            </div>
+          </div>
+          <div style="margin-inline:3%">
+            <button class="btn btn-sm">
+              <p>Button</p>
+            </button>
+            <button class="btn btn-sm">
+              <p>Button</p>
+            </button>
+            <button class="btn btn-sm">
+              <p>Button</p>
+            </button>
+            <button class="btn btn-sm">
+              <p>Button</p>
+            </button>
+          <div class="row">
+            <button class="btn btn-lg">
+              <p>Button</p>
+            </button>
+          </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="container text-center" style="margin-top:3%;">
+          <div class="col text-center d-flex justify-content-center">
+            <div class="card" style="width: 64rem;">
+              <h5 class="card-title">Song Playback</h5>
+              <div class="card-body">
+                <!-- Content here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
 </body>
