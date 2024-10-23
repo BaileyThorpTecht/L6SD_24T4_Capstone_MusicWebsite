@@ -27,18 +27,13 @@ class Chord(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='chords')
 
     # These are the fields related to the 'Chord' model
-    rootname = models.CharField(max_length=50)
-    name = models.CharField(max_length=50)
+    notes = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
     iscustom = models.BooleanField()
-    fingerposition1 = models.IntegerField()
-    fingerposition2 = models.IntegerField() 
-    fingerposition3 = models.IntegerField() 
-    fingerposition4 = models.IntegerField() 
-    fingerposition5 = models.IntegerField() 
-    fingerposition6 = models.IntegerField()  
+    fingerpositions = models.JSONField()
 
     def __str__(self):
-        return super().__str__()
+        return f"{self.name} : {self.notes}"
 
 
 # This is the defined 'SongChord' model
