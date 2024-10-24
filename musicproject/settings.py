@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,14 +32,23 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Local Apps
+    'musicwebsite.apps.MusicwebsiteConfig',
+    'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'musicwebsite.apps.MusicwebsiteConfig'
+    # Third-Party
+    'crispy_forms',
+    'crispy_bootstrap5'
 ]
+
+CRISPY_ALLOWED_TEMPLATES_PACKS = 'bootstrap5'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -55,7 +65,10 @@ ROOT_URLCONF = 'musicproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'musicwebsite', 'templates', 'musicwebsite'),
+            os.path.join(BASE_DIR, 'users', 'templates', 'users'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,3 +135,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'
+
+# SMTP Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'code.calligraphers@gmail.com'
+EMAIL_HOST_PASSWORD = 'codeCallif.123'

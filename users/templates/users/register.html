@@ -1,0 +1,27 @@
+{% extends "musicwebsite/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block title %} Registration {% endblock %}
+
+{% block content %}
+
+<div>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Registration</legend>
+            {{ form|crispy }}
+        </fieldset>
+        <div class="form-group py-3">
+            <input type="submit" class="btn btn-outline-primary" value="Save">
+            <a href="{% url 'home'%}" class="btn btn-outline-danger">Cancel</a>
+        </div>
+    </form>
+    <div class="border-top pt-3">
+        <a href="{% url 'home' %}" class="text-muted"></a>
+    </div>
+    <p><a href="{% url 'login'%}" class="btn btn-outline-success">Already Have An Account? Click Here To Login</a></p>
+</div>
+
+{% endblock content %}
