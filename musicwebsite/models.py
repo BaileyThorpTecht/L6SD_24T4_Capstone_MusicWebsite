@@ -49,4 +49,4 @@ class SongChord(models.Model):
 
     def __str__(self):
         return super().__str__()
-    
+
