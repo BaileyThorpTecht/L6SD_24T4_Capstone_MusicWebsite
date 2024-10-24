@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from dataclasses import dataclass
-from typing import List
 
 # Create your models here.
 
@@ -31,7 +29,7 @@ class Chord(models.Model):
     # These are the fields related to the 'Chord' model
     name = models.CharField(max_length=50)
     base = models.IntegerField()
-    frets = models.JSONField()  # Or use a CharField and convert from string to list
+    frets = models.JSONField()
     fingers = models.JSONField()
 
     def __str__(self):
