@@ -146,3 +146,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'code.calligraphers@gmail.com'
 EMAIL_HOST_PASSWORD = 'codeCallif.123'
+DEFAULT_FROM_EMAIL = 'code.calligraphers@gmail.com'
