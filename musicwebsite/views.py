@@ -34,7 +34,7 @@ def verify_chord(request):
     else:
         form = ChordVerificationForm()
 
-    return render(request, 'verify_chord.html', {'form': form, 'message': message})
+    return render(request, 'musicwebsite/verify_chord.html', {'form': form, 'message': message})
 
 
 
