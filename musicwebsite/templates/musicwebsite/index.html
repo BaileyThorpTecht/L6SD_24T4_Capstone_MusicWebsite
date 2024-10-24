@@ -6,7 +6,14 @@
   {% bootstrap_css %}
   {% bootstrap_javascript %}
 
-  <!-- Header -->
+  <style>
+    * {
+        box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+<!-- Header -->
   <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
     <div class="container-fluid">
       {% load static %}
@@ -21,17 +28,51 @@
       </div>
     </div>
   </nav>    
-</head>
-<body>    
   <main>
     <div class="container">
       <div class="row">
         <div class="container text-center" style="margin-top:3%;">
           <div class="col text-center d-flex justify-content-center">
             <div class="card" style="width: 64rem;">
-              <h5 class="card-title">Guide Section</h5>
               <div class="card-body">
-                <!-- Content here -->
+
+                <!-- fretboard -->
+                
+
+
+
+                <div>
+                    <div class="fretboard container">
+                        <div class="string row">
+                            <div class="note-fret col bg-secondary border border-primary border-2" >E</div>
+                            <div class="note-fret col bg-secondary border border-primary border-2" >F</div>
+                            <div class="note-fret col bg-secondary border border-primary border-2" >F#</div>
+                            <div class="note-fret col bg-secondary border border-primary border-2" >G</div>
+                            <div class="note-fret col bg-secondary border border-primary border-2" >G#</div>
+                            <div class="note-fret col bg-secondary border border-primary border-2" >A</div>
+                            <div class="note-fret col bg-secondary border border-primary border-2" >A#</div>
+                            <div class="note-fret col bg-secondary border border-primary border-2" >B</div>
+                            <div class="note-fret col bg-secondary border border-primary border-2" >C</div>
+                            <div class="note-fret col bg-secondary border border-primary border-2" >C#</div>
+                            <div class="note-fret col bg-secondary border border-primary border-2" >D</div>
+                            <div class="note-fret col bg-secondary border border-primary border-2" >D#</div>
+                            <div class="note-fret col bg-secondary border border-primary border-2" >E</div>
+                        </div>
+                        <div class="string row">
+                            <div class="note-fret p-2">c</div>
+                            <div class="note-fret p-2">d</div>
+                        </div>
+                        <div class="string row">
+                            <div class="note-fret p-2">e</div>
+                            <div class="note-fret p-2">f</div>
+                        </div>
+                    </div>
+                </div>
+                
+
+
+
+                
               </div>
             </div>
           </div>
