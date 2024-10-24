@@ -12,9 +12,5 @@ def index(request):
     return render(request, 'musicwebsite/index.html', context)
 
 
-def search_chord(fret_pattern=None):
-    query = Chord.objects
-
-
 
 

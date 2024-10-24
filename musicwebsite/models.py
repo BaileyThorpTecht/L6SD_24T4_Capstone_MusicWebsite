@@ -24,7 +24,7 @@ class Song(models.Model):
 class Chord(models.Model):
 
     # This is the Forgeign Key to user aspect of the model
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='chords')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # These are the fields related to the 'Chord' model
     name = models.CharField(max_length=50)

@@ -21,5 +21,4 @@ from musicwebsite import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('music/', include('musicwebsite.urls')),
-    path('verify-chord/', views.verify_chord, name='verify_chord'),  
 ]
