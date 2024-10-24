@@ -1,16 +1,22 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <title>Chordial</title>
   {% load django_bootstrap5 %}
   {% bootstrap_css %}
   {% bootstrap_javascript %}
+<style>
+  * {
+    box-sizing: border-box; 
+  }
 
-  <style>
-    * {
-        box-sizing: border-box;
-    }
-  </style>
+  .fret {
+    height: 30px;
+  }
+</style>
+  
+
 </head>
 <body>
 <!-- Header -->
@@ -28,6 +34,7 @@
       </div>
     </div>
   </nav>    
+
   <main>
     <div class="container">
       <div class="row">
@@ -38,37 +45,17 @@
 
                 <!-- fretboard -->
                 
-
-
-
-                <div>
-                    <div class="fretboard container">
-                        <div class="string row">
-                            <div class="note-fret col bg-secondary border border-primary border-2" >E</div>
-                            <div class="note-fret col bg-secondary border border-primary border-2" >F</div>
-                            <div class="note-fret col bg-secondary border border-primary border-2" >F#</div>
-                            <div class="note-fret col bg-secondary border border-primary border-2" >G</div>
-                            <div class="note-fret col bg-secondary border border-primary border-2" >G#</div>
-                            <div class="note-fret col bg-secondary border border-primary border-2" >A</div>
-                            <div class="note-fret col bg-secondary border border-primary border-2" >A#</div>
-                            <div class="note-fret col bg-secondary border border-primary border-2" >B</div>
-                            <div class="note-fret col bg-secondary border border-primary border-2" >C</div>
-                            <div class="note-fret col bg-secondary border border-primary border-2" >C#</div>
-                            <div class="note-fret col bg-secondary border border-primary border-2" >D</div>
-                            <div class="note-fret col bg-secondary border border-primary border-2" >D#</div>
-                            <div class="note-fret col bg-secondary border border-primary border-2" >E</div>
-                        </div>
-                        <div class="string row">
-                            <div class="note-fret p-2">c</div>
-                            <div class="note-fret p-2">d</div>
-                        </div>
-                        <div class="string row">
-                            <div class="note-fret p-2">e</div>
-                            <div class="note-fret p-2">f</div>
-                        </div>
-                    </div>
+                <div id="fretboard" class="container">
+                    <p>Loading...</p>
                 </div>
-                
+
+                <button id="button-input" class="btn btn-primary">Test</button>
+                <span>string:</span>
+                <input type="text" id="string-input">
+                <span>fret:</span>
+                <input type="text" id="fret-input">
+                <br>
+                <span>remember its 0 indexed</span>
 
 
 
@@ -183,3 +170,89 @@
   </main>
   
 </body>
+</html>
+
+
+<script>
+/* THE PLAN:
+    'fretboard' contains all the html content. it contains 6 'strings'. each 'string' contains 13 'frets' (0 to 12)
+    there can be extra bonus elements for string and fret No. labels
+
+    const enabledFret html element is defined
+
+    each fret has a click eventListener for changeFret() function
+
+    changeFret(){
+    gets the string and fret position of the clicked fret
+    sets that fret to be enabled and and others on the same string to be disabled (en/disabled stored in a 2d array or smthn)
+
+    reloads the fretboard with html, but now an enabledFret element is added to the chosen position
+    includes the note name
+
+TODO:
+    Make it call firstLoadFretboard() when page is opened
+    Determine note from string and fret position and show it on that fret
+    Give frets an event listener which calls reloadFretboard(), and get the string and fret positions from it
+
+    put a fretboard image in the background
+    }
+*/
+
+    const fretboard = document.getElementById("fretboard");
+    const enabledFretElement = `<svg width="20" height="20">
+                                <circle cx="10" cy="10" r="10" stroke="red" stroke-width="1" fill="orange" />
+                                <text fill="#ffffff" font-size="10" font-family="Verdana" x="3" y="13">A#</text>
+                            </svg>`;
+    var selectedFrets = [0,0,0,0,0,0];
+
+    function loadFretboard(currentFrets)
+    {
+        fretboard.innerHTML = "";
+
+        for (var stringNo = 0; stringNo < 6; stringNo++) { // 6 strings. 
+            const startOfString = `<div class="string row">`;
+            const endOfString = `</div>`;
+            
+            let currentStringElement = startOfString;
+
+            for (var fretNo = 0; fretNo < 13; fretNo++) { // 13 fret positions
+                const startOfFret = `<div class="fret col bg-secondary border border-primary border-2" >`
+                const endOfFret = `</div>`;
+                
+                let currentFretElement = startOfFret;
+                
+                let isSelectedFret = currentFrets[stringNo] == fretNo;
+                if (isSelectedFret){
+                    currentFretElement += enabledFretElement;
+                }
+
+                currentFretElement += endOfFret;
+                currentStringElement += currentFretElement;
+            }
+            
+            currentStringElement += endOfString;
+            fretboard.innerHTML += currentStringElement;
+        }
+    }
+
+    function firstLoadFretboard()
+    {
+        loadFretboard(selectedFrets)
+    }
+
+    function reloadFretboard()
+    {
+        //get x and y from whatever input
+        let newString = document.getElementById("string-input").value;
+        let newFret = document.getElementById("fret-input").value;
+
+        selectedFrets[newString] = newFret;
+
+        loadFretboard(selectedFrets);
+    }
+
+    var button = document.getElementById("button-input");
+    button.addEventListener("click", reloadFretboard);
+
+
+</script>
