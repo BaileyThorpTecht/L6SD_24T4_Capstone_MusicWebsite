@@ -49,16 +49,6 @@
                     <p>Loading...</p>
                 </div>
 
-                <button id="button-input" class="btn btn-primary">Test</button>
-                <span>string:</span>
-                <input type="text" id="string-input">
-                <span>fret:</span>
-                <input type="text" id="fret-input">
-                <br>
-                <span>remember its 0 indexed</span>
-
-
-
                 
               </div>
             </div>
@@ -174,85 +164,147 @@
 
 
 <script>
-/* THE PLAN:
-    'fretboard' contains all the html content. it contains 6 'strings'. each 'string' contains 13 'frets' (0 to 12)
-    there can be extra bonus elements for string and fret No. labels
+/*  TODO:
+    Be able to click on 0th fret again to disable that string (set fret position to -1) 
 
-    const enabledFret html element is defined
-
-    each fret has a click eventListener for changeFret() function
-
-    changeFret(){
-    gets the string and fret position of the clicked fret
-    sets that fret to be enabled and and others on the same string to be disabled (en/disabled stored in a 2d array or smthn)
-
-    reloads the fretboard with html, but now an enabledFret element is added to the chosen position
-    includes the note name
-
-TODO:
-    Make it call firstLoadFretboard() when page is opened
-    Determine note from string and fret position and show it on that fret
-    Give frets an event listener which calls reloadFretboard(), and get the string and fret positions from it
-
-    put a fretboard image in the background
+    Add labels to the frets (0 - 12) and strings (EADGBE)
+    Make it look like a fretboard
+        Have 6 strings going through the frets, add the dots
+    do the styling good (???)
     }
 */
 
+
+    //global code
     const fretboard = document.getElementById("fretboard");
-    const enabledFretElement = `<svg width="20" height="20">
-                                <circle cx="10" cy="10" r="10" stroke="red" stroke-width="1" fill="orange" />
-                                <text fill="#ffffff" font-size="10" font-family="Verdana" x="3" y="13">A#</text>
-                            </svg>`;
     var selectedFrets = [0,0,0,0,0,0];
 
-    function loadFretboard(currentFrets)
+    const startOfStringElement = `<div class="string row">`;
+    const endOfStringElement = `</div>`;
+
+    const startOfFretElement = `<div class="fret col bg-secondary-subtle border border-dark-subtle border-2" >`;
+    const endOfFretElement = `</div>`;
+
+    firstLoadFretboard()
+
+
+    //classes
+    class fretPosition{
+        constructor(string, fret){
+            this.string = string;
+            this.fret = fret;
+        }
+    }
+
+
+
+    //functions
+    function generateEnabledFretElement(string, fret)
+    {
+        let note = findNoteOfFret(string, fret);
+        
+
+        const enabledFretElement = `<svg width="20" height="20">
+            <circle cx="10" cy="10" r="10" stroke="red" stroke-width="1" fill="orange" />
+            <text fill="#000000" font-size="10" font-family="Verdana" x="6" y="13">${note}</text>
+        </svg>`;
+
+        return enabledFretElement;
+
+    }
+
+    function findNoteOfFret(string, fret)
+    {
+        let noteList = ["E","F","F#","G","G#","A","A#","B","C","C#","D","D#"]; //for this purpose, E is the lowest note
+        let stringTunings = [0,5,10,15,19,24]; //how many notes is each string tuned up relative to the lowest
+
+        let noteNumber = stringTunings[string];
+        noteNumber += fret;
+        noteNumber = noteNumber % 12;
+        let selectedNote = noteList[noteNumber];
+        return selectedNote;
+    }
+    
+
+
+
+
+
+
+    function loadFretboard(selectedFrets)
     {
         fretboard.innerHTML = "";
 
-        for (var stringNo = 0; stringNo < 6; stringNo++) { // 6 strings. 
-            const startOfString = `<div class="string row">`;
-            const endOfString = `</div>`;
+        for (var stringNo = 5; stringNo >= 0; stringNo--) { // 6 strings. (iterates in reverse so the lowest string (string 0) is at the bottom)
             
-            let currentStringElement = startOfString;
+            let currentStringElement = "";
+            currentStringElement += startOfStringElement;
 
             for (var fretNo = 0; fretNo < 13; fretNo++) { // 13 fret positions
-                const startOfFret = `<div class="fret col bg-secondary border border-primary border-2" >`
-                const endOfFret = `</div>`;
                 
-                let currentFretElement = startOfFret;
+                let currentFretElement = "";
+                currentFretElement += startOfFretElement;
                 
-                let isSelectedFret = currentFrets[stringNo] == fretNo;
-                if (isSelectedFret){
-                    currentFretElement += enabledFretElement;
+                if (selectedFrets[stringNo] == fretNo){ // only show the fret as selected if it is currently selected
+                    let insideFretElement = generateEnabledFretElement(stringNo, fretNo);
+                    currentFretElement += insideFretElement
+                    
                 }
 
-                currentFretElement += endOfFret;
+                currentFretElement += endOfFretElement;
                 currentStringElement += currentFretElement;
             }
             
-            currentStringElement += endOfString;
+            currentStringElement += endOfStringElement;
             fretboard.innerHTML += currentStringElement;
         }
+
+        addListenersToFrets()
+    }
+
+
+
+
+
+
+    function addListenersToFrets()
+    {
+        let frets = document.getElementsByClassName("fret");
+        for (var i = 0; i < frets.length; i++){
+            frets[i].addEventListener('click', reloadEvent);
+
+            //getting the string and fret of each fret element from i like this feels like a bad idea but it works
+            frets[i].string = 5 - Math.floor(i / 13);
+            frets[i].fret = i % 13;
+        }
+    }
+
+    function reloadEvent(evt)
+    {
+        let string = evt.currentTarget.string;
+        let fret = evt.currentTarget.fret;
+
+        const newFretPosition = new fretPosition(string, fret)
+        reloadFretboard([newFretPosition])
+    }
+
+    function reloadFretboard(fretPositionList) //TAKES A LIST OF 'fretPosition' OBJECTS
+    {
+        fretPositionList.forEach((fretPosition) => {
+            let newString = fretPosition.string;
+            let newFret = fretPosition.fret;
+
+            selectedFrets[newString] = newFret;
+        });
+        
+
+        loadFretboard(selectedFrets);
     }
 
     function firstLoadFretboard()
     {
         loadFretboard(selectedFrets)
     }
-
-    function reloadFretboard()
-    {
-        //get x and y from whatever input
-        let newString = document.getElementById("string-input").value;
-        let newFret = document.getElementById("fret-input").value;
-
-        selectedFrets[newString] = newFret;
-
-        loadFretboard(selectedFrets);
-    }
-
-    var button = document.getElementById("button-input");
-    button.addEventListener("click", reloadFretboard);
 
 
 </script>
