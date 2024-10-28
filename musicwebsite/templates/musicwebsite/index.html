@@ -168,10 +168,12 @@
     Be able to click on 0th fret again to disable that string (set fret position to -1) 
 
     Add labels to the frets (0 - 12) and strings (EADGBE)
-    Make it look like a fretboard
-        Have 6 strings going through the frets, add the dots
-    do the styling good (???)
-    }
+
+
+    DESIGN:
+    Make it look like a fretboard. Have 6 strings going through the frets, add the dots
+
+    Do the styling good (???)
 */
 
 
@@ -179,6 +181,7 @@
     const fretboard = document.getElementById("fretboard");
     var selectedFrets = [0,0,0,0,0,0];
 
+        //The elements for the strings and frets (rows and columns)
     const startOfStringElement = `<div class="string row">`;
     const endOfStringElement = `</div>`;
 
@@ -231,21 +234,27 @@
 
 
 
-    function loadFretboard(selectedFrets)
+    function loadFretboard(selectedFrets) //#### THIS IS THE BIG FUNCTION THAT MAKES THE FRETBOARD ####
     {
+        //This creates html elements by adding an opening tag, the contents, then the closing tag to a string, then repeats with for loops. See global variables above to see and edit those tags for designing.
+
+
         fretboard.innerHTML = "";
 
-        for (var stringNo = 5; stringNo >= 0; stringNo--) { // 6 strings. (iterates in reverse so the lowest string (string 0) is at the bottom)
+        // 6 strings. (iterates in reverse so the lowest string (string 0) is at the bottom)
+        for (var stringNo = 5; stringNo >= 0; stringNo--) { 
             
             let currentStringElement = "";
             currentStringElement += startOfStringElement;
 
-            for (var fretNo = 0; fretNo < 13; fretNo++) { // 13 fret positions
+            // 13 fret positions
+            for (var fretNo = 0; fretNo < 13; fretNo++) { 
                 
                 let currentFretElement = "";
                 currentFretElement += startOfFretElement;
                 
-                if (selectedFrets[stringNo] == fretNo){ // only show the fret as selected if it is currently selected
+                // only show the fret as selected if it is currently selected
+                if (selectedFrets[stringNo] == fretNo){ 
                     let insideFretElement = generateEnabledFretElement(stringNo, fretNo);
                     currentFretElement += insideFretElement
                     
