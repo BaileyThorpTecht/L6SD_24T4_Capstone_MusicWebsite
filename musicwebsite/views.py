@@ -5,6 +5,7 @@ from .models import Chord
 from musicwebsite.forms import ChordVerificationForm
 
 
+# The views.
 def index(request):
     context = {
         "context_name" : "context data"
