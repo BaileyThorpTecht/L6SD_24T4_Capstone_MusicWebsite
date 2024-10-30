@@ -291,6 +291,7 @@
   }
 
   document.getElementById("playbutton").addEventListener("click", function(music){    
+    Change_Audio();
     var i = 0
     setInterval(function() {
       strings[i].play();
@@ -301,6 +302,7 @@
   for (let i = 0; i < stringbuttons.length; i++)
   {
     document.getElementById(stringbuttons[i]).addEventListener("click", function(music){
+      Change_Audio();
       strings[i].play();
   }, false);
   }
