@@ -49,7 +49,13 @@
           <!-- Content here -->
         </div>
       </div>
-      <button class="btn btn-sm btn-primary me-2">Strum</button>
+      <button class="btn btn-sm btn-primary me-2" id="playbutton">Strum</button>
+      <button class="btn btn-sm btn-primary me-2" id="string0button">Play String 1</button>
+      <button class="btn btn-sm btn-primary me-2" id="string1button">Play String 2</button>
+      <button class="btn btn-sm btn-primary me-2" id="string2button">Play String 3</button>
+      <button class="btn btn-sm btn-primary me-2" id="string3button">Play String 4</button>
+      <button class="btn btn-sm btn-primary me-2" id="string4button">Play String 5</button>
+      <button class="btn btn-sm btn-primary me-2" id="string5button">Play String 6</button>
     </div>
 
     <!-- Chord Section -->
@@ -138,6 +144,7 @@
 
     const startOfFretElement = `<div class="fret col bg-secondary-subtle border border-dark-subtle border-2" >`;
     const endOfFretElement = `</div>`;
+    const strings = [string0 = document.createElement("audio"), string1 = document.createElement("audio"), string2 = document.createElement("audio"), string3 = document.createElement("audio"), string4 = document.createElement("audio"), string5 = document.createElement("audio")]
 
     firstLoadFretboard()
 
@@ -237,6 +244,7 @@
             frets[i].string = 5 - Math.floor(i / 13);
             frets[i].fret = i % 13;
         }
+        Change_Audio();
     }
 
     function reloadEvent(evt)
@@ -264,8 +272,60 @@
     function firstLoadFretboard()
     {
         loadFretboard(selectedFrets)
-    }
+    } 
 
+    function Change_Audio(){
+  var frets0 = ["{% static 'audio/String1/String1-Fret0.wav' %}", "{% static 'audio/String1/String1-Fret1.wav' %}", "{% static 'audio/String1/String1-Fret2.wav' %}", "{% static 'audio/String1/String1-Fret3.wav' %}", "{% static 'audio/String1/String1-Fret4.wav' %}", "{% static 'audio/String1/String1-Fret5.wav' %}", "{% static 'audio/String1/String1-Fret6.wav' %}", "{% static 'audio/String1/String1-Fret7.wav' %}", "{% static 'audio/String1/String1-Fret8.wav' %}", "{% static 'audio/String1/String1-Fret9.wav' %}", "{% static 'audio/String1/String1-Fret10.wav' %}", "{% static 'audio/String1/String1-Fret11.wav' %}", "{% static 'audio/String1/String1-Fret12.wav' %}" ]
+  var frets1 = ["{% static 'audio/String2/String2-Fret0.wav' %}", "{% static 'audio/String2/String2-Fret1.wav' %}", "{% static 'audio/String2/String2-Fret2.wav' %}", "{% static 'audio/String2/String2-Fret3.wav' %}", "{% static 'audio/String2/String2-Fret4.wav' %}", "{% static 'audio/String2/String2-Fret5.wav' %}", "{% static 'audio/String2/String2-Fret6.wav' %}", "{% static 'audio/String2/String2-Fret7.wav' %}", "{% static 'audio/String2/String2-Fret8.wav' %}", "{% static 'audio/String2/String2-Fret9.wav' %}", "{% static 'audio/String2/String2-Fret10.wav' %}", "{% static 'audio/String2/String2-Fret11.wav' %}", "{% static 'audio/String2/String2-Fret12.wav' %}" ]
+  var frets2 = ["{% static 'audio/String3/String3-Fret0.wav' %}", "{% static 'audio/String3/String3-Fret1.wav' %}", "{% static 'audio/String3/String3-Fret2.wav' %}", "{% static 'audio/String3/String3-Fret3.wav' %}", "{% static 'audio/String3/String3-Fret4.wav' %}", "{% static 'audio/String3/String3-Fret5.wav' %}", "{% static 'audio/String3/String3-Fret6.wav' %}", "{% static 'audio/String3/String3-Fret7.wav' %}", "{% static 'audio/String3/String3-Fret8.wav' %}", "{% static 'audio/String3/String3-Fret9.wav' %}", "{% static 'audio/String3/String3-Fret10.wav' %}", "{% static 'audio/String3/String3-Fret11.wav' %}", "{% static 'audio/String3/String3-Fret12.wav' %}" ]
+  var frets3 = ["{% static 'audio/String4/String4-Fret0.wav' %}", "{% static 'audio/String4/String4-Fret1.wav' %}", "{% static 'audio/String4/String4-Fret2.wav' %}", "{% static 'audio/String4/String4-Fret3.wav' %}", "{% static 'audio/String4/String4-Fret4.wav' %}", "{% static 'audio/String4/String4-Fret5.wav' %}", "{% static 'audio/String4/String4-Fret6.wav' %}", "{% static 'audio/String4/String4-Fret7.wav' %}", "{% static 'audio/String4/String4-Fret8.wav' %}", "{% static 'audio/String4/String4-Fret9.wav' %}", "{% static 'audio/String4/String4-Fret10.wav' %}", "{% static 'audio/String4/String4-Fret11.wav' %}", "{% static 'audio/String4/String4-Fret12.wav' %}" ]
+  var frets4 = ["{% static 'audio/String5/String5-Fret0.wav' %}", "{% static 'audio/String5/String5-Fret1.wav' %}", "{% static 'audio/String5/String5-Fret2.wav' %}", "{% static 'audio/String5/String5-Fret3.wav' %}", "{% static 'audio/String5/String5-Fret4.wav' %}", "{% static 'audio/String5/String5-Fret5.wav' %}", "{% static 'audio/String5/String5-Fret6.wav' %}", "{% static 'audio/String5/String5-Fret7.wav' %}", "{% static 'audio/String5/String5-Fret8.wav' %}", "{% static 'audio/String5/String5-Fret9.wav' %}", "{% static 'audio/String5/String5-Fret10.wav' %}", "{% static 'audio/String5/String5-Fret11.wav' %}", "{% static 'audio/String5/String5-Fret12.wav' %}" ]
+  var frets5 = ["{% static 'audio/String6/String6-Fret0.wav' %}", "{% static 'audio/String6/String6-Fret1.wav' %}", "{% static 'audio/String6/String6-Fret2.wav' %}", "{% static 'audio/String6/String6-Fret3.wav' %}", "{% static 'audio/String6/String6-Fret4.wav' %}", "{% static 'audio/String6/String6-Fret5.wav' %}", "{% static 'audio/String6/String6-Fret6.wav' %}", "{% static 'audio/String6/String6-Fret7.wav' %}", "{% static 'audio/String6/String6-Fret8.wav' %}", "{% static 'audio/String6/String6-Fret9.wav' %}", "{% static 'audio/String6/String6-Fret10.wav' %}", "{% static 'audio/String6/String6-Fret11.wav' %}", "{% static 'audio/String6/String6-Fret12.wav' %}" ]
+
+  strings[0].src = frets0[selectedFrets[0]];
+  strings[1].src = frets1[selectedFrets[1]];
+  strings[2].src = frets2[selectedFrets[2]];
+  strings[3].src = frets3[selectedFrets[3]];
+  strings[4].src = frets4[selectedFrets[4]];
+  strings[5].src = frets5[selectedFrets[5]];
+
+
+
+  document.getElementById("playbutton").addEventListener("click", function(music){    
+    var i = 0
+    setInterval(function() {
+      strings[i].play();
+      i++;
+    },0);
+  }, false);
+
+  document.getElementById("string0button").addEventListener("click", function(music){
+      strings[0].play();
+  }, false);
+
+  document.getElementById("string1button").addEventListener("click", function(music){
+      strings[1].play();
+  }, false);
+
+  document.getElementById("string2button").addEventListener("click", function(music){
+      strings[2].play();
+  }, false);
+
+  document.getElementById("string3button").addEventListener("click", function(music){
+      strings[3].play();
+  }, false);
+
+  document.getElementById("string4button").addEventListener("click", function(music){
+      strings[4].play();
+  }, false);
+  
+  document.getElementById("string5button").addEventListener("click", function(music){
+      strings[5].play();
+  }, false);
+
+
+}
+Change_Audio();
 
 </script>
 {% endblock %}
