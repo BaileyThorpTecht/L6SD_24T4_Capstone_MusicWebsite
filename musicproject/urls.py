@@ -20,5 +20,5 @@ from musicwebsite import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('music/', include('musicwebsite.urls')),
+    path('', include('musicwebsite.urls')),
 ]
