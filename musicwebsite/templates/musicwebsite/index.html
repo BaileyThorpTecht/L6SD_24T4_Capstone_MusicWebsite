@@ -1,14 +1,319 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
+  <title>Chordial</title>
+  {% load django_bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+<style>
+  * {
+    box-sizing: border-box; 
+  }
+
+  .fret {
+    height: 30px;
+  }
+</style>
+  
+
 </head>
 <body>
-    <h1>heading baybee</h1>
-    <p>also text</p>
+<!-- Header -->
+  <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <div class="container-fluid">
+      {% load static %}
+      <a><img src="{% static 'placeholder.png' %}" height="100px" alt="image"></a>
+      <h1>Chordial</h1>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <button class="btn">
+        <h4>Account</h4>
+      </button>
+      </div>
+    </div>
+  </nav>    
 
-    <main>
-        {% block content %}
-        <h3>{{context_name}}</h3>
-        {% endblock%}
-    </main>
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="container text-center" style="margin-top:3%;">
+          <div class="col text-center d-flex justify-content-center">
+            <div class="card" style="width: 64rem;">
+              <div class="card-body">
+
+                <!-- fretboard -->
+                
+                <div id="fretboard" class="container">
+                    <p>Loading...</p>
+                </div>
+
+                
+              </div>
+            </div>
+          </div>
+          <div class="row float-end" style="margin-inline:3%">
+            <button class="btn btn-sm">
+              <p>Button</p>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="container text-center" style="margin-top:3%;">
+          <div class="col text-center d-flex justify-content-center">
+            <div class="card" style="width: 64rem;">
+              <h5 class="card-title">Chord Section</h5>
+              <div class="card-body">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>      
+      <div class="row">
+        <div class="container text-center" style="margin-top:3%;">
+          <div class="row">
+            <div class="col">
+              <div class="text-center d-flex justify-content-center">
+                <div class="card" style="width: 29rem;">
+                  <h5 class="card-title">Chord Identidication</h5>
+                  <div class="card-body">
+                    <!-- Content here -->
+                  </div>
+                </div>
+              </div>
+              <div style="margin-inline:3%">
+                <button class="btn btn-lg">
+                  <p>Button</p>
+                </button>
+              </div>
+            </div>
+            <div class="col">
+              <div class="text-center d-flex justify-content-center">
+                <div class="card" style="width: 29rem;">
+                  <h5 class="card-title">Chord Saving</h5>
+                  <div class="card-body">
+                    <!-- Content here -->
+                  </div>
+                </div>
+              </div>
+              <div style="margin-inline:3%">
+                <button class="btn btn-sm">
+                  <p>Button</p>
+                </button>
+                <button class="btn btn-sm">
+                  <p>Button</p>
+                </button>
+                <button class="btn btn-sm">
+                  <p>Button</p>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="container text-center" style="margin-top:3%;">
+          <div class="col text-center d-flex justify-content-center">
+            <div class="card" style="width: 64rem;">
+              <h5 class="card-title">Guide Section</h5>
+              <div class="card-body">
+                <!-- Content here -->
+              </div>
+            </div>
+          </div>
+          <div style="margin-inline:3%">
+            <button class="btn btn-sm">
+              <p>Button</p>
+            </button>
+            <button class="btn btn-sm">
+              <p>Button</p>
+            </button>
+            <button class="btn btn-sm">
+              <p>Button</p>
+            </button>
+            <button class="btn btn-sm">
+              <p>Button</p>
+            </button>
+          <div class="row">
+            <button class="btn btn-lg">
+              <p>Button</p>
+            </button>
+          </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="container text-center" style="margin-top:3%;">
+          <div class="col text-center d-flex justify-content-center">
+            <div class="card" style="width: 64rem;">
+              <h5 class="card-title">Song Playback</h5>
+              <div class="card-body">
+                <!-- Content here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
 </body>
+</html>
+
+
+<script>
+/*  TODO:
+    Be able to click on 0th fret again to disable that string (set fret position to -1) 
+
+    Add labels to the frets (0 - 12) and strings (EADGBE)
+
+
+    DESIGN:
+    Make it look like a fretboard. Have 6 strings going through the frets, add the dots
+
+    Do the styling good (???)
+*/
+
+
+    //global code
+    const fretboard = document.getElementById("fretboard");
+    var selectedFrets = [0,0,0,0,0,0];
+
+        //The elements for the strings and frets (rows and columns)
+    const startOfStringElement = `<div class="string row">`;
+    const endOfStringElement = `</div>`;
+
+    const startOfFretElement = `<div class="fret col bg-secondary-subtle border border-dark-subtle border-2" >`;
+    const endOfFretElement = `</div>`;
+
+    firstLoadFretboard()
+
+
+    //classes
+    class fretPosition{
+        constructor(string, fret){
+            this.string = string;
+            this.fret = fret;
+        }
+    }
+
+
+
+    //functions
+    function generateEnabledFretElement(string, fret)
+    {
+        let note = findNoteOfFret(string, fret);
+        
+
+        const enabledFretElement = `<svg width="20" height="20">
+            <circle cx="10" cy="10" r="10" stroke="red" stroke-width="1" fill="orange" />
+            <text fill="#000000" font-size="10" font-family="Verdana" x="6" y="13">${note}</text>
+        </svg>`;
+
+        return enabledFretElement;
+
+    }
+
+    function findNoteOfFret(string, fret)
+    {
+        let noteList = ["E","F","F#","G","G#","A","A#","B","C","C#","D","D#"]; //for this purpose, E is the lowest note
+        let stringTunings = [0,5,10,15,19,24]; //how many notes is each string tuned up relative to the lowest
+
+        let noteNumber = stringTunings[string];
+        noteNumber += fret;
+        noteNumber = noteNumber % 12;
+        let selectedNote = noteList[noteNumber];
+        return selectedNote;
+    }
+    
+
+
+
+
+
+
+    function loadFretboard(selectedFrets) //#### THIS IS THE BIG FUNCTION THAT MAKES THE FRETBOARD ####
+    {
+        //This creates html elements by adding an opening tag, the contents, then the closing tag to a string, then repeats with for loops. See global variables above to see and edit those tags for designing.
+
+
+        fretboard.innerHTML = "";
+
+        // 6 strings. (iterates in reverse so the lowest string (string 0) is at the bottom)
+        for (var stringNo = 5; stringNo >= 0; stringNo--) { 
+            
+            let currentStringElement = "";
+            currentStringElement += startOfStringElement;
+
+            // 13 fret positions
+            for (var fretNo = 0; fretNo < 13; fretNo++) { 
+                
+                let currentFretElement = "";
+                currentFretElement += startOfFretElement;
+                
+                // only show the fret as selected if it is currently selected
+                if (selectedFrets[stringNo] == fretNo){ 
+                    let insideFretElement = generateEnabledFretElement(stringNo, fretNo);
+                    currentFretElement += insideFretElement
+                    
+                }
+
+                currentFretElement += endOfFretElement;
+                currentStringElement += currentFretElement;
+            }
+            
+            currentStringElement += endOfStringElement;
+            fretboard.innerHTML += currentStringElement;
+        }
+
+        addListenersToFrets()
+    }
+
+
+
+
+
+
+    function addListenersToFrets()
+    {
+        let frets = document.getElementsByClassName("fret");
+        for (var i = 0; i < frets.length; i++){
+            frets[i].addEventListener('click', reloadEvent);
+
+            //getting the string and fret of each fret element from i like this feels like a bad idea but it works
+            frets[i].string = 5 - Math.floor(i / 13);
+            frets[i].fret = i % 13;
+        }
+    }
+
+    function reloadEvent(evt)
+    {
+        let string = evt.currentTarget.string;
+        let fret = evt.currentTarget.fret;
+
+        const newFretPosition = new fretPosition(string, fret)
+        reloadFretboard([newFretPosition])
+    }
+
+    function reloadFretboard(fretPositionList) //TAKES A LIST OF 'fretPosition' OBJECTS
+    {
+        fretPositionList.forEach((fretPosition) => {
+            let newString = fretPosition.string;
+            let newFret = fretPosition.fret;
+
+            selectedFrets[newString] = newFret;
+        });
+        
+
+        loadFretboard(selectedFrets);
+    }
+
+    function firstLoadFretboard()
+    {
+        loadFretboard(selectedFrets)
+    }
+
+
+</script>
