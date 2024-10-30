@@ -1,8 +1,12 @@
 <!DOCTYPE html>
+{% extends "musicwebsite/base.html" %}
 
+{% block title %}Home - Music Website{% endblock %}
+
+{% block content %}
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8">  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chordial</title>
   {% load static %}
@@ -35,27 +39,13 @@
 
 <body>
   <!-- Header -->
-  <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-        <img src="{% static 'placeholder.png' %}" alt="Chordial logo">
-      </a>
-      <h2 class="text-white">Chordial</h2>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <button class="btn btn-outline-light">
-        <h6>Account</h6>
-      </button>
-    </div>
-  </nav>
 
   <main class="container mt-3">
     <!-- Guide Section -->
     <div class="text-center mb-4">
       <div class="card mx-auto" style="width: 64rem;">
-        <h5 class="card-title">Guide Section</h5>
-        <div class="card-body">
+        <h5 class="card-title">Fretboard</h5>
+        <div Id="fretboard" class="card-body">
           <!-- Content here -->
         </div>
       </div>
@@ -278,3 +268,4 @@
 
 
 </script>
+{% endblock %}
