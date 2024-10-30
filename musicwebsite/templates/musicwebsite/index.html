@@ -57,7 +57,10 @@
       <div class="card mx-auto" style="width: 64rem;">
         <h5 class="card-title">Chord Section</h5>
         <h7 class="card-subtitle">Please choose a note and a chord type.</h7>
-        <div class="card-body"></div>
+        <div class="card-body">
+          <div id="note-select-div"></div>
+          <div id="chord-select-div"></div>
+        </div>
       </div>
     </div>
 
@@ -127,6 +130,9 @@
     Do the styling good (???)
 */
 
+    //#####################################
+    //              FRETBOARD
+    //#####################################
 
     //global code
     const fretboard = document.getElementById("fretboard");
@@ -248,7 +254,8 @@
         reloadFretboard([newFretPosition])
     }
 
-    function reloadFretboard(fretPositionList) //TAKES A LIST OF 'fretPosition' OBJECTS
+    function reloadFretboard(fretPositionList) //THIS IS THE IMPORTANT FUNCTION TO CALL WHEN DISPLAYING A CHORD
+    //TAKES A LIST OF 'fretPosition' OBJECTS
     {
         fretPositionList.forEach((fretPosition) => {
             let newString = fretPosition.string;
@@ -266,6 +273,141 @@
         loadFretboard(selectedFrets)
     }
 
+
+
+
+    //#####################################
+    //            CHORD SELECT
+    //#####################################
+
+    const noteDiv = document.getElementById("note-select-div");
+    const chordDiv = document.getElementById("chord-select-div");
+
+    const startOfNoteButtonElement = `<button class="note-select-button  p-1 sm:p-1 align-middle mb-2 sm:mb-4 text-sm sm:text-base w-1/6 sm:w-1/12 border bg-gray-dark border-gray-dark text-white">`;
+    const endOfNoteButtonElement = `</button>`;
+    const startOfChordButtonElement = `<button class="chord-select-button p-1 sm:p-1 align-middle mb-2 sm:mb-4 border bg-gray border-gray text-sm sm:text-base w-1/6 lg:w-1/12">`;
+    const endOfChordButtonElement = `</button>`;
+
+    const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+    const chordTypes = ["Major","Minor","Augmented","Diminished","dim7","7","maj7","min7"];
+    const chordSuffixes = ["","m","aug","dim","dim7","7","maj7","min7"];
+
+    var selectedNote = "";
+    var selectedChord = "";
+
+
+    loadNoteButtons();
+    setNoteButtonListeners();
+    loadChordButtons();
+    setChordButtonListeners();
+
+    function loadNoteButtons()
+    {
+      //Create note buttons
+      noteDiv.innerHTML = "";
+      for (var i = 0; i < notes.length; i++)
+      {
+        let noteButtonElement = startOfNoteButtonElement;
+        noteButtonElement += notes[i];
+        noteButtonElement += endOfNoteButtonElement;
+
+        noteDiv.innerHTML += noteButtonElement;
+      }
+    }
+
+    function setNoteButtonListeners()
+    {
+
+      //add listeners and attributes to note buttons
+      let noteButtons = document.getElementsByClassName("note-select-button");
+      for (var i = 0; i < noteButtons.length; i++){
+        noteButtons[i].addEventListener('click', noteButtonClicked);
+        
+        noteButtons[i].note = notes[i];
+        
+      }
+    }
+
+    function noteButtonClicked(evt)
+    {
+
+      //set current button to be highlighted ################################################################ TODO
+
+      selectedNote = evt.currentTarget.note;
+
+      displayChord();
+    }
+
+
+
+
+
+
+
+    function loadchordButtons()
+    {
+      //Create chord buttons
+      chordDiv.innerHTML = "";
+      for (var i = 0; i < chordTypes.length; i++)
+      {
+        let chordButtonElement = startOfChordButtonElement;
+        chordButtonElement += chordTypes[i];
+        chordButtonElement += endOfChordButtonElement;
+
+        chordDiv.innerHTML += chordButtonElement;
+      }
+    }
+
+    function setChordButtonListeners()
+    {
+
+      //add listeners and attributes to chord buttons
+      let chordButtons = document.getElementsByClassName("chord-select-button");
+      for (var i = 0; i < chordButtons.length; i++){
+        chordButtons[i].addEventListener('click', chordButtonClicked);
+        
+        chordButtons[i].suffix = chordSuffixes[i];
+        
+      }
+    }
+
+    function chordButtonClicked(evt)
+    {
+
+      //set current button to be highlighted ################################################################ TODO
+
+      selectedchord = evt.currentTarget.suffix;
+
+      displayChord();
+    }
+
+    function displayChord()
+    {
+      if (selectedChord != "" && selectedNote != "")
+      {
+        let finalChord = selectedNote + selectedChord;
+
+        //get frets from database ################################################################ TODO
+        //example input
+        let fretList = [0,2,2,1,0,0];
+
+        let fretPositonList = [
+        new fretPosition(0,0)
+        new fretPosition(1,2)
+        new fretPosition(2,2)
+        new fretPosition(3,1)
+        new fretPosition(4,0)
+        new fretPosition(5,0)
+        ]
+
+
+        
+
+        reloadFretboard()
+        
+
+      }
+    }
 
 </script>
 {% endblock %}
