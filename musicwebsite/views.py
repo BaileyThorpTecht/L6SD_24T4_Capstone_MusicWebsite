@@ -7,5 +7,3 @@ def index(request):
         "context_name" : "context data"
     }
     return render(request, 'musicwebsite/index.html', context)
-
-
