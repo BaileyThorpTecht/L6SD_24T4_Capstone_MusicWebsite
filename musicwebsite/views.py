@@ -96,8 +96,7 @@ def chord_search(request):
             })
             break
 
-    # Step 5: Return the list of matching chords as a JSON response
-    return JsonResponse({"matching_chords": matching_chords})
+    return render(request, 'musicwebsite/index.html')
 
 
 
