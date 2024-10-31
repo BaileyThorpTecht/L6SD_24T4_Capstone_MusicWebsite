@@ -136,7 +136,7 @@
     var selectedFretsGlobal = [0,0,0,0,0,0];
 
         //The elements for the strings and frets (rows and columns)
-    const startOfStringElement = `<div class="string row">`;
+    const startOfStringElement = `<div class="string row" style="height:30px;">`; //##################### FIXED HEIGHT TEMPORARY FIX ###########################################################################################
     const endOfStringElement = `</div>`;
 
     const startOfFretElement = `<div class="fret col bg-secondary-subtle border border-dark-subtle border-2" >`;
@@ -269,11 +269,14 @@
     const endOfChordButtonElement = `</button>`;
 
     const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
-    const chordTypes = ["Major","Minor","Augmented","Diminished","dim7","7","maj7","min7"];
-    const chordSuffixes = ["","m","aug","dim","dim7","7","maj7","min7"];
+    const chordTypes = ["Major","Minor","Augmented","Diminished","dim7","7","maj7"];
+    const chordSuffixes = ["","m","aug","dim","dim7","7","maj7"];
 
-    var selectedNote = "none";
-    var selectedChord = "none";
+    var selectedNoteGlobal = "none";
+    var selectedChordGlobal = "none";
+
+    var chordButtonsGlobal;
+    var noteButtonsGlobal;
 
 
     loadNoteButtons();
@@ -299,11 +302,11 @@
     {
 
       //add listeners and attributes to note buttons
-      let noteButtons = document.getElementsByClassName("note-select-button");
-      for (var i = 0; i < noteButtons.length; i++){
-        noteButtons[i].addEventListener('click', noteButtonClicked);
+      noteButtonsGlobal = document.getElementsByClassName("note-select-button");
+      for (var i = 0; i < noteButtonsGlobal.length; i++){
+        noteButtonsGlobal[i].addEventListener('click', noteButtonClicked);
         
-        noteButtons[i].note = notes[i];
+        noteButtonsGlobal[i].note = notes[i];
         
       }
     }
@@ -311,9 +314,15 @@
     function noteButtonClicked(evt)
     {
 
-      //set current button to be highlighted ################################################################ TODO
+      //highlight clicked button
+      for (var m = 0; m < noteButtonsGlobal.length; m++){
+        noteButtonsGlobal[m].style.backgroundColor = "";
+        
+      }
+      evt.currentTarget.style.backgroundColor = "gold";
 
-      selectedNote = evt.currentTarget.note;
+      //store clicked note name
+      selectedNoteGlobal = evt.currentTarget.note;
 
       displayChord();
     }
@@ -342,21 +351,26 @@
     {
 
       //add listeners and attributes to chord buttons
-      let chordButtons = document.getElementsByClassName("chord-select-button");
-      for (var i = 0; i < chordButtons.length; i++){
-        chordButtons[i].addEventListener('click', chordButtonClicked);
+      chordButtonsGlobal = document.getElementsByClassName("chord-select-button");
+      for (var i = 0; i < chordButtonsGlobal.length; i++){
+        chordButtonsGlobal[i].addEventListener('click', chordButtonClicked);
         
-        chordButtons[i].suffix = chordSuffixes[i];
-        
+        chordButtonsGlobal[i].suffix = chordSuffixes[i];
       }
     }
 
     function chordButtonClicked(evt)
     {
+      
+      //highlight clicked button
+      for (var l = 0; l < chordButtonsGlobal.length; l++){
+        chordButtonsGlobal[l].style.backgroundColor = "";
+        
+      }
+      evt.currentTarget.style.backgroundColor = "gold";
 
-      //set current button to be highlighted ################################################################ TODO
-
-      selectedChord = evt.currentTarget.suffix;
+      //store clicked chord name
+      selectedChordGlobal = evt.currentTarget.suffix;
 
       displayChord();
     }
@@ -364,14 +378,23 @@
     function displayChord()
     {
 
-      if (selectedChord != "none" && selectedNote != "none")
+      if (selectedChordGlobal != "none" && selectedNoteGlobal != "none")
       {
 
-        let finalChordName = selectedNote + selectedChord;
-        
-        let finalChord = databaseChordList.filter((chord) => chord.name == finalChordName);
+        let finalChordName = selectedNoteGlobal + selectedChordGlobal;
+        let finalChord = databaseChordList.filter((chord) => chord.name == finalChordName)[0];
+        let newFrets = finalChord.frets.slice();
 
-        let newFrets = finalChord[0].frets
+        for (var k = 0; k < newFrets.length; k++)
+        {
+          if (newFrets[k] > -1)
+          {
+            newFrets[k] += finalChord.base - 1;
+          }
+        }
+        
+
+
         
         selectedFretsGlobal = newFrets;
         loadFretboard()
