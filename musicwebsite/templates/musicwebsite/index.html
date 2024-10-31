@@ -44,7 +44,7 @@
     <!-- Guide Section -->
     <div class="text-center mb-4">
       <div class="card mx-auto" style="width: 64rem;">
-        <h5 class="card-title">Fretboard</h5>
+        <h5 id="title" class="card-title">Fretboard</h5>
         <div Id="fretboard" class="card-body">
           <!-- Content here -->
         </div>
@@ -118,18 +118,14 @@
 </html>
 
 
+{{ "D"|json_script:"hello-data" }}
+
 <script>
-/*  TODO:
-    Be able to click on 0th fret again to disable that string (set fret position to -1) 
+    //#####################################
+    //            DATABASE INPUT
+    //#####################################
 
-    Add labels to the frets (0 - 12) and strings (EADGBE)
-
-
-    DESIGN:
-    Make it look like a fretboard. Have 6 strings going through the frets, add the dots
-
-    Do the styling good (???)
-*/
+    const databaseChordList = JSON.parse('{{data|escapejs}}'); 
 
     //#####################################
     //              FRETBOARD
@@ -204,7 +200,15 @@
                 if (selectedFretsGlobal[stringNo] == fretNo){ 
                     let insideFretElement = generateEnabledFretElement(stringNo, fretNo);
                     currentFretElement += insideFretElement
-                    
+                }
+
+                // ############################################################################################## TODO
+                // account for muted strings (-1)
+                // create a cross on the 0th fret
+                //    make it an svg with the same height as the selected fret circle
+                if (selectedFretsGlobal[stringNo] == -1 && fretNo == 0)
+                {
+
                 }
 
                 currentFretElement += endOfFretElement;
@@ -268,8 +272,8 @@
     const chordTypes = ["Major","Minor","Augmented","Diminished","dim7","7","maj7","min7"];
     const chordSuffixes = ["","m","aug","dim","dim7","7","maj7","min7"];
 
-    var selectedNote = "";
-    var selectedChord = "";
+    var selectedNote = "none";
+    var selectedChord = "none";
 
 
     loadNoteButtons();
@@ -360,15 +364,16 @@
     function displayChord()
     {
 
-      if (selectedChord != "" && selectedNote != "")
+      if (selectedChord != "none" && selectedNote != "none")
       {
 
-        let finalChord = selectedNote + selectedChord;
-
-        //get frets from database ################################################################ TODO
-        //example input
+        let finalChordName = selectedNote + selectedChord;
         
-        selectedFretsGlobal = [0,2,2,1,0,0];
+        let finalChord = databaseChordList.filter((chord) => chord.name == finalChordName);
+
+        let newFrets = finalChord[0].frets
+        
+        selectedFretsGlobal = newFrets;
         loadFretboard()
         
 
