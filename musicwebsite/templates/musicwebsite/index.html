@@ -22,6 +22,7 @@
   <!-- <link rel="icon" type="image/x-icon" href="placeholder_icon.ico"> -->
   <link rel="icon" href="{% static 'placeholder_icon.ico' %}" type="image/x-icon"/>
 
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
   
   <!-- Header Styles -->
   <style>
@@ -40,23 +41,24 @@
 <body>
   <!-- Header -->
 
-  <main class="container mt-3">
+  <main class="container mt-4">
     <!-- Guide Section -->
-    <div class="text-center mb-4">
-      <div class="card mx-auto" style="width: 64rem;">
-        <h5 class="card-title">Fretboard</h5>
+    <div class="text-center mb-5">
+      <div class="card mx-auto" style="width: 100%;">
+        <h5 class="card-title mt-3">Fretboard</h5>
         <div Id="fretboard" class="card-body">
           <!-- Content here -->
+
         </div>
       </div>
       <button class="btn btn-sm btn-primary me-2">Strum</button>
     </div>
 
     <!-- Chord Section -->
-    <div class="text-center mb-4">
-      <div class="card mx-auto" style="width: 64rem;">
-        <h5 class="card-title">Chord Section</h5>
-        <h7 class="card-subtitle">Please choose a note and a chord type.</h7>
+    <div class="text-center mb-5">
+      <div class="card mx-auto" style="width: 100%;">
+        <h5 class="card-title mt-3">Chord Section</h5>
+        <h7 class="card-subtitle text-muted">Please choose a note and a chord type.</h7>
         <div class="card-body"></div>
       </div>
     </div>
@@ -64,9 +66,9 @@
     <!-- Chord Identification and Saving -->
     <div class="row mb-4">
       <div class="col text-center">
-        <div class="card mx-auto" style="width: 29rem;">
-          <h5 class="card-title">Chord Identification</h5>
-          <h7 class="card-subtitle">Click on the fretboard to find chords with corresponding notes.</h7>
+        <div class="card mx-auto" style="width: 100%;">
+          <h5 class="card-title mt-3">Chord Identification</h5>
+          <h7 class="card-subtitle text-muted">Click on the fretboard to find chords with corresponding notes.</h7>
           <div class="card-body"></div>
         </div>
         <div class="button-container">
@@ -74,8 +76,8 @@
         </div>
       </div>
       <div class="col text-center">
-        <div class="card mx-auto" style="width: 29rem;">
-          <h5 class="card-title">Chord Saving</h5>
+        <div class="card mx-auto" style="width: 100%;">
+          <h5 class="card-title mt-3">Chord Saving</h5>
           <div class="card-body"></div>
         </div>
         <div class="button-container">
@@ -87,9 +89,9 @@
     </div>
 
     <!-- List of Songs -->
-    <div class="text-center mb-4">
-      <div class="card mx-auto" style="width: 64rem;">
-        <h5 class="card-title">List of Songs</h5>
+    <div class="text-center mb-5">
+      <div class="card mx-auto" style="width: 100%;">
+        <h5 class="card-title mt-3">List of Songs</h5>
         <div class="card-body"></div>
       </div>
       <div class="button-container">
@@ -98,15 +100,15 @@
         <button class="btn btn-sm btn-primary me-3">Add Chord</button>
         <button class="btn btn-sm btn-primary">Delete Chord</button>
       </div>
-      <div class="text-center">
+      <div class="text-center mt-3">
         <button class="btn btn-lg btn-primary">Play Song</button>
       </div>
     </div>
 
     <!-- Song Playback -->
-    <div class="text-center mb-4">
-      <div class="card mx-auto" style="width: 64rem;">
-        <h5 class="card-title">Song Playback</h5>
+    <div class="text-center mb-5">
+      <div class="card mx-auto" style="width: 100%;">
+        <h5 class="card-title mt-3">Song Playback</h5>
       </div>
     </div>
   </main>
@@ -136,7 +138,7 @@
     const startOfStringElement = `<div class="string row">`;
     const endOfStringElement = `</div>`;
 
-    const startOfFretElement = `<div class="fret col bg-secondary-subtle border border-dark-subtle border-2" >`;
+    const startOfFretElement = `<div class="fret col bg-secondary-subtle border border-dark-subtle border-2 fret-border-right" >`;
     const endOfFretElement = `</div>`;
 
     firstLoadFretboard()
