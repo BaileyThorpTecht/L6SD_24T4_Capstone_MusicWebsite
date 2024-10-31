@@ -4,6 +4,7 @@ from django.template import loader
 from .models import Chord
 from musicwebsite.forms import ChordVerificationForm
 from .forms import ChordSearchForm
+import logging
 
 
 # The views.
@@ -13,36 +14,49 @@ def index(request):
     }
     return render(request, 'musicwebsite/index.html', context)
 
+logger = logging.getLogger(__name__)
+
 # This view is what process user input into searching the JSON file in the database for related chord
 def chord_search(request):
-    # Retrieve the 'frets' input from the query parameters
-    frets_input = request.GET.get('frets')
+    # Step 1: Get the user input for 'frets'
+    user_frets_input = request.GET.get('frets')
     
-    if not frets_input:
+    if not user_frets_input:
         return JsonResponse({"error": "No frets input provided."}, status=400)
     
-    # Convert the input string to a list of integers (e.g., "0,3,2,0,1,0" to [0, 3, 2, 0, 1, 0])
+    # Step 2: Convert the input string to a list of integers
     try:
-        frets_input_list = list(map(int, frets_input.split(',')))
+        user_frets_list = list(map(int, user_frets_input.split(',')))
     except ValueError:
-        return JsonResponse({"error": "Invalid frets format. Please make sure they are all numbers seperatd commas."}, status=400)
+        return JsonResponse({"error": "Invalid frets format. Expected a comma-separated list of integers."}, status=400)
 
-    # Search for chords with matching frets
-    matching_chords = Chord.objects.filter(frets=frets_input_list)
+    # Step 3: Prepare a list to store matching chords
+    matching_chords = []
     
-    # Create a response list with the matching chords
-    chord_list = [
-        {
-            "name": chord.name,
-            "base": chord.base,
-            "frets": chord.frets,
-            "fingers": chord.fingers,
-        }
-        for chord in matching_chords
-    ]
-    
-    # Return the response as JSON
-    return JsonResponse({"chords": chord_list})
+    # Step 4: Iterate over each chord in the database
+    for chord in Chord.objects.all():
+        # Check if the chord frets length matches the user input length
+        if len(chord.frets) != len(user_frets_list):
+            continue
+
+        # Calculate adjusted frets by adding 'base' to each fret in chord.frets
+        adjusted_frets = [fret + chord.base - 1 if fret != -1 else -1 for fret in chord.frets]
+
+        # Adjust user input to remove the base value for comparison
+        adjusted_user_frets = [fret - chord.base if fret != -1 else -1 for fret in user_frets_list]
+
+        # Compare adjusted frets with adjusted user input
+        if adjusted_frets == adjusted_user_frets:
+            # If they match, add the chord to the list of matching chords
+            matching_chords.append({
+                "name": chord.name,
+                "base": chord.base,
+                "original_frets": chord.frets,
+                "fingers": chord.fingers,
+            })
+
+    # Step 5: Return the list of matching chords as a JSON response
+    return JsonResponse({"matching_chords": matching_chords})
 
 
 
