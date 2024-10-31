@@ -136,11 +136,13 @@
     var selectedFretsGlobal = [0,0,0,0,0,0];
 
         //The elements for the strings and frets (rows and columns)
-    const startOfStringElement = `<div class="string row" style="height:30px;">`; //##################### FIXED HEIGHT TEMPORARY FIX ###########################################################################################
+    const startOfStringElement = `<div class="string row">`;
     const endOfStringElement = `</div>`;
 
     const startOfFretElement = `<div class="fret col bg-secondary-subtle border border-dark-subtle border-2" >`;
     const endOfFretElement = `</div>`;
+
+    const disabledFretElement = `<span class=" text-danger text-lg font-bold">X</span>`
 
     firstLoadFretboard()
 
@@ -199,16 +201,13 @@
                 // only show the fret as selected if it is currently selected
                 if (selectedFretsGlobal[stringNo] == fretNo){ 
                     let insideFretElement = generateEnabledFretElement(stringNo, fretNo);
-                    currentFretElement += insideFretElement
+                    currentFretElement += insideFretElement;
                 }
 
-                // ############################################################################################## TODO
-                // account for muted strings (-1)
-                // create a cross on the 0th fret
-                //    make it an svg with the same height as the selected fret circle
+                // accounting for muted strings (-1 fret)
                 if (selectedFretsGlobal[stringNo] == -1 && fretNo == 0)
                 {
-
+                    currentFretElement += disabledFretElement;
                 }
 
                 currentFretElement += endOfFretElement;
@@ -241,10 +240,16 @@
 
     function reloadEvent(evt)
     {
+        //set selected fret to the fret you just clicked
         let string = evt.currentTarget.string;
         let fret = evt.currentTarget.fret;
 
-        selectedFretsGlobal[string] = fret;
+        //if you click on an already selected fret, disable it
+        if (selectedFretsGlobal[string] == fret) {
+          selectedFretsGlobal[string] = -1;
+        } else {
+          selectedFretsGlobal[string] = fret;
+        }
         loadFretboard();
     }
 
