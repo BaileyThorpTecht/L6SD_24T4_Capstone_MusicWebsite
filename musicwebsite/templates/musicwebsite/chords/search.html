@@ -1,0 +1,16 @@
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Search</button>
+</form>
+
+{% if results %}
+    <h2>Matching Chords:</h2>
+    <ul>
+        {% for chord in results %}
+            <li>{{ chord.name }} (Base Fret: {{ chord.base }})</li>
+        {% empty %}
+            <li>No matching chords found.</li>
+        {% endfor %}
+    </ul>
+{% endif %}
