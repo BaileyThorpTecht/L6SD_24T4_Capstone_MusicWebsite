@@ -1,14 +1,412 @@
 <!DOCTYPE html>
+{% extends "musicwebsite/base.html" %}
+
+{% block title %}Home - Music Website{% endblock %}
+
+{% block content %}
 <html lang="en">
 <head>
-</head>
-<body>
-    <h1>heading baybee</h1>
-    <p>also text</p>
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chordial</title>
+  {% load static %}
 
-    <main>
-        {% block content %}
-        <h3>{{context_name}}</h3>
-        {% endblock%}
-    </main>
+  <!-- United theme from Bootswatch -->
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/united/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap JS for functionality -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Icon for website tab -->
+  <!-- <link rel="icon" href="placeholder_icon.ico" type="image/x-icon"/> -->
+  <!-- <link rel="icon" type="image/x-icon" href="placeholder_icon.ico"> -->
+  <link rel="icon" href="{% static 'placeholder_icon.ico' %}" type="image/x-icon"/>
+
+  
+  <!-- Header Styles -->
+  <style>
+    .navbar-brand img {
+      height: 40px;
+    }
+    .card {
+      margin-bottom: 20px; /* Spacing between cards */
+    }
+    .button-container {
+      margin: 3% 0; /* Top and bottom margin for button containers */
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+
+  <main class="container mt-3">
+    <!-- Guide Section -->
+    <div class="text-center mb-4">
+      <div class="card mx-auto" style="width: 64rem;">
+        <h5 id="title" class="card-title">Fretboard</h5>
+        <div Id="fretboard" class="card-body">
+          <!-- Content here -->
+        </div>
+      </div>
+      <button class="btn btn-sm btn-primary me-2">Strum</button>
+    </div>
+
+    <!-- Chord Section -->
+    <div class="text-center mb-4">
+      <div class="card mx-auto" style="width: 64rem;">
+        <h5 class="card-title">Chord Section</h5>
+        <h7 class="card-subtitle">Please choose a note and a chord type.</h7>
+        <div class="card-body container">
+          <div id="note-select-div" class="row"></div>
+          <br>
+          <div id="chord-select-div" class="row"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chord Identification and Saving -->
+    <div class="row mb-4">
+      <div class="col text-center">
+        <div class="card mx-auto" style="width: 29rem;">
+          <h5 class="card-title">Chord Identification</h5>
+          <h7 class="card-subtitle">Click on the fretboard to find chords with corresponding notes.</h7>
+          <div class="card-body"></div>
+        </div>
+        <div class="button-container">
+          <button class="btn btn-lg btn-primary">Identify</button>
+        </div>
+      </div>
+      <div class="col text-center">
+        <div class="card mx-auto" style="width: 29rem;">
+          <h5 class="card-title">Chord Saving</h5>
+          <div class="card-body"></div>
+        </div>
+        <div class="button-container">
+          <button class="btn btn-sm btn-secondary me-2">Save Chord</button>
+          <button class="btn btn-sm btn-secondary me-2">Clear</button>
+          <button class="btn btn-sm btn-secondary">Export</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- List of Songs -->
+    <div class="text-center mb-4">
+      <div class="card mx-auto" style="width: 64rem;">
+        <h5 class="card-title">List of Songs</h5>
+        <div class="card-body"></div>
+      </div>
+      <div class="button-container">
+        <button class="btn btn-sm btn-primary me-3">Add song</button>
+        <button class="btn btn-sm btn-primary me-3">Delete song</button>
+        <button class="btn btn-sm btn-primary me-3">Add Chord</button>
+        <button class="btn btn-sm btn-primary">Delete Chord</button>
+      </div>
+      <div class="text-center">
+        <button class="btn btn-lg btn-primary">Play Song</button>
+      </div>
+    </div>
+
+    <!-- Song Playback -->
+    <div class="text-center mb-4">
+      <div class="card mx-auto" style="width: 64rem;">
+        <h5 class="card-title">Song Playback</h5>
+      </div>
+    </div>
+  </main>
 </body>
+</html>
+
+
+{{ "D"|json_script:"hello-data" }}
+
+<script>
+    //#####################################
+    //            DATABASE INPUT
+    //#####################################
+
+    const databaseChordList = JSON.parse('{{data|escapejs}}'); 
+
+    //#####################################
+    //              FRETBOARD
+    //#####################################
+
+    //global code
+    const fretboard = document.getElementById("fretboard");
+    var selectedFretsGlobal = [0,0,0,0,0,0];
+
+        //The elements for the strings and frets (rows and columns)
+    const startOfStringElement = `<div class="string row">`;
+    const endOfStringElement = `</div>`;
+
+    const startOfFretElement = `<div class="fret col bg-secondary-subtle border border-dark-subtle border-2" >`;
+    const endOfFretElement = `</div>`;
+
+    const disabledFretElement = `<span class=" text-danger text-lg font-bold">X</span>`
+
+    firstLoadFretboard()
+
+    //functions
+    function generateEnabledFretElement(string, fret)
+    {
+        let note = findNoteOfFret(string, fret);
+        
+
+        const enabledFretElement = `<svg width="20" height="20">
+            <circle cx="10" cy="10" r="10" stroke="red" stroke-width="1" fill="orange" />
+            <text fill="#000000" font-size="10" font-family="Verdana" x="6" y="13">${note}</text>
+        </svg>`;
+
+        return enabledFretElement;
+
+    }
+
+    function findNoteOfFret(string, fret)
+    {
+        let noteList = ["E","F","F#","G","G#","A","A#","B","C","C#","D","D#"]; //for this purpose, E is the lowest note
+        let stringTunings = [0,5,10,15,19,24]; //how many notes is each string tuned up relative to the lowest
+
+        let noteNumber = stringTunings[string];
+        noteNumber += fret;
+        noteNumber = noteNumber % 12;
+        let selectedNote = noteList[noteNumber];
+        return selectedNote;
+    }
+    
+
+
+
+
+
+
+    function loadFretboard() //#### THIS IS THE BIG FUNCTION THAT MAKES THE FRETBOARD ####
+    {
+      
+        //This creates html elements by adding an opening tag, the contents, then the closing tag to a string, then repeats with for loops. See global variables above to see and edit those tags for designing.
+        
+        fretboard.innerHTML = "";
+
+        // 6 strings. (iterates in reverse so the lowest string (string 0) is at the bottom)
+        for (var stringNo = 5; stringNo >= 0; stringNo--) { 
+            
+            let currentStringElement = "";
+            currentStringElement += startOfStringElement;
+
+            // 13 fret positions
+            for (var fretNo = 0; fretNo < 13; fretNo++) { 
+                
+                let currentFretElement = "";
+                currentFretElement += startOfFretElement;
+                
+                // only show the fret as selected if it is currently selected
+                if (selectedFretsGlobal[stringNo] == fretNo){ 
+                    let insideFretElement = generateEnabledFretElement(stringNo, fretNo);
+                    currentFretElement += insideFretElement;
+                }
+
+                // accounting for muted strings (-1 fret)
+                if (selectedFretsGlobal[stringNo] == -1 && fretNo == 0)
+                {
+                    currentFretElement += disabledFretElement;
+                }
+
+                currentFretElement += endOfFretElement;
+                currentStringElement += currentFretElement;
+            }
+            
+            currentStringElement += endOfStringElement;
+            fretboard.innerHTML += currentStringElement;
+        }
+
+        addListenersToFrets()
+    }
+
+
+
+
+
+
+    function addListenersToFrets()
+    {
+        let frets = document.getElementsByClassName("fret");
+        for (var i = 0; i < frets.length; i++){
+            frets[i].addEventListener('click', reloadEvent);
+
+            //getting the string and fret of each fret element from i like this feels like a bad idea but it works
+            frets[i].string = 5 - Math.floor(i / 13);
+            frets[i].fret = i % 13;
+        }
+    }
+
+    function reloadEvent(evt)
+    {
+        //set selected fret to the fret you just clicked
+        let string = evt.currentTarget.string;
+        let fret = evt.currentTarget.fret;
+
+        //if you click on an already selected fret, disable it
+        if (selectedFretsGlobal[string] == fret) {
+          selectedFretsGlobal[string] = -1;
+        } else {
+          selectedFretsGlobal[string] = fret;
+        }
+        loadFretboard();
+    }
+
+    function firstLoadFretboard()
+    {
+        loadFretboard();
+    }
+
+
+
+
+    //#####################################
+    //            CHORD SELECT
+    //#####################################
+
+    const noteDiv = document.getElementById("note-select-div");
+    const chordDiv = document.getElementById("chord-select-div");
+
+    const startOfNoteButtonElement = `<button class="note-select-button  p-1 sm:p-1 align-middle mb-2 sm:mb-4 text-sm sm:text-base w-1/6 sm:w-1/12 border bg-gray-dark border-dark-subtle text-black col">`;
+    const endOfNoteButtonElement = `</button>`;
+    const startOfChordButtonElement = `<button class="chord-select-button p-1 sm:p-1 align-middle mb-2 sm:mb-4 border bg-gray border-dark-subtle text-sm sm:text-base w-1/6 lg:w-1/12 col">`;
+    const endOfChordButtonElement = `</button>`;
+
+    const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+    const chordTypes = ["Major","Minor","Augmented","Diminished","dim7","7","maj7"];
+    const chordSuffixes = ["","m","aug","dim","dim7","7","maj7"];
+
+    var selectedNoteGlobal = "none";
+    var selectedChordGlobal = "none";
+
+    var chordButtonsGlobal;
+    var noteButtonsGlobal;
+
+
+    loadNoteButtons();
+    setNoteButtonListeners();
+    loadChordButtons();
+    setChordButtonListeners();
+
+    function loadNoteButtons()
+    {
+      //Create note buttons
+      noteDiv.innerHTML = "";
+      for (var i = 0; i < notes.length; i++)
+      {
+        let noteButtonElement = startOfNoteButtonElement;
+        noteButtonElement += notes[i];
+        noteButtonElement += endOfNoteButtonElement;
+
+        noteDiv.innerHTML += noteButtonElement;
+      }
+    }
+
+    function setNoteButtonListeners()
+    {
+
+      //add listeners and attributes to note buttons
+      noteButtonsGlobal = document.getElementsByClassName("note-select-button");
+      for (var i = 0; i < noteButtonsGlobal.length; i++){
+        noteButtonsGlobal[i].addEventListener('click', noteButtonClicked);
+        
+        noteButtonsGlobal[i].note = notes[i];
+        
+      }
+    }
+
+    function noteButtonClicked(evt)
+    {
+
+      //highlight clicked button
+      for (var m = 0; m < noteButtonsGlobal.length; m++){
+        noteButtonsGlobal[m].style.backgroundColor = "";
+        
+      }
+      evt.currentTarget.style.backgroundColor = "gold";
+
+      //store clicked note name
+      selectedNoteGlobal = evt.currentTarget.note;
+
+      displayChord();
+    }
+
+
+
+
+
+
+
+    function loadChordButtons()
+    {
+      //Create chord buttons
+      chordDiv.innerHTML = "";
+      for (var i = 0; i < chordTypes.length; i++)
+      {
+        let chordButtonElement = startOfChordButtonElement;
+        chordButtonElement += chordTypes[i];
+        chordButtonElement += endOfChordButtonElement;
+
+        chordDiv.innerHTML += chordButtonElement;
+      }
+    }
+
+    function setChordButtonListeners()
+    {
+
+      //add listeners and attributes to chord buttons
+      chordButtonsGlobal = document.getElementsByClassName("chord-select-button");
+      for (var i = 0; i < chordButtonsGlobal.length; i++){
+        chordButtonsGlobal[i].addEventListener('click', chordButtonClicked);
+        
+        chordButtonsGlobal[i].suffix = chordSuffixes[i];
+      }
+    }
+
+    function chordButtonClicked(evt)
+    {
+      
+      //highlight clicked button
+      for (var l = 0; l < chordButtonsGlobal.length; l++){
+        chordButtonsGlobal[l].style.backgroundColor = "";
+        
+      }
+      evt.currentTarget.style.backgroundColor = "gold";
+
+      //store clicked chord name
+      selectedChordGlobal = evt.currentTarget.suffix;
+
+      displayChord();
+    }
+
+    function displayChord()
+    {
+
+      if (selectedChordGlobal != "none" && selectedNoteGlobal != "none")
+      {
+
+        let finalChordName = selectedNoteGlobal + selectedChordGlobal;
+        let finalChord = databaseChordList.filter((chord) => chord.name == finalChordName)[0];
+        let newFrets = finalChord.frets.slice();
+
+        for (var k = 0; k < newFrets.length; k++)
+        {
+          if (newFrets[k] > -1)
+          {
+            newFrets[k] += finalChord.base - 1;
+          }
+        }
+        
+
+
+        
+        selectedFretsGlobal = newFrets;
+        loadFretboard()
+        
+
+      }
+    }
+
+</script>
+{% endblock %}
