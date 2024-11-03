@@ -123,9 +123,6 @@
 </body>
 </html>
 
-
-{{ "D"|json_script:"hello-data" }}
-
 <script>
     //#####################################
     //            DATABASE INPUT
@@ -133,31 +130,61 @@
 
     const databaseChordList = JSON.parse('{{data|escapejs}}'); 
 
+
     //#####################################
-    //              FRETBOARD
+    //        CONST / GLOBAL VARIABES
     //#####################################
 
-    //global code
+    //FRETBOARD
+
     const fretboard = document.getElementById("fretboard");
     var selectedFretsGlobal = [0,0,0,0,0,0];
 
-        //The elements for the strings and frets (rows and columns)
     const startOfStringElement = `<div class="string row">`;
     const endOfStringElement = `</div>`;
 
     const startOfFretElement = `<div class="fret col bg-secondary-subtle border border-dark-subtle border-2" >`;
     const endOfFretElement = `</div>`;
 
+    const disabledFretElement = `<span class=" text-danger text-lg font-bold">X</span>`
+
+    
+    //CHORD SELECT
+    const noteDiv = document.getElementById("note-select-div");
+    const chordDiv = document.getElementById("chord-select-div");
+
+    const startOfNoteButtonElement = `<button class="note-select-button  p-1 sm:p-1 align-middle mb-2 sm:mb-4 text-sm sm:text-base w-1/6 sm:w-1/12 border bg-gray-dark border-dark-subtle text-black col">`;
+    const endOfNoteButtonElement = `</button>`;
+    const startOfChordButtonElement = `<button class="chord-select-button p-1 sm:p-1 align-middle mb-2 sm:mb-4 border bg-gray border-dark-subtle text-sm sm:text-base w-1/6 lg:w-1/12 col">`;
+    const endOfChordButtonElement = `</button>`;
+
+    const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+    const chordTypes = ["Major","Minor","Augmented","Diminished","dim7","7","maj7"];
+    const chordSuffixes = ["","m","aug","dim","dim7","7","maj7"];
+
+    var selectedNoteGlobal = "none";
+    var selectedChordGlobal = "none";
+
+    var chordButtonsGlobal;
+    var noteButtonsGlobal;
+
+    //PLAYING SOUND
+
     const strings = [string0 = document.createElement("audio"), string1 = document.createElement("audio"), string2 = document.createElement("audio"), string3 = document.createElement("audio"), string4 = document.createElement("audio"), string5 = document.createElement("audio")]
     const stringbuttons = ["string0button", "string1button", "string2button", "string3button", "string4button", "string5button"];
-    const notes = [["{% static 'audio/String1/String1-Fret0.wav' %}", "{% static 'audio/String1/String1-Fret1.wav' %}", "{% static 'audio/String1/String1-Fret2.wav' %}", "{% static 'audio/String1/String1-Fret3.wav' %}", "{% static 'audio/String1/String1-Fret4.wav' %}", "{% static 'audio/String1/String1-Fret5.wav' %}", "{% static 'audio/String1/String1-Fret6.wav' %}", "{% static 'audio/String1/String1-Fret7.wav' %}", "{% static 'audio/String1/String1-Fret8.wav' %}", "{% static 'audio/String1/String1-Fret9.wav' %}", "{% static 'audio/String1/String1-Fret10.wav' %}", "{% static 'audio/String1/String1-Fret11.wav' %}", "{% static 'audio/String1/String1-Fret12.wav' %}" ],
-      ["{% static 'audio/String2/String2-Fret0.wav' %}", "{% static 'audio/String2/String2-Fret1.wav' %}", "{% static 'audio/String2/String2-Fret2.wav' %}", "{% static 'audio/String2/String2-Fret3.wav' %}", "{% static 'audio/String2/String2-Fret4.wav' %}", "{% static 'audio/String2/String2-Fret5.wav' %}", "{% static 'audio/String2/String2-Fret6.wav' %}", "{% static 'audio/String2/String2-Fret7.wav' %}", "{% static 'audio/String2/String2-Fret8.wav' %}", "{% static 'audio/String2/String2-Fret9.wav' %}", "{% static 'audio/String2/String2-Fret10.wav' %}", "{% static 'audio/String2/String2-Fret11.wav' %}", "{% static 'audio/String2/String2-Fret12.wav' %}" ],
+    const noteSounds = [["{% static 'audio/String1/String1-Fret0.wav' %}", "{% static 'audio/String1/String1-Fret1.wav' %}", "{% static 'audio/String1/String1-Fret2.wav' %}", "{% static 'audio/String1/String1-Fret3.wav' %}", "{% static 'audio/String1/String1-Fret4.wav' %}", "{% static 'audio/String1/String1-Fret5.wav' %}", "{% static 'audio/String1/String1-Fret6.wav' %}", "{% static 'audio/String1/String1-Fret7.wav' %}", "{% static 'audio/String1/String1-Fret8.wav' %}", "{% static 'audio/String1/String1-Fret9.wav' %}", "{% static 'audio/String1/String1-Fret10.wav' %}", "{% static 'audio/String1/String1-Fret11.wav' %}", "{% static 'audio/String1/String1-Fret12.wav' %}" ], ["{% static 'audio/String2/String2-Fret0.wav' %}", "{% static 'audio/String2/String2-Fret1.wav' %}", "{% static 'audio/String2/String2-Fret2.wav' %}", "{% static 'audio/String2/String2-Fret3.wav' %}", "{% static 'audio/String2/String2-Fret4.wav' %}", "{% static 'audio/String2/String2-Fret5.wav' %}", "{% static 'audio/String2/String2-Fret6.wav' %}", "{% static 'audio/String2/String2-Fret7.wav' %}", "{% static 'audio/String2/String2-Fret8.wav' %}", "{% static 'audio/String2/String2-Fret9.wav' %}", "{% static 'audio/String2/String2-Fret10.wav' %}", "{% static 'audio/String2/String2-Fret11.wav' %}", "{% static 'audio/String2/String2-Fret12.wav' %}" ],
       ["{% static 'audio/String3/String3-Fret0.wav' %}", "{% static 'audio/String3/String3-Fret1.wav' %}", "{% static 'audio/String3/String3-Fret2.wav' %}", "{% static 'audio/String3/String3-Fret3.wav' %}", "{% static 'audio/String3/String3-Fret4.wav' %}", "{% static 'audio/String3/String3-Fret5.wav' %}", "{% static 'audio/String3/String3-Fret6.wav' %}", "{% static 'audio/String3/String3-Fret7.wav' %}", "{% static 'audio/String3/String3-Fret8.wav' %}", "{% static 'audio/String3/String3-Fret9.wav' %}", "{% static 'audio/String3/String3-Fret10.wav' %}", "{% static 'audio/String3/String3-Fret11.wav' %}", "{% static 'audio/String3/String3-Fret12.wav' %}" ],
       ["{% static 'audio/String4/String4-Fret0.wav' %}", "{% static 'audio/String4/String4-Fret1.wav' %}", "{% static 'audio/String4/String4-Fret2.wav' %}", "{% static 'audio/String4/String4-Fret3.wav' %}", "{% static 'audio/String4/String4-Fret4.wav' %}", "{% static 'audio/String4/String4-Fret5.wav' %}", "{% static 'audio/String4/String4-Fret6.wav' %}", "{% static 'audio/String4/String4-Fret7.wav' %}", "{% static 'audio/String4/String4-Fret8.wav' %}", "{% static 'audio/String4/String4-Fret9.wav' %}", "{% static 'audio/String4/String4-Fret10.wav' %}", "{% static 'audio/String4/String4-Fret11.wav' %}", "{% static 'audio/String4/String4-Fret12.wav' %}" ],
       ["{% static 'audio/String5/String5-Fret0.wav' %}", "{% static 'audio/String5/String5-Fret1.wav' %}", "{% static 'audio/String5/String5-Fret2.wav' %}", "{% static 'audio/String5/String5-Fret3.wav' %}", "{% static 'audio/String5/String5-Fret4.wav' %}", "{% static 'audio/String5/String5-Fret5.wav' %}", "{% static 'audio/String5/String5-Fret6.wav' %}", "{% static 'audio/String5/String5-Fret7.wav' %}", "{% static 'audio/String5/String5-Fret8.wav' %}", "{% static 'audio/String5/String5-Fret9.wav' %}", "{% static 'audio/String5/String5-Fret10.wav' %}", "{% static 'audio/String5/String5-Fret11.wav' %}", "{% static 'audio/String5/String5-Fret12.wav' %}" ],
-      ["{% static 'audio/String6/String6-Fret0.wav' %}", "{% static 'audio/String6/String6-Fret1.wav' %}", "{% static 'audio/String6/String6-Fret2.wav' %}", "{% static 'audio/String6/String6-Fret3.wav' %}", "{% static 'audio/String6/String6-Fret4.wav' %}", "{% static 'audio/String6/String6-Fret5.wav' %}", "{% static 'audio/String6/String6-Fret6.wav' %}", "{% static 'audio/String6/String6-Fret7.wav' %}", "{% static 'audio/String6/String6-Fret8.wav' %}", "{% static 'audio/String6/String6-Fret9.wav' %}", "{% static 'audio/String6/String6-Fret10.wav' %}", "{% static 'audio/String6/String6-Fret11.wav' %}", "{% static 'audio/String6/String6-Fret12.wav' %}" ]]
+      ["{% static 'audio/String6/String6-Fret0.wav' %}", "{% static 'audio/String6/String6-Fret1.wav' %}", "{% static 'audio/String6/String6-Fret2.wav' %}", "{% static 'audio/String6/String6-Fret3.wav' %}", "{% static 'audio/String6/String6-Fret4.wav' %}", "{% static 'audio/String6/String6-Fret5.wav' %}", "{% static 'audio/String6/String6-Fret6.wav' %}", "{% static 'audio/String6/String6-Fret7.wav' %}", "{% static 'audio/String6/String6-Fret8.wav' %}", "{% static 'audio/String6/String6-Fret9.wav' %}", "{% static 'audio/String6/String6-Fret10.wav' %}", "{% static 'audio/String6/String6-Fret11.wav' %}", "{% static 'audio/String6/String6-Fret12.wav' %}" ]];
 
-    const disabledFretElement = `<span class=" text-danger text-lg font-bold">X</span>`
+
+
+
+    //#####################################
+    //              FRETBOARD
+    //#####################################
+    
 
     firstLoadFretboard()
 
@@ -196,7 +223,6 @@
 
     function loadFretboard() //#### THIS IS THE BIG FUNCTION THAT MAKES THE FRETBOARD ####
     {
-      
         //This creates html elements by adding an opening tag, the contents, then the closing tag to a string, then repeats with for loops. See global variables above to see and edit those tags for designing.
         
         fretboard.innerHTML = "";
@@ -271,35 +297,10 @@
 
     function firstLoadFretboard()
     {
-        loadFretboard(selectedFrets)
+        loadFretboard(selectedFretsGlobal)
     } 
 
-    function Change_Audio()
-    {
-
-      for (let i = 0; i < strings.length; i++)
-      {
-      strings[i].src = notes[i][selectedFrets[i]];
-      }
-        loadFretboard();
-    }
-
-    document.getElementById("playbutton").addEventListener("click", function(music){    
-        Change_Audio();
-        var i = 0
-        setInterval(function() {
-          strings[i].play();
-          i++;
-        },20);
-      }, false);
-
-      for (let i = 0; i < stringbuttons.length; i++)
-      {
-        document.getElementById(stringbuttons[i]).addEventListener("click", function(music){
-          Change_Audio();
-          strings[i].play();
-      }, false);
-      }
+    
 
 
 
@@ -307,23 +308,7 @@
     //            CHORD SELECT
     //#####################################
 
-    const noteDiv = document.getElementById("note-select-div");
-    const chordDiv = document.getElementById("chord-select-div");
-
-    const startOfNoteButtonElement = `<button class="note-select-button  p-1 sm:p-1 align-middle mb-2 sm:mb-4 text-sm sm:text-base w-1/6 sm:w-1/12 border bg-gray-dark border-dark-subtle text-black col">`;
-    const endOfNoteButtonElement = `</button>`;
-    const startOfChordButtonElement = `<button class="chord-select-button p-1 sm:p-1 align-middle mb-2 sm:mb-4 border bg-gray border-dark-subtle text-sm sm:text-base w-1/6 lg:w-1/12 col">`;
-    const endOfChordButtonElement = `</button>`;
-
-    const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
-    const chordTypes = ["Major","Minor","Augmented","Diminished","dim7","7","maj7"];
-    const chordSuffixes = ["","m","aug","dim","dim7","7","maj7"];
-
-    var selectedNoteGlobal = "none";
-    var selectedChordGlobal = "none";
-
-    var chordButtonsGlobal;
-    var noteButtonsGlobal;
+    
 
 
     loadNoteButtons();
@@ -449,6 +434,53 @@
 
       }
     }
+
+
+
+
+
+    //#####################################
+    //           PLAYING SOUND
+    //#####################################
+
+
+    
+      
+
+
+
+      function Change_Audio()
+    {
+
+      for (let i = 0; i < strings.length; i++)
+      {
+      strings[i].load();
+      strings[i].src = noteSounds[i][selectedFretsGlobal[i]];
+
+      }
+        //loadFretboard();
+    }
+
+    document.getElementById("playbutton").addEventListener("click", function(music){    
+        //Change_Audio();
+        var i = 0
+        setInterval(function() {
+          strings[i].load();
+          strings[i].play();
+
+          i++;
+        },20);
+      }, false);
+
+      for (let i = 0; i < stringbuttons.length; i++)
+      {
+        document.getElementById(stringbuttons[i]).addEventListener("click", function(music){
+          //Change_Audio();
+          strings[i].load();
+          strings[i].play();
+      }, false);
+      }
+
 
 </script>
 {% endblock %}
