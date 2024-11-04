@@ -80,7 +80,7 @@
           <div class="card-body"></div>
         </div>
         <div class="button-container">
-          <button class="btn btn-lg btn-primary">Identify</button>
+          <button id="chord-search-button" class="btn btn-lg btn-primary">Identify</button>
         </div>
       </div>
       <div class="col text-center">
@@ -301,7 +301,8 @@
     } 
 
     
-
+  </script>
+  <script>
 
 
     //#####################################
@@ -481,6 +482,36 @@
       }, false);
       }
 
+
+
+    //#####################################
+    //       REVERSE CHORD SEARCH
+    //#####################################
+
+    let chordSearchButton = document.getElementById("chord-search-button");
+    let chordSearchDisplay = document.getElementById("chord-search-display");
+    chordSearchButton.addEventListener('click', reverseChordSearch);
+
+    function reverseChordSearch()
+    {
+      let foundChordList = databaseChordList.filter((chord) => 
+      
+      chord.frets[0] + chord.base - 1 == selectedFretsGlobal[0]  &&
+      chord.frets[1] + chord.base - 1 == selectedFretsGlobal[1]  &&
+      chord.frets[2] + chord.base - 1 == selectedFretsGlobal[2]  &&
+      chord.frets[3] + chord.base - 1 == selectedFretsGlobal[3]  &&
+      chord.frets[4] + chord.base - 1 == selectedFretsGlobal[4]  &&
+      chord.frets[5] + chord.base - 1 == selectedFretsGlobal[5] );
+
+      let foundChord;
+      if (foundChordList.length > 0){
+        foundChord = foundChordList[0].name;
+      } else {
+        foundChord = "No Chords Found";
+      }
+
+      window.alert(foundChord);
+    }
 
 </script>
 {% endblock %}
