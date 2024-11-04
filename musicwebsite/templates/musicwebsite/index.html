@@ -111,6 +111,12 @@
 </body>
 </html>
 
+<style>
+  .fret {
+    height: 30px;
+    width: 50px;
+  }
+</style>
 
 <script>
 /*  TODO:
@@ -134,7 +140,7 @@
     const startOfStringElement = `<div class="string row">`;
     const endOfStringElement = `</div>`;
 
-    const startOfFretElement = `<div class="fret col bg-secondary-subtle border border-dark-subtle border-2" style="background-image: url(static/string.png); background-size: cover;">`;
+    const startOfFretElement = `<div class="fret col bg-secondary-subtle border border-dark-subtle border-2" style="background-image: url(static/string.png); background-size: 60px; background-position: top;">`;
     const endOfFretElement = `</div>`;
 
     firstLoadFretboard()
