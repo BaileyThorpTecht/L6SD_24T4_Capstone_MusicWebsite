@@ -493,7 +493,7 @@
     let chordSearchDisplay = document.getElementById("chord-search-display");
     chordSearchButton.addEventListener('click', reverseChordSearch);
 
-    function reverseChordSearch()
+    async function reverseChordSearch()
     {
       chordSearchDisplay.innerHTML = "...";
 
@@ -511,7 +511,7 @@
 
       let foundChord;
       if (foundChordList.length > 0){
-        foundChord = foundChordList[foundChordList.length - 1].name;
+        foundChord = foundChordList[0].name;
       } else {
         foundChord = "No Chords Found";
       }
