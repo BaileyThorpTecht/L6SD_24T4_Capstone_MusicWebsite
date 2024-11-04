@@ -77,6 +77,7 @@
         <div class="card mx-auto" style="width: 29rem;">
           <h5 class="card-title">Chord Identification</h5>
           <h7 class="card-subtitle">Click on the fretboard to find chords with corresponding notes.</h7>
+          <h1 id="chord-search-display">...</h1>
           <div class="card-body"></div>
         </div>
         <div class="button-container">
@@ -494,23 +495,28 @@
 
     function reverseChordSearch()
     {
-      let foundChordList = databaseChordList.filter((chord) => 
-      
-      chord.frets[0] + chord.base - 1 == selectedFretsGlobal[0]  &&
-      chord.frets[1] + chord.base - 1 == selectedFretsGlobal[1]  &&
-      chord.frets[2] + chord.base - 1 == selectedFretsGlobal[2]  &&
-      chord.frets[3] + chord.base - 1 == selectedFretsGlobal[3]  &&
-      chord.frets[4] + chord.base - 1 == selectedFretsGlobal[4]  &&
-      chord.frets[5] + chord.base - 1 == selectedFretsGlobal[5] );
+      chordSearchDisplay.innerHTML = "...";
+
+
+      // for each fret in the chord, they all must:
+      //    the fret + base - 1 must match the selected fret
+      //    OR, if the fret is -1, the selected fret must be -1
+      let foundChordList = databaseChordList.filter((chord) =>    
+      (chord.frets[0] + chord.base - 1 == selectedFretsGlobal[0] || (chord.frets[0] == -1  && selectedFretsGlobal[0] == -1)) &&
+      (chord.frets[1] + chord.base - 1 == selectedFretsGlobal[1] || (chord.frets[1] == -1  && selectedFretsGlobal[1] == -1)) &&
+      (chord.frets[2] + chord.base - 1 == selectedFretsGlobal[2] || (chord.frets[2] == -1  && selectedFretsGlobal[2] == -1)) &&
+      (chord.frets[3] + chord.base - 1 == selectedFretsGlobal[3] || (chord.frets[3] == -1  && selectedFretsGlobal[3] == -1)) &&
+      (chord.frets[4] + chord.base - 1 == selectedFretsGlobal[4] || (chord.frets[4] == -1  && selectedFretsGlobal[4] == -1)) &&
+      (chord.frets[5] + chord.base - 1 == selectedFretsGlobal[5] || (chord.frets[5] == -1  && selectedFretsGlobal[5] == -1)));
 
       let foundChord;
       if (foundChordList.length > 0){
-        foundChord = foundChordList[0].name;
+        foundChord = foundChordList[foundChordList.length - 1].name;
       } else {
         foundChord = "No Chords Found";
       }
 
-      window.alert(foundChord);
+      chordSearchDisplay.innerHTML = foundChord;
     }
 
 </script>
