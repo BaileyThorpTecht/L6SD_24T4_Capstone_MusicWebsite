@@ -62,29 +62,46 @@
     </div>
 
     <!-- Chord Identification and Saving -->
-    <div class="row mb-4">
-      <div class="col text-center">
-        <div class="card mx-auto" style="width: 29rem;">
-          <h5 class="card-title">Chord Identification</h5>
-          <h7 class="card-subtitle">Click on the fretboard to find chords with corresponding notes.</h7>
-          <div class="card-body"></div>
-        </div>
-        <div class="button-container">
-          <button class="btn btn-lg btn-primary">Identify</button>
-        </div>
-      </div>
-      <div class="col text-center">
-        <div class="card mx-auto" style="width: 29rem;">
-          <h5 class="card-title">Chord Saving</h5>
-          <div class="card-body"></div>
-        </div>
-        <div class="button-container">
-          <button class="btn btn-sm btn-secondary me-2">Save Chord</button>
-          <button class="btn btn-sm btn-secondary me-2">Clear</button>
-          <button class="btn btn-sm btn-secondary">Export</button>
-        </div>
-      </div>
-    </div>
+    <script>
+      async function Search_Chords() {
+        /* Gets the frets from the fret board and converts them into a valid input for the view */
+        const fretsInput = document.getElementById(selectedFrets).value;
+        const fretsArray = fretsInput.split(',').map(fret => parseInt(fret.trim()));
+
+        /*Send POST request to the chord_search view */
+        const response = await fetch('http://127.0.0.1:8000/search/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()  // Optional: CSRF token function if needed
+                },
+                body: JSON.stringify({ frets: fretsArray })
+            });
+
+          const data = await response.json();
+
+          if(response.ok) {
+            /*This actually displays the code into an output field on the index page rather then a whole nother page */
+            document.getElementById('outputField').value = JSON.stringify(data.matching_chords, null, 2);
+          } else {
+            document.getElementById('outputField').value = data.Error || 'Could Not Find Chord In Database.';
+          }
+      }
+    </script>
+    <body>
+      <h2>Chord Search</h2>
+    
+        <!-- Input for frets -->
+        <label for="fretsInput">Enter frets (comma-separated):</label>
+        <input type="text" id="fretsInput" placeholder="e.g., 1, -1, 3, 2, 1, -1">
+        
+        <!-- Button to trigger the search -->
+        <button onclick="searchChords()">Search Chords</button>
+        
+        <!-- Output field to display matching chords -->
+        <label for="outputField">Matching Chords:</label>
+        <textarea id="outputField" rows="10" cols="50" readonly></textarea>
+    </body>
 
     <!-- List of Songs -->
     <div class="text-center mb-4">
@@ -131,7 +148,6 @@
     //global code
     const fretboard = document.getElementById("fretboard");
     var selectedFrets = [0,0,0,0,0,0]; /* This is the array that changes based off the user inputs on the fretboard image */
-    const converted_js_array = selectedFrets.join(',')
 
         //The elements for the strings and frets (rows and columns)
     const startOfStringElement = `<div class="string row">`;
