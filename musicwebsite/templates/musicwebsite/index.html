@@ -31,6 +31,11 @@
     .button-container {
       margin: 3% 0; /* Top and bottom margin for button containers */
     }
+
+    .fret {
+      height: 30px;
+      width: 50px;
+    }
   </style>
 </head>
 
@@ -111,13 +116,6 @@
 </body>
 </html>
 
-<style>
-  .fret {
-    height: 30px;
-    width: 50px;
-  }
-</style>
-
 <script>
 /*  TODO:
     Be able to click on 0th fret again to disable that string (set fret position to -1) 
@@ -140,7 +138,7 @@
     const startOfStringElement = `<div class="string row">`;
     const endOfStringElement = `</div>`;
 
-    const startOfFretElement = `<div class="fret col bg-secondary-subtle border border-dark-subtle border-2" style="background-image: url(static/string.png); background-size: 60px; background-position: top;">`;
+    const startOfFretElement = `<div class="fret col border-end border-secondary-subtle border-4" style="background-image: url(static/string.png); background-position: center; background-repeat: no-repeat; background-color:#333333;">`;
     const endOfFretElement = `</div>`;
 
     firstLoadFretboard()
