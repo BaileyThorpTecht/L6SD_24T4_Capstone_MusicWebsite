@@ -1,0 +1,25 @@
+/* .fret-border-right {
+    border-right: 7px solid;
+    border-image: url(/img/fret-h.png) 0 100% 0 0 stretch;
+  } */
+
+
+  /* .str { 
+    border-width: 2px;
+    border-style: solid;
+    background-color: black;
+    background-image: url(/static/fret-h.png) 30 stretch;
+  } */
+/*   
+  .fret-border-right {
+    border-right: 7px solid;
+      border-right-width: 7px;
+      border-right-style: solid;
+      border-right-color: currentcolor;
+    border-image: url(/static/fret-h.png) 0 100% 0 0 stretch;
+      border-image-outset: 0;
+      border-image-repeat: stretch;
+      border-image-slice: 0 100% 0 0;
+      border-image-source: url("/static/fret-h.png");
+      border-image-width: 1;
+  } */
