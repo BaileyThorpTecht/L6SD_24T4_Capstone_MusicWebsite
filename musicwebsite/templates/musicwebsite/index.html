@@ -248,9 +248,9 @@
         let note = findNoteOfFret(string, fret);
         
 
-        const enabledFretElement = `<svg width="30" height="30">
+        const enabledFretElement = `<svg width="20" height="20">
             <circle cx="50%" cy="50%" r="9" stroke="purple" stroke-width=".5" fill="orange" />
-            <text fill="#000000" font-size="10" font-family="Verdana" x="50%" y="60%" text-anchor="middle">${note}</text>
+            <text fill="#000000" font-size="10" font-family="Verdana" x="50%" y="65%" text-anchor="middle">${note}</text>
         </svg>`;
 
         return enabledFretElement;
@@ -280,11 +280,11 @@
           
           labelRow += `<div class='fretlabel col'>`
 
+
           //add fretmarks
           if (fretNo == 3 || fretNo == 5 || fretNo == 7 || fretNo == 9){
             labelRow += `<span class="fretmark"></span>`;
           }
-
           //add double fretmark
           /*
           if (fretNo == 12){
@@ -295,12 +295,15 @@
           
           
           labelRow += `${fretNo}</div>`
-          //labelRow += startOfFretElement;
-          //labelRow += fretNos;
-          //labelRow += endOfFretElement;
+
         }
       labelRow += endOfStringElement;
       fretboard.innerHTML += labelRow;
+
+      //make 0th fretlabel half width
+      let zerothFretLabel = document.getElementsByClassName("fretlabel")[0];
+      setColToHalfWidth(zerothFretLabel);
+      
 
     }
 
@@ -372,9 +375,15 @@
 
             //frets[i].style.backgroundImage = null;
             frets[i].style.backgroundColor = null;
+            setColToHalfWidth(frets[i])
           }
         }
 
+    }
+
+    function setColToHalfWidth(element){
+      element.classList.remove('col');
+      element.classList.add('col-0-half');
     }
 
     function reloadEvent(evt)
