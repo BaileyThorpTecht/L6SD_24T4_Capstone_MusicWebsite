@@ -32,10 +32,41 @@
       margin: 3% 0; /* Top and bottom margin for button containers */
     }
 
-    .fret {
+    .fretlabel {
       height: 30px;
       width: 50px;
     }
+    
+    .fret {
+      height: 30px;
+      width: 50px;
+      
+    }
+    .fretmark, .double-fretmark-1, .double-fretmark-2 {
+      --tw-bg-opacity: 1;
+      background-color: rgba(255,255,255,var(--tw-bg-opacity));
+      content: "";
+      position: absolute;
+      margin-left: -6px;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+    }
+
+    .fretmark {
+      margin-top: 112px;
+
+    }
+
+    .double-fretmark-1 {
+      margin-top: 68px;
+
+    }
+    .double-fretmark-2 {
+      margin-top: 160px;
+      
+    }
+    
   </style>
 </head>
 
@@ -209,7 +240,7 @@
     //#####################################
     
 
-    firstLoadFretboard()
+    firstLoadFretboard();
 
     //functions
     function generateEnabledFretElement(string, fret)
@@ -241,7 +272,37 @@
 
 
 
+    function loadFretNumbers()
+    {
+      let labelRow = "";
+      labelRow += startOfStringElement;
+        for (var fretNo = 0; fretNo < 13; fretNo++) {
+          
+          labelRow += `<div class='fretlabel col'>`
 
+          //add fretmarks
+          if (fretNo == 3 || fretNo == 5 || fretNo == 7 || fretNo == 9){
+            labelRow += `<span class="fretmark"></span>`;
+          }
+
+          //add double fretmark
+          /*
+          if (fretNo == 12){
+            labelRow += `<span class="double-fretmark-1"></span>`;
+            labelRow += `<span class="double-fretmark-2"></span>`;
+          }
+            */
+          
+          
+          labelRow += `${fretNo}</div>`
+          //labelRow += startOfFretElement;
+          //labelRow += fretNos;
+          //labelRow += endOfFretElement;
+        }
+      labelRow += endOfStringElement;
+      fretboard.innerHTML += labelRow;
+
+    }
 
 
     function loadFretboard() //#### THIS IS THE BIG FUNCTION THAT MAKES THE FRETBOARD ####
@@ -249,6 +310,8 @@
         //This creates html elements by adding an opening tag, the contents, then the closing tag to a string, then repeats with for loops. See global variables above to see and edit those tags for designing.
         
         fretboard.innerHTML = "";
+
+        loadFretNumbers();
 
         // 6 strings. (iterates in reverse so the lowest string (string 0) is at the bottom)
         for (var stringNo = 5; stringNo >= 0; stringNo--) { 
@@ -302,6 +365,16 @@
             frets[i].string = 5 - Math.floor(i / 13);
             frets[i].fret = i % 13;
         }
+
+        //remove string background from 0th frets
+        for(var i = 0; i < frets.length; i++ ){
+          if (frets[i].fret == 0){
+
+            //frets[i].style.backgroundImage = null;
+            frets[i].style.backgroundColor = null;
+          }
+        }
+
     }
 
     function reloadEvent(evt)
