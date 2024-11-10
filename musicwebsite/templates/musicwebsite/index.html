@@ -32,38 +32,33 @@
       margin: 3% 0; /* Top and bottom margin for button containers */
     }
 
-    .fretlabel {
+    .fret, .fretlabel {
       height: 30px;
       width: 50px;
     }
-    
-    .fret {
-      height: 30px;
-      width: 50px;
-      
-    }
+
     .fretmark, .double-fretmark-1, .double-fretmark-2 {
       --tw-bg-opacity: 1;
       background-color: rgba(255,255,255,var(--tw-bg-opacity));
       content: "";
       position: absolute;
-      margin-left: -6px;
+      margin-left: -10px;
       height: 18px;
       width: 18px;
       border-radius: 50%;
     }
 
     .fretmark {
-      margin-top: 110px;
+      margin-top: 70px;
 
     }
 
     .double-fretmark-1 {
-      margin-top: 65px;
+      margin-top: 25px;
 
     }
     .double-fretmark-2 {
-      margin-top: 154px;
+      margin-top: 114px;
       
     }
     
@@ -80,7 +75,6 @@
         <h5 id="title" class="card-title mt-3">Fretboard</h5>
         <div Id="fretboard" class="card-body">
           <!-- Content here -->
-
         </div>
       </div>
       <button class="btn btn-sm btn-primary me-2" id="playbutton">Strum</button>
@@ -185,6 +179,7 @@
 
     const disabledFretElement = `<span class="text-danger font-bold" style="font-size:30px; margin:-10px; position:absolute; z-index:2;">X</span>`
 
+    const smallScreenFretLimit = 9;
     
     //CHORD SELECT
     const noteDiv = document.getElementById("note-select-div");
@@ -250,7 +245,7 @@
         let note = findNoteOfFret(string, fret);
         
 
-        const enabledFretElement = `<svg width="20" height="20" style=" position:relative; z-index: 1;">
+        const enabledFretElement = `<svg  height="20" style=" position:relative; z-index: 1;" class="mw-100">
             <circle cx="50%" cy="50%" r="9" stroke="purple" stroke-width=".5" fill="orange" />
             <text fill="#000000" font-size="10" font-family="Verdana" x="50%" y="65%" text-anchor="middle">${note}</text>
         </svg>`;
@@ -282,6 +277,7 @@
           
           labelRow += `<div class='fretlabel col '>`
 
+          labelRow += `<p>${fretNo}</p>`
 
           //add fretmarks
           if (fretNo == 3 || fretNo == 5 || fretNo == 7 || fretNo == 9){
@@ -293,17 +289,26 @@
             labelRow += `<span class="double-fretmark-2"></span>`;
           }
           
-          
-          labelRow += `${fretNo}</div>`
+          labelRow += `</div>`
 
         }
       labelRow += endOfStringElement;
       fretboard.innerHTML += labelRow;
 
+      let fretLabels = document.getElementsByClassName("fretlabel");
+      let zerothFretLabel = fretLabels[0];
+      
       //make 0th fretlabel half width
-      let zerothFretLabel = document.getElementsByClassName("fretlabel")[0];
       setColToHalfWidth(zerothFretLabel);
       
+      //make higher fretlabels disappear on small screens
+      for(var i = 0; i < fretLabels.length; i++ ){
+        if (i > smallScreenFretLimit){
+
+          fretLabels[i].classList.add("d-none");
+          fretLabels[i].classList.add("d-md-block");
+        }
+      }
 
     }
 
@@ -378,6 +383,12 @@
             frets[i].style.backgroundColor = null;
             setColToHalfWidth(frets[i])
           }
+
+          if (frets[i].fret > smallScreenFretLimit){
+            frets[i].classList.add("d-none");
+            frets[i].classList.add("d-md-block");
+          }
+
         }
 
     }
@@ -568,7 +579,7 @@
           }
 
 
-      },100);
+      },30);
 
     }
     document.getElementById("playbutton").addEventListener("click", function(music){    
