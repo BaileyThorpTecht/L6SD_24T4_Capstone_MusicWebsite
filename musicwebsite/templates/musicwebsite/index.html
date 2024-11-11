@@ -10,7 +10,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chordial</title>
     {% load static %}
-    {% static "" as staticUrl %}
 
     <!-- Bootstrap JS for functionality -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -187,7 +186,7 @@
     const strings = [];
     for (let fret_index = 0; fret_index <= 12; fret_index++) {
       const string = document.createElement("audio");
-      string.src = `{{staticUrl}}audio/String${string_index}/String${string_index}-Fret${fret_index}.wav`;
+      string.src = `{% get_static_prefix %}audio/String${string_index}/String${string_index}-Fret${fret_index}.wav`;
       string.load();
       strings.push(string);
     }
