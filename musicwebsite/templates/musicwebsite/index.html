@@ -14,6 +14,10 @@
     <!-- Bootstrap JS for functionality -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Scripts -->
+    <script src="{% static '/js/chords.js' %}"></script>
+
+
     <!-- Icon for website tab -->
     <!-- <link rel="icon" href="placeholder_icon.ico" type="image/x-icon"/> -->
     <!-- <link rel="icon" type="image/x-icon" href="placeholder_icon.ico"> -->
@@ -92,13 +96,16 @@
             <button id="chord-search-button" class="btn btn-lg btn-primary">Identify</button>
           </div>
         </div>
+
         <div class="col text-center">
           <div class="card mx-auto" style="width: 100%;">
             <h5 class="card-title mt-3">Chord Saving</h5>
             <div class="card-body"></div>
           </div>
           <div class="button-container">
-            <button class="btn btn-sm btn-secondary me-2">Save Chord</button>
+            <a href="{% url 'login' %}" class="nav-item nav-link">Login</button></a>
+
+            <button class="btn btn-sm btn-secondary me-2 js-create-chord">Save Chord</button>
             <button class="btn btn-sm btn-secondary me-2">Clear</button>
             <button class="btn btn-sm btn-secondary">Export</button>
           </div>
@@ -128,6 +135,15 @@
           <h5 class="card-title mt-3">Song Playback</h5>
         </div>
       </div>
+
+
+      <div class="modal fade" id="modal-chord">
+        <div class="modal-dialog">
+          <div class="modal-content">
+          </div>
+        </div>
+      </div>
+      
     </main>
   </body>
 </html>
@@ -520,5 +536,7 @@
     chordSearchDisplay.innerHTML = foundChord;
   }
 
+
+  
 </script>
 {% endblock %}

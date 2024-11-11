@@ -11,6 +11,7 @@ Pip install packages
 - django-bootstrap5
 - pillow
 - django-crispy-forms
+- django-widget-tweaks
 
 Extentions Needed:
 - SQLite
