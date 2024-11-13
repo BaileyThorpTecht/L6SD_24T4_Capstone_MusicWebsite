@@ -478,8 +478,11 @@
   document.getElementById("playbutton").addEventListener("click", function (music) {
     for (let i = 0; i < strings.length; i++)
   {
-    strings[i].pause();
-    strings[i].currentTime = 0;
+    if(strings[i] !== null){
+      strings[i].pause();
+      strings[i].currentTime = 0;
+      }
+    
   }
     playOneString(0);
   }, false);
@@ -505,8 +508,10 @@
   {
     for (let i = 0; i < strings.length; i++)
     {
+      if(strings[i] !== null){
       strings[i].pause();
       strings[i].currentTime = 0;
+      }
     }
     Change_Audio(songNotes[songProgress][0]);
     playOneString(0);
