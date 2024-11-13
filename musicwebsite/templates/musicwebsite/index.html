@@ -472,7 +472,7 @@
         playOneString(i + 1);
       }
 
-    }, 100);
+    }, 20);
 
   }
   document.getElementById("playbutton").addEventListener("click", function (music) {
@@ -480,7 +480,6 @@
   {
     strings[i].pause();
     strings[i].currentTime = 0;
-    console.log(i);
   }
     playOneString(0);
   }, false);
@@ -499,26 +498,28 @@
   })
 
   document.getElementById("playSong").addEventListener("click", function (music){
-    var songProgress = 0
-    songPlayback = setInterval(function () {
-      for (let i = 0; i < strings.length; i++)
-      {
-        strings[i].pause();
-        strings[i].currentTime = 0;
-        console.log(i);
-      }
-      Change_Audio(songNotes[songProgress][0]);
-      playOneString(0);
-      songProgress++;
-      lengthCheck(songProgress);
-    }, 1500);
+    songPlayback(0)
   })
-  function lengthCheck(songProgress){
-  if (songProgress == songNotes.length)
+
+  function songPlayback(songProgress)
+  {
+    for (let i = 0; i < strings.length; i++)
     {
-      clearInterval(songPlayback);
+      strings[i].pause();
+      strings[i].currentTime = 0;
+    }
+    Change_Audio(songNotes[songProgress][0]);
+    playOneString(0);
+    if (songProgress !== songNotes.length -1)
+    {
+      setTimeout(function() 
+      {
+        songPlayback(songProgress+1);
+      }, 2000);
     }
   }
+
+
 
   //#####################################
   //       REVERSE CHORD SEARCH
