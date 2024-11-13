@@ -10,6 +10,8 @@ from django.template.loader import render_to_string
 from json import dumps
 from json import dump
 
+import pdb
+
 from .forms import ChordForm
 
 
@@ -32,13 +34,31 @@ def index(request):
 
 
 def chord_create(request):
-    form = ChordForm()
+    pdb.set_trace()
+    data = dict()
+
+    if request.method == 'POST':
+        form = ChordForm(request.POST)
+        
+        if form.is_valid():
+            form.save()
+            
+            data['form_is_valid'] = True            
+        else:            
+            data['form_is_valid'] = False
+            
+    else:        
+        form = ChordForm()
+        
+
     context = {'form': form}
-    html_form = render_to_string('partial_chord_create.html',
+    
+    data['html_form'] = render_to_string('partial_chord_create.html',
         context,
-        request=request,
+        request=request
     )
-    return JsonResponse({'html_form': html_form})
+    
+    return JsonResponse(data)
     
 
 

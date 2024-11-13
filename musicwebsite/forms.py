@@ -11,5 +11,5 @@ class ChordSearchForm(forms.Form):
 class ChordForm(forms.ModelForm):
     class Meta:
         model = Chord
-        fields = ('name', 'base', 'frets', 'fingers')
+        fields = ('user', 'name', 'base', 'frets', 'fingers')
 

@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 
-<form method="post">
+<form method="post"  action="{% url 'chord_create' %}" class="js-chord-create-form">
   {% csrf_token %}
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
