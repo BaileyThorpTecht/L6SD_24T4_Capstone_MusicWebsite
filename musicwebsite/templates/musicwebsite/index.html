@@ -463,7 +463,9 @@
 
   function playOneString(i) {
     const strumDelay = setTimeout(function () {
-      strings[i].play();
+      if (strings[i] !== null) {
+        strings[i].play();
+      }
       if (i < strings.length - 1) {
         playOneString(i + 1);
       }
@@ -480,7 +482,9 @@
   for (let i = 0; i < stringbuttons.length; i++) {
     document.getElementById(stringbuttons[i]).addEventListener("click", function (music) {
       //Change_Audio();
-      strings[i].play();
+      if (strings[i] !== null) {
+        strings[i].play();
+      }
     }, false);
   }
 
