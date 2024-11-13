@@ -95,10 +95,18 @@
         <div class="col text-center">
           <div class="card mx-auto" style="width: 100%;">
             <h5 class="card-title mt-3">Chord Saving</h5>
-            <div class="card-body"></div>
+            <div class="card-body" id="chordList">
+              {% for chord in chords %}
+              <div class="chord-item" data-frets="{{ chord.frets }}">
+                Chord: {{ chord.frets }}
+              </div>
+              {% endfor %}
+            </div>
+
+            {% csrf_token %}
           </div>
           <div class="button-container">
-            <button class="btn btn-sm btn-secondary me-2">Save Chord</button>
+            <button type="button" id="addChord" class="btn btn-sm btn-secondary me-2">Save Chord</button>
             <button class="btn btn-sm btn-secondary me-2">Clear</button>
             <button class="btn btn-sm btn-secondary">Export</button>
           </div>
@@ -138,6 +146,7 @@
   //#####################################
 
   const databaseChordList = JSON.parse('{{data|escapejs}}');
+  const savedChords = JSON.parse('{{ data|safe }}');
 
 
   //#####################################
@@ -520,5 +529,73 @@
     chordSearchDisplay.innerHTML = foundChord;
   }
 
+
+
+  //#####################################
+  //            CHORD  SAVE
+  //#####################################
+
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const chordListContainer = document.getElementById("chordList");
+
+    // Load saved chords and set up click events
+    document.querySelectorAll(".chord-item").forEach(item => {
+        const frets = item.getAttribute("data-frets").split(",").map(Number);
+        item.addEventListener("click", function () {
+            selectChordOnFretboard(frets);
+        });
+    });
+
+    document.getElementById("addChord").addEventListener("click", function () {
+        const fretArray = [...selectedFretsGlobal];
+
+        // Display the chord in the list with click event
+        const chordElement = document.createElement("div");
+        chordElement.textContent = `Chord: ${fretArray.join(",")}`;
+        chordElement.className = "chord-item";
+        chordElement.addEventListener("click", function () {
+            selectChordOnFretboard(fretArray);
+        });
+        chordListContainer.appendChild(chordElement);
+
+        // Send the new chord to the Django backend for saving
+        fetch('', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken(),
+            },
+            body: JSON.stringify({ frets: fretArray.join(",") })
+        });
+    });
+
+    function selectChordOnFretboard(fretArray) {
+        clearFretboard();
+        fretArray.forEach((fret, index) => {
+            if (fret >= 0) {
+                const stringSelector = `#string-${index + 1}-fret-${fret}`;
+                const fretElement = document.querySelector(stringSelector);
+                if (fretElement) fretElement.classList.add("selected");
+            }
+        });
+    }
+
+    function clearFretboard() {
+        document.querySelectorAll(".selected").forEach(fret => fret.classList.remove("selected"));
+    }
+
+    function getCSRFToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]').value;
+    }
+});
+
+
+
+
+
+
 </script>
+<script src="{% static 'js/fretboard.js' %}"></script>
 {% endblock %}

@@ -5,32 +5,38 @@ from .models import Chord
 from musicwebsite.forms import ChordVerificationForm
 
 from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
 from django.forms.models import model_to_dict
+from django.views.decorators.csrf import csrf_exempt
 
-from json import dumps
+from json import dumps, loads
 from json import dump
+import json
 
 from .forms import ChordSearchForm
 
 
 
 # The views.
+@csrf_exempt
 def index(request):
-    
+    if request.method == 'POST':
+        # Handle the chord-saving action
+        data = loads(request.body)
+        frets = data.get('frets', '')
+        if frets:
+            Chord.objects.create(frets=frets)
+            return JsonResponse({'status': 'success'})
+        return JsonResponse({'status': 'error'}, status=400)
+
+    # Handle the initial page load
     chordList = list(Chord.objects.all())
-    #frets = [chord.frets for chord in chords]
-    
-    dictList = []
-    for x in chordList:
-        dictList.append(model_to_dict(x))    
-    
-    dataJSON = dumps(dictList)
-    
-    #with open('data.json', 'w') as f:
-    #    dump(dataJSON, f)
-    
+    dictList = [model_to_dict(chord) for chord in chordList]
+    dataJSON = dumps(dictList, cls=DjangoJSONEncoder)  # JSON serialize the chord data for JavaScript
+
     context = {
-        'data' : dataJSON,
+        'data': dataJSON,
+        'chords': chordList,  # Pass chords directly for any Django template use
     }
     return render(request, 'musicwebsite/index.html', context)
 
@@ -49,6 +55,7 @@ def chord_search(request):
             results = Chord.objects.filter(frets=frets_list)
 
     return render(request, 'chords/search.html', {'form': form, 'results': results})
+
 
 
 
