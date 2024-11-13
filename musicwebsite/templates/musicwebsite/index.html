@@ -505,7 +505,9 @@
   {
     for (let i = 0; i < strings.length; i++)
     {
+      if(strings[i] !== null){
       strings[i].pause();
+      }
       strings[i].currentTime = 0;
     }
     Change_Audio(songNotes[songProgress][0]);
