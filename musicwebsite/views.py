@@ -29,10 +29,23 @@ def index(request):
     
     context = {
         'data' : dataJSON,
-        'chords' : Chord.objects.all()
+        'chords' : Chord.objects.all() #if this isnt here, then the page loads to quickly and the first ajax request to load the custom chords happens before the database is loaded and it fails to show custom chords lol
         
     }
     return render(request, 'musicwebsite/index.html', context)
+
+def chord_load(request):
+    data = dict()
+    
+    chordList = list(Chord.objects.all())
+    dictList = []
+    for x in chordList:
+        dictList.append(model_to_dict(x))
+    
+    chords = dumps(dictList)
+    
+    data['chords'] = chords
+    return JsonResponse(data)
 
 
 def chord_create(request):

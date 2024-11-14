@@ -168,7 +168,30 @@
   //            DATABASE INPUT
   //#####################################
 
-  const databaseChordList = JSON.parse('{{data|escapejs}}');
+  //var databaseChordList = JSON.parse('{{data|escapejs}}');
+  var databaseChordList;
+  
+  loadDatabase();
+
+
+  function loadDatabase() {
+
+    $.ajax({
+      url: '/chords/load/',
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+      },
+      success: function (data) {
+
+        databaseChordList = JSON.parse(data.chords);
+        
+        //window.alert("value: " + chordList);
+        //window.alert("Is array: " + Array.isArray(chordList));
+        //window.alert("keys: " + Object.keys(chordList));
+      }
+    });
+  }
 
 
   //#####################################
@@ -458,23 +481,27 @@
       let finalChordName = selectedNoteGlobal + selectedChordGlobal;
       let finalChord = databaseChordList.filter((chord) => chord.name == finalChordName)[0];
       let newFrets = finalChord.frets.slice();
+      let newBase = finalChord.base;
 
-      for (var k = 0; k < newFrets.length; k++) {
-        if (newFrets[k] > -1) {
-          newFrets[k] += finalChord.base - 1;
-        }
-      }
+      changeGlobalFrets(newFrets, newBase)
 
-
-
-
-      selectedFretsGlobal = newFrets;
-      loadFretboard()
+      
 
 
     }
   }
 
+
+  function changeGlobalFrets(frets, base){
+    for (var k = 0; k < frets.length; k++) {
+      if (frets[k] > -1) {
+        frets[k] += base - 1;
+      }
+    }
+
+    selectedFretsGlobal = frets;
+    loadFretboard()
+  }
 
 
 
@@ -559,16 +586,16 @@
 //       SAVING / DELETING CHORDS
 //#####################################
 
-  function updateCustomChordList(innerHtml){
-    $("#chord-table tbody").html(innerHtml)
-  }
+function updateCustomChordList(innerHtml){
+  $("#chord-table tbody").html(innerHtml);
+  loadDatabase();
+}
 
 
-  // ## SAVE CHORDS ##
-  $("#custom-chord-buttons").on("click", ".js-create-chord", createCustomChord)
+// ## SAVE CHORDS ##
+$("#custom-chord-buttons").on("click", ".js-create-chord", createCustomChord);
 
-
-  function createCustomChord() {
+function createCustomChord() {
 
   //CONVERT FRETBOARD AND TEXTBOXES TO DATA
   let customName = "customname" // have this come from a textbox, or be a default based on the notes ############ TODO
@@ -612,7 +639,6 @@ $("#chord-table").on("click", ".js-delete-chord", deleteCustomChord)
 
 function deleteCustomChord(){
   var btn = $(this);
-
   $.ajax({
     url: btn.attr("data-url"),
     type: 'get',
@@ -624,6 +650,21 @@ function deleteCustomChord(){
     }
   });
 
+}
+
+
+// ## SELECT CHORD ##
+
+$("#chord-table").on("click", ".js-select-chord", selectCustomChord)
+
+function selectCustomChord() {
+  var btn = $(this);
+  let customChordId = btn.attr("data-id");
+  let customChord = databaseChordList.find((chord) => chord.id == customChordId);
+  let customFrets = customChord.frets;
+  let customBase = customChord.base;
+
+  changeGlobalFrets(customFrets, customBase);
 }
 
 
