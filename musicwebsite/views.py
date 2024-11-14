@@ -1,6 +1,7 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.template import loader
+from django.urls import reverse
 from .models import Chord, User
 
 from django.core import serializers
@@ -66,6 +67,20 @@ def chord_create(request):
     return JsonResponse(data)
     
 
-
+def chord_delete(request, id):
+    #pdb.set_trace()
+    data = dict()
+    
+    chord = Chord.objects.get(id=id)
+    chord.delete()
+    
+    #copied code from create_chord view. This is to refresh the table
+    chords = Chord.objects.all()
+    data['html_chord_list'] = render_to_string('musicwebsite/partial_chord_list.html', {
+        'chords' : chords
+    })
+    
+    
+    return JsonResponse(data)
 
 

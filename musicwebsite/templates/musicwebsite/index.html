@@ -119,7 +119,7 @@
               </table>
             </div>
           </div>
-          <div class="button-container">
+          <div id="custom-chord-buttons" class="button-container">
             <button class="btn btn-sm btn-secondary me-2 js-create-chord">Save Chord</button>
             <button class="btn btn-sm btn-secondary me-2">Clear</button>
             <button class="btn btn-sm btn-secondary">Export</button>
@@ -555,54 +555,77 @@
 
 
 
-  //#####################################
-  //           SAVING CHORDS
-  //#####################################
+//#####################################
+//       SAVING / DELETING CHORDS
+//#####################################
+
+  function updateCustomChordList(innerHtml){
+    $("#chord-table tbody").html(innerHtml)
+  }
 
 
-    document.getElementsByClassName("js-create-chord")[0].addEventListener("click", createCustomChord)
+  // ## SAVE CHORDS ##
+  $("#custom-chord-buttons").on("click", ".js-create-chord", createCustomChord)
 
 
-    function createCustomChord() {
+  function createCustomChord() {
 
-    //CONVERT FRETBOARD AND TEXTBOXES TO DATA
-    let customName = "customname" // have this come from a textbox, or be a default based on the notes ############ TODO
-    let customBase = 1;
-    let customFrets = selectedFretsGlobal.slice();
+  //CONVERT FRETBOARD AND TEXTBOXES TO DATA
+  let customName = "customname" // have this come from a textbox, or be a default based on the notes ############ TODO
+  let customBase = 1;
+  let customFrets = selectedFretsGlobal.slice();
 
-    //if customName is null or whitespace
-    if (!customName || !customName.trim())
-    {
-      //have the name be based on the notes
-      customName = "eadgbe";
+  //if customName is null or whitespace
+  if (!customName || !customName.trim())
+  {
+    //have the name be based on the notes
+    customName = "eadgbe";
 
-    }
+  }
 
-    let customChordData = {
-      "name" : customName,
-      "base" : customBase,
-      "frets" : JSON.stringify(customFrets),
-      "fingers" : JSON.stringify([1,2,3,4,0,0]), //fingers arent needed
-      "isCustom" : "True"
-    };
-
-    $.ajax({
-      url: '/chords/create/',
-      type: 'get',
-      dataType: 'json',
-      data: customChordData,
-      beforeSend: function () {
-        //window.alert("before");
-      },
-      success: function (data) {
-        //after the ajax call is done, update the table body to include the new chord
-        $("#chord-table tbody").html(data.html_chord_list);
-      }
-    });
-
-
-
+  let customChordData = {
+    "name" : customName,
+    "base" : customBase,
+    "frets" : JSON.stringify(customFrets),
+    "fingers" : JSON.stringify([1,2,3,4,0,0]), //fingers arent needed
+    "isCustom" : "True"
   };
+
+  $.ajax({
+    url: '/chords/create/',
+    type: 'get',
+    dataType: 'json',
+    data: customChordData,
+
+    success: function (data) {
+      //after the ajax call is done, update the table body to include the new chord
+      updateCustomChordList(data.html_chord_list);
+    }
+  });
+};
+
+
+
+  // ## DELETE CHORDS ##
+
+$("#chord-table").on("click", ".js-delete-chord", deleteCustomChord)
+
+function deleteCustomChord(){
+  var btn = $(this);
+
+  $.ajax({
+    url: btn.attr("data-url"),
+    type: 'get',
+    dataType: 'json',
+
+    success: function (data) {
+      //after the ajax call is done, update the table body to include the new chord
+      updateCustomChordList(data.html_chord_list);
+    }
+  });
+
+}
+
 
 
   

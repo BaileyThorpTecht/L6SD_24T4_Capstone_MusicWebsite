@@ -1,11 +1,20 @@
+
+<!-- Later, add an if statement to only show the chords if not logged in-->
+
+
 {% for chord in chords %}
 
   {% if chord.isCustom == True %}
+  <!-- Later, add here to only show chords of currently logged in user-->
   <tr>
     <td>{{ chord.id }}</td>
     <td>{{ chord.user }}</td>
     <td>{{ chord.name }}</td>
     <td>{{ chord.frets }}</td>
+    <td><button type="button"
+                class="btn btn-danger delete-chord-button js-delete-chord"
+                data-url="{% url 'chord_delete' chord.id %}" >DELETE
+    </button></td>
   </tr>
   {% endif %}
 
