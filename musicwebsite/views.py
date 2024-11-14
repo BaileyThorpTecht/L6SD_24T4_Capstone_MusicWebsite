@@ -1,14 +1,13 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
-from .models import Chord
+from .models import Chord, User
 
 from django.core import serializers
 from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
 
-from json import dumps
-from json import dump
+from json import dumps, loads
 
 import pdb
 
@@ -36,28 +35,29 @@ def index(request):
 def chord_create(request):
     pdb.set_trace()
     data = dict()
-    print(request.method)
-    print(request.GET.get("name"))
-    if request.method == 'POST':
-        form = ChordForm(request.POST)
-        
-        if form.is_valid():
-            form.save()
-            
-            data['form_is_valid'] = True            
-        else:            
-            data['form_is_valid'] = False
-            
-    else:        
-        form = ChordForm()
-        
-
-    context = {'form': form}
     
-    data['html_form'] = render_to_string('partial_chord_create.html',
-        context,
-        request=request
-    )
+    name = request.GET.get("name")
+    base = request.GET.get("base")
+    frets = request.GET.get("frets")
+    fingers = request.GET.get("fingers")
+    isCustom = request.GET.get("isCustom")
+    
+    print("name: " + name)
+    print("base: " + base)
+    print("frets: " + frets)
+    print("fingers: " + fingers)
+    print("isCustom: " + isCustom)
+    
+    Chord.objects.create(
+                    name=name,
+                    base=base,
+                    frets=loads(frets), #must loads to make it back into JSON
+                    fingers=loads(fingers), #must loads to make it back into JSON
+                    isCustom=isCustom,
+                    user= User.objects.first() #GIVES CHORDS TO THE ADMIN INSTEAD OF LOGGED IN USER ############## ToDo
+                )
+    
+    
     
     return JsonResponse(data)
     

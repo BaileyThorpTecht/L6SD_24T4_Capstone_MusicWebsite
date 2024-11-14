@@ -103,8 +103,6 @@
             <div class="card-body"></div>
           </div>
           <div class="button-container">
-            <a href="{% url 'login' %}" class="nav-item nav-link">Login</button></a>
-
             <button class="btn btn-sm btn-secondary me-2 js-create-chord">Save Chord</button>
             <button class="btn btn-sm btn-secondary me-2">Clear</button>
             <button class="btn btn-sm btn-secondary">Export</button>
@@ -540,28 +538,44 @@
 
 
 
-  let testAddButton = document.getElementsByClassName("js-create-chord")[0];
-  testAddButton.addEventListener("click", function () {
+  //#####################################
+  //           SAVING CHORDS
+  //#####################################
 
-    window.alert("a");
 
-    var exampleData = {
-      "name" : "kk",
-      "base" : 6,
-      "frets" : [ 0,3,2,0,1,0 ],
-      "fingers" : [ 0,3,2,0,1,0 ]
-  };
+    document.getElementsByClassName("js-create-chord")[0].addEventListener("click", function () {
+
+    //CONVERT FRETBOARD AND TEXTBOXES TO DATA
+    let customName = "customname" // have this come from a textbox, or be a default based on the notes ############ TODO
+    let customBase = 1;
+    let customFrets = selectedFretsGlobal.slice();
+
+    //if customName is null or whitespace
+    if (!customName || !customName.trim())
+    {
+      //have the name be based on the notes
+      customName = "eadgbe";
+
+    }
+
+    let customChordData = {
+      "name" : customName,
+      "base" : customBase,
+      "frets" : JSON.stringify(customFrets),
+      "fingers" : JSON.stringify([1,2,3,4,0,0]), //fingers arent needed
+      "isCustom" : "True"
+    };
 
     $.ajax({
       url: '/chords/create/',
       type: 'get',
       dataType: 'json',
-      data:  exampleData,
+      data: customChordData,
       beforeSend: function () {
-        window.alert("before");
+        //window.alert("before");
       },
       success: function (data) {
-        window.alert("after");
+        //window.alert("after");
       }
     });
 
