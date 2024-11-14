@@ -83,7 +83,7 @@
         </div>
       </div>
 
-      <!-- Chord Identification and Saving -->
+      <!-- Chord Identification -->
       <div class="row mb-4">
         <div class="col text-center">
           <div class="card mx-auto" style="width: 100%;">
@@ -97,10 +97,27 @@
           </div>
         </div>
 
+
+      <!-- Chord Saving -->
+
         <div class="col text-center">
           <div class="card mx-auto" style="width: 100%;">
             <h5 class="card-title mt-3">Chord Saving</h5>
-            <div class="card-body"></div>
+            <div class="card-body">
+              <table class="table" id="chord-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>User</th>
+                    <th>Name</th>
+                    <th>Frets</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% include 'musicwebsite/partial_chord_list.html' %}
+                </tbody>
+              </table>
+            </div>
           </div>
           <div class="button-container">
             <button class="btn btn-sm btn-secondary me-2 js-create-chord">Save Chord</button>
@@ -543,7 +560,10 @@
   //#####################################
 
 
-    document.getElementsByClassName("js-create-chord")[0].addEventListener("click", function () {
+    document.getElementsByClassName("js-create-chord")[0].addEventListener("click", createCustomChord)
+
+
+    function createCustomChord() {
 
     //CONVERT FRETBOARD AND TEXTBOXES TO DATA
     let customName = "customname" // have this come from a textbox, or be a default based on the notes ############ TODO
@@ -575,13 +595,14 @@
         //window.alert("before");
       },
       success: function (data) {
-        //window.alert("after");
+        //after the ajax call is done, update the table body to include the new chord
+        $("#chord-table tbody").html(data.html_chord_list);
       }
     });
 
 
 
-  });
+  };
 
 
   

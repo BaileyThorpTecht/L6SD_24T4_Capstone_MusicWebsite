@@ -1,0 +1,18 @@
+{% for chord in chords %}
+
+  {% if chord.isCustom == True %}
+  <tr>
+    <td>{{ chord.id }}</td>
+    <td>{{ chord.user }}</td>
+    <td>{{ chord.name }}</td>
+    <td>{{ chord.frets }}</td>
+  </tr>
+  {% endif %}
+
+{% empty %}
+<tr>
+  <td colspan="4" class="text-center bg-warning">No chord</td>
+</tr>
+
+
+{% endfor %}

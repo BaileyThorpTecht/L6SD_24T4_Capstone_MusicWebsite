@@ -28,12 +28,14 @@ def index(request):
     
     context = {
         'data' : dataJSON,
+        'chords' : Chord.objects.all()
+        
     }
     return render(request, 'musicwebsite/index.html', context)
 
 
 def chord_create(request):
-    pdb.set_trace()
+    #pdb.set_trace()
     data = dict()
     
     name = request.GET.get("name")
@@ -42,20 +44,22 @@ def chord_create(request):
     fingers = request.GET.get("fingers")
     isCustom = request.GET.get("isCustom")
     
-    print("name: " + name)
-    print("base: " + base)
-    print("frets: " + frets)
-    print("fingers: " + fingers)
-    print("isCustom: " + isCustom)
-    
     Chord.objects.create(
                     name=name,
                     base=base,
                     frets=loads(frets), #must loads to make it back into JSON
                     fingers=loads(fingers), #must loads to make it back into JSON
                     isCustom=isCustom,
-                    user= User.objects.first() #GIVES CHORDS TO THE ADMIN INSTEAD OF LOGGED IN USER ############## ToDo
+                    user= User.objects.first() #CURRENTLY GIVES CHORDS TO THE ADMIN INSTEAD OF LOGGED IN USER ############## ToDo
                 )
+    
+    
+    #generates the chord list html including the newly created chord, to be sent back to the javascript
+    chords = Chord.objects.all()
+    data['html_chord_list'] = render_to_string('musicwebsite/partial_chord_list.html', {
+        'chords' : chords
+    })
+    
     
     
     
