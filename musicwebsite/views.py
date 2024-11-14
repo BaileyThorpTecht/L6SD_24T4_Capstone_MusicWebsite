@@ -2,15 +2,17 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from .models import Chord
-from musicwebsite.forms import ChordVerificationForm
 
 from django.core import serializers
 from django.forms.models import model_to_dict
+from django.template.loader import render_to_string
 
 from json import dumps
 from json import dump
 
-from .forms import ChordSearchForm
+import pdb
+
+from .forms import ChordForm
 
 
 
@@ -18,37 +20,46 @@ from .forms import ChordSearchForm
 def index(request):
     
     chordList = list(Chord.objects.all())
-    #frets = [chord.frets for chord in chords]
-    
+
     dictList = []
     for x in chordList:
         dictList.append(model_to_dict(x))    
     
     dataJSON = dumps(dictList)
     
-    #with open('data.json', 'w') as f:
-    #    dump(dataJSON, f)
-    
     context = {
         'data' : dataJSON,
     }
     return render(request, 'musicwebsite/index.html', context)
 
-# This view is what process user input into searching the JSON file in the database for related chord
-def chord_search(request):
-    form = ChordSearchForm()
-    results = None
+
+def chord_create(request):
+    pdb.set_trace()
+    data = dict()
 
     if request.method == 'POST':
-        form = ChordSearchForm(request.POST)
+        form = ChordForm(request.POST)
+        
         if form.is_valid():
-            frets_input = form.cleaned_data['frets']
-            frets_list = [int(f) for f in frets_input.split(',')]
+            form.save()
+            
+            data['form_is_valid'] = True            
+        else:            
+            data['form_is_valid'] = False
+            
+    else:        
+        form = ChordForm()
+        
 
-            # Search for chords that match the frets
-            results = Chord.objects.filter(frets=frets_list)
-
-    return render(request, 'chords/search.html', {'form': form, 'results': results})
+    context = {'form': form}
+    
+    data['html_form'] = render_to_string('partial_chord_create.html',
+        context,
+        request=request
+    )
+    
+    return JsonResponse(data)
+    
 
 
 
