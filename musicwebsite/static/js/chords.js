@@ -2,10 +2,19 @@
 $(function () {
 
     $(".js-create-chord").click(function () {
+
+      var exampleData = {
+        "name" : "kk",
+        "base" : 6,
+        "frets" : [ 0,3,2,0,1,0 ],
+        "fingers" : [ 0,3,2,0,1,0 ],
+    };
+
       $.ajax({
         url: '/chords/create/',
         type: 'get',
         dataType: 'json',
+        data:  exampleData,
         beforeSend: function () {
           $("#modal-chord").modal("show");
         },

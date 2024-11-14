@@ -537,6 +537,39 @@
   }
 
 
+
+
+
+  let testAddButton = document.getElementsByClassName("js-create-chord")[0];
+  testAddButton.addEventListener("click", function () {
+
+    window.alert("a");
+
+    var exampleData = {
+      "name" : "kk",
+      "base" : 6,
+      "frets" : [ 0,3,2,0,1,0 ],
+      "fingers" : [ 0,3,2,0,1,0 ]
+  };
+
+    $.ajax({
+      url: '/chords/create/',
+      type: 'get',
+      dataType: 'json',
+      data:  exampleData,
+      beforeSend: function () {
+        window.alert("before");
+      },
+      success: function (data) {
+        window.alert("after");
+      }
+    });
+
+
+
+  });
+
+
   
 </script>
 {% endblock %}

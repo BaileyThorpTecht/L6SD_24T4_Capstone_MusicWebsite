@@ -36,7 +36,8 @@ def index(request):
 def chord_create(request):
     pdb.set_trace()
     data = dict()
-
+    print(request.method)
+    print(request.GET.get("name"))
     if request.method == 'POST':
         form = ChordForm(request.POST)
         
