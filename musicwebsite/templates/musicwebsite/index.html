@@ -491,6 +491,8 @@
     document.getElementById(stringbuttons[i]).addEventListener("click", function (music) {
       //Change_Audio();
       if (strings[i] !== null) {
+        strings[i].pause();
+        strings[i].currentTime = 0;
         strings[i].play();
       }
     }, false);
