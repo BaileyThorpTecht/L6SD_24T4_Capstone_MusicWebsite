@@ -120,6 +120,7 @@
             </div>
           </div>
           <div id="custom-chord-buttons" class="button-container">
+            <input class="js-chord-name-input me-2 align-middle" placeholder="Chord name..."></input>
             <button class="btn btn-sm btn-secondary me-2 js-create-chord">Save Chord</button>
             <button class="btn btn-sm btn-secondary me-2">Clear</button>
             <button class="btn btn-sm btn-secondary">Export</button>
@@ -170,7 +171,7 @@
 
   //var databaseChordList = JSON.parse('{{data|escapejs}}');
   var databaseChordList;
-  
+
   loadDatabase();
 
 
@@ -269,12 +270,13 @@
 
   //functions
   function generateEnabledFretElement(string, fret) {
-    let note = findNoteOfFret(string, fret);
+    let fullNote = findNoteOfFret(string, fret);
+    let letter = fullNote.letter;
 
 
     const enabledFretElement = `<svg width="30" height="30">
             <circle cx="50%" cy="50%" r="9" stroke="purple" stroke-width=".5" fill="orange" />
-            <text fill="#000000" font-size="10" font-family="Verdana" x="50%" y="60%" text-anchor="middle">${note}</text>
+            <text fill="#000000" font-size="10" font-family="Verdana" x="50%" y="60%" text-anchor="middle">${letter}</text>
         </svg>`;
 
     return enabledFretElement;
@@ -282,14 +284,17 @@
   }
 
   function findNoteOfFret(string, fret) {
-    let noteList = ["⠀E⠀", "⠀F⠀", "⠀F#", "⠀G⠀", "⠀G#", "⠀A⠀", "⠀A#", "⠀B⠀", "⠀C⠀", "⠀C#", "⠀D⠀", "⠀D#"]; //for this purpose, E is the lowest note
-    let stringTunings = [0, 5, 10, 15, 19, 24]; //how many notes is each string tuned up relative to the lowest
+    let noteList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    let stringTunings = [28, 33, 38, 43, 47, 52]; //how many notes is each string tuned up relative C0
 
     let noteNumber = stringTunings[string];
     noteNumber += fret;
-    noteNumber = noteNumber % 12;
-    let selectedNote = noteList[noteNumber];
-    return selectedNote;
+    let selectedNote = noteList[noteNumber % 12];
+    let octave = Math.floor(noteNumber / 12);
+    return {
+      octave: octave,
+      letter: selectedNote,
+    }
   }
 
 
@@ -591,6 +596,16 @@ function updateCustomChordList(innerHtml){
   loadDatabase();
 }
 
+function replaceDigitWithSubscript(num) {
+  const subscriptList = ['₀','₁','₂','₃','₄','₅','₆','₇','₈','₉']
+
+  if (Number.isInteger(num)){
+    if (num < 10 && num >= 0){
+      return subscriptList[num];
+    }
+  }
+}
+
 
 // ## SAVE CHORDS ##
 $("#custom-chord-buttons").on("click", ".js-create-chord", createCustomChord);
@@ -598,15 +613,20 @@ $("#custom-chord-buttons").on("click", ".js-create-chord", createCustomChord);
 function createCustomChord() {
 
   //CONVERT FRETBOARD AND TEXTBOXES TO DATA
-  let customName = "customname" // have this come from a textbox, or be a default based on the notes ############ TODO
+  let customName = $(".js-chord-name-input").val(); 
   let customBase = 1;
   let customFrets = selectedFretsGlobal.slice();
 
   //if customName is null or whitespace
   if (!customName || !customName.trim())
   {
-    //have the name be based on the notes
-    customName = "eadgbe";
+    //have the name just be the list of notes being played
+    defaultCustomName = "";
+    for (i = 0; i < 6; i++){
+      let fullNote = findNoteOfFret(i, customFrets[i]);
+      defaultCustomName +=  fullNote.letter + replaceDigitWithSubscript(fullNote.octave);
+    }
+    customName = defaultCustomName;
 
   }
 
@@ -627,6 +647,7 @@ function createCustomChord() {
     success: function (data) {
       //after the ajax call is done, update the table body to include the new chord
       updateCustomChordList(data.html_chord_list);
+      $(".js-chord-name-input").val("");
     }
   });
 };
