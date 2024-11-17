@@ -45,6 +45,10 @@
         width: 50px;
       }
 
+      td {
+        vertical-align: middle;
+      }
+
     </style>
   </head>
 
@@ -104,11 +108,9 @@
           <div class="card mx-auto" style="width: 100%;">
             <h5 class="card-title mt-3">Chord Saving</h5>
             <div class="card-body">
-              <table class="table" id="chord-table">
+              <table class="table" style="border-collapse:collapse;" id="chord-table">
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>User</th>
                     <th>Name</th>
                     <th>Frets</th>
                   </tr>
@@ -424,10 +426,10 @@
 
     //highlight clicked button
     for (var m = 0; m < noteButtonsGlobal.length; m++) {
-      noteButtonsGlobal[m].style.backgroundColor = "";
-
+      noteButtonsGlobal[m].classList.remove("bg-warning");
     }
-    evt.currentTarget.style.backgroundColor = "gold";
+
+    evt.currentTarget.classList.add("bg-warning");
 
     //store clicked note name
     selectedNoteGlobal = evt.currentTarget.note;
@@ -468,10 +470,10 @@
 
     //highlight clicked button
     for (var l = 0; l < chordButtonsGlobal.length; l++) {
-      chordButtonsGlobal[l].style.backgroundColor = "";
-
+      chordButtonsGlobal[l].classList.remove("bg-warning");
     }
-    evt.currentTarget.style.backgroundColor = "gold";
+
+    evt.currentTarget.classList.add("bg-warning");
 
     //store clicked chord name
     selectedChordGlobal = evt.currentTarget.suffix;
@@ -676,7 +678,7 @@ function deleteCustomChord(){
 
 // ## SELECT CHORD ##
 
-$("#chord-table").on("click", ".js-select-chord", selectCustomChord)
+$("#chord-table").on("click", ".js-select-chord", selectCustomChord);
 
 function selectCustomChord() {
   var btn = $(this);
@@ -686,7 +688,15 @@ function selectCustomChord() {
   let customBase = customChord.base;
 
   changeGlobalFrets(customFrets, customBase);
+
+  if (btn.attr("data-play") == "true"){
+    playOneString(0);
+  }
 }
+
+// ## PLAY CHORD ##
+
+$("#chord-table").on("click", ".js-play-chord", selectCustomChord);
 
 
 
