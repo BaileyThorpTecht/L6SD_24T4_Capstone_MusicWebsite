@@ -90,9 +90,12 @@ def chord_delete(request, id):
 
 
 
-def song_list_render():
+def song_list_render(req):
+    selectedSongId = req.GET.get("song-id")
+    
     renderContext = {
-        'songs' : Song.objects.all()
+        'songs' : Song.objects.all(),
+        'selected_song' : Song.objects.get(id=selectedSongId) 
     }
     return render_to_string('musicwebsite/partial_song_list.html', renderContext)
     
@@ -111,27 +114,27 @@ def song_create(request):
     )
     
     
-    data['html_song_list'] = song_list_render()  
+    data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
 
 def song_load(request):
     data = dict()
+    selectedSongId = request.GET.get("song-id")
     
-    
-    data['html_song_list'] = song_list_render()  
+    data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
 
 def song_update(request):
     data = dict()
     
     
-    data['html_song_list'] = song_list_render()  
+    data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
 
 def song_delete(request):
     data = dict()
     
     
-    data['html_song_list'] = song_list_render()  
+    data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
 

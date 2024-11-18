@@ -12,16 +12,16 @@
     <td><button type="button"
       data-id="{{ chord.id }}"
       data-play="true"
-      class="btn btn-primary js-play-chord" >Play</button></td>
+      class="btn btn-primary js-play-chord">Play</button></td>
 
     <td><button type="button"
       data-id="{{ chord.id }}"
       data-play="false"
-      class="btn btn-info js-select-chord" >Select</button></td>
+      class="btn btn-info js-select-chord">Select</button></td>
 
     <td><button type="button"
       class="btn btn-danger delete-chord-button js-delete-chord"
-      data-url="{% url 'chord_delete' chord.id %}" >DELETE</button></td>
+      data-url="{% url 'chord_delete' chord.id %}">DELETE</button></td>
   </tr>
   {% endif %}
 

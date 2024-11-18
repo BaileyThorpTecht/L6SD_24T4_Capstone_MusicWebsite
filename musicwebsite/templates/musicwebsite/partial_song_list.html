@@ -3,13 +3,14 @@
         {% for song in songs %}
         
         <button type="button"
-            data-url=""
-            class="btn btn-primary js-xx-song">Play: {{ song.title }}</button>
+            data-url="{% url 'song_load' %}"
+            data-id = {{ song.id }}
+            class="btn btn-primary js-load-song">Select: {{ song.title }}</button>
         
         {% endfor %}
     </div>
     <div class="col-8">
-
+        <p>{{ selected_song.id }}
         {% include 'musicwebsite/partial_chord_list.html' with chords=songs.chords %} <!-- does this work? -->
 
         <button type="button"
