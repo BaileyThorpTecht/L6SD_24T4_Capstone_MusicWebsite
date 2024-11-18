@@ -1,0 +1,20 @@
+<div class="row">
+    <div class="col-4 border-end border-2">
+        {% for song in songs %}
+        
+        <button type="button"
+            data-url=""
+            class="btn btn-primary js-xx-song">Play: {{ song.title }}</button>
+        
+        {% endfor %}
+    </div>
+    <div class="col-8">
+
+        {% include 'musicwebsite/partial_chord_list.html' with chords=songs.chords %} <!-- does this work? -->
+
+        <button type="button"
+            data-url="{% url 'song_delete' 1 %}"
+            class="btn btn-primary js-delete-song">Delete song</button>
+
+    </div>
+</div>

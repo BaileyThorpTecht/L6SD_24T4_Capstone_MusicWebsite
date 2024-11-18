@@ -13,10 +13,6 @@ class Song(models.Model):
     # These are the fields related to the 'Song' model
     title = models.CharField(max_length=50)
 
-    # These are Timestaps for when the song was created or updated
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
-
     def __str__(self):
         return super().__str__()
 

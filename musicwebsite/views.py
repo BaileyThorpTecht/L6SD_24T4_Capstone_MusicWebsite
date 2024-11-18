@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
-from .models import Chord, User
+from .models import *
 
 from django.core import serializers
 from django.forms.models import model_to_dict
@@ -19,17 +19,9 @@ from .forms import ChordForm
 # The views.
 def index(request):
     
-    chordList = list(Chord.objects.all())
-
-    dictList = []
-    for x in chordList:
-        dictList.append(model_to_dict(x))    
-    
-    dataJSON = dumps(dictList)
-    
     context = {
-        'data' : dataJSON,
-        'chords' : Chord.objects.all() #if this isnt here, then the page loads to quickly and the first ajax request to load the custom chords happens before the database is loaded and it fails to show custom chords lol
+        'chords' : Chord.objects.all(),
+        'songs' : Song.objects.all()
         
     }
     return render(request, 'musicwebsite/index.html', context)
@@ -96,4 +88,50 @@ def chord_delete(request, id):
     
     return JsonResponse(data)
 
+
+
+def song_list_render():
+    renderContext = {
+        'songs' : Song.objects.all()
+    }
+    return render_to_string('musicwebsite/partial_song_list.html', renderContext)
+    
+    
+    
+
+
+
+
+def song_create(request):
+    data = dict()
+    
+    Song.objects.create(
+        title="newsong",
+        user = User.objects.first(),
+    )
+    
+    
+    data['html_song_list'] = song_list_render()  
+    return JsonResponse(data)
+
+def song_load(request):
+    data = dict()
+    
+    
+    data['html_song_list'] = song_list_render()  
+    return JsonResponse(data)
+
+def song_update(request):
+    data = dict()
+    
+    
+    data['html_song_list'] = song_list_render()  
+    return JsonResponse(data)
+
+def song_delete(request):
+    data = dict()
+    
+    
+    data['html_song_list'] = song_list_render()  
+    return JsonResponse(data)
 
