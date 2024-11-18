@@ -1,14 +1,542 @@
 <!DOCTYPE html>
+{% extends "musicwebsite/base.html" %}
+
+{% block title %}Home - Music Website{% endblock %}
+
+{% block content %}
 <html lang="en">
 <head>
-</head>
-<body>
-    <h1>heading baybee</h1>
-    <p>also text</p>
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chordial</title>
+  {% load static %}
 
-    <main>
-        {% block content %}
-        <h3>{{context_name}}</h3>
-        {% endblock%}
-    </main>
+  <!-- Bootstrap JS for functionality -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Icon for website tab -->
+  <!-- <link rel="icon" href="placeholder_icon.ico" type="image/x-icon"/> -->
+  <!-- <link rel="icon" type="image/x-icon" href="placeholder_icon.ico"> -->
+  <link rel="icon" href="{% static 'placeholder_icon.ico' %}" type="image/x-icon"/>
+
+  
+  <!-- Header Styles -->
+  <style>
+    .navbar-brand img {
+      height: 40px;
+    }
+    .card {
+      margin-bottom: 20px; /* Spacing between cards */
+    }
+    .button-container {
+      margin: 3% 0; /* Top and bottom margin for button containers */
+    }
+
+    .fret {
+      height: 30px;
+      width: 50px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+
+  <main class="container mt-4">
+    <!-- Guide Section -->
+    <div class="text-center mb-5">
+      <div class="card mx-auto" style="width: 100%;">
+        <h5 id="title" class="card-title mt-3">Fretboard</h5>
+        <div Id="fretboard" class="card-body">
+          <!-- Content here -->
+
+        </div>
+      </div>
+      <button class="btn btn-sm btn-primary me-2" id="playbutton">Strum</button>
+      <button class="btn btn-sm btn-primary me-2" id="string0button">Play String 1</button>
+      <button class="btn btn-sm btn-primary me-2" id="string1button">Play String 2</button>
+      <button class="btn btn-sm btn-primary me-2" id="string2button">Play String 3</button>
+      <button class="btn btn-sm btn-primary me-2" id="string3button">Play String 4</button>
+      <button class="btn btn-sm btn-primary me-2" id="string4button">Play String 5</button>
+      <button class="btn btn-sm btn-primary me-2" id="string5button">Play String 6</button>
+    </div>
+
+    <!-- Chord Section -->
+    <div class="text-center mb-5">
+      <div class="card mx-auto" style="width: 100%;">
+        <h5 class="card-title mt-3">Chord Section</h5>
+        <h7 class="card-subtitle text-muted">Please choose a note and a chord type.</h7>
+        <div class="card-body container">
+          <div id="note-select-div" class="row"></div>
+          <br>
+          <div id="chord-select-div" class="row"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chord Identification and Saving -->
+    <div class="row mb-4">
+      <div class="col text-center">
+        <div class="card mx-auto" style="width: 100%;">
+          <h5 class="card-title mt-3">Chord Identification</h5>
+          <h7 class="card-subtitle text-muted">Click on the fretboard to find chords with corresponding notes.</h7>
+          <h1 id="chord-search-display">...</h1>
+          <div class="card-body"></div>
+        </div>
+        <div class="button-container">
+          <button id="chord-search-button" class="btn btn-lg btn-primary">Identify</button>
+        </div>
+      </div>
+      <div class="col text-center">
+        <div class="card mx-auto" style="width: 100%;">
+          <h5 class="card-title mt-3">Chord Saving</h5>
+          <div class="card-body"></div>
+        </div>
+        <div class="button-container">
+          <button class="btn btn-sm btn-secondary me-2">Save Chord</button>
+          <button class="btn btn-sm btn-secondary me-2">Clear</button>
+          <button class="btn btn-sm btn-secondary">Export</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- List of Songs -->
+    <div class="text-center mb-5">
+      <div class="card mx-auto" style="width: 100%;">
+        <h5 class="card-title mt-3">List of Songs</h5>
+        <div class="card-body"></div>
+      </div>
+      <div class="button-container">
+        <button class="btn btn-sm btn-primary me-3">Add song</button>
+        <button class="btn btn-sm btn-primary me-3">Delete song</button>
+        <button class="btn btn-sm btn-primary me-3">Add Chord</button>
+        <button class="btn btn-sm btn-primary">Delete Chord</button>
+      </div>
+      <div class="text-center mt-3">
+        <button class="btn btn-lg btn-primary">Play Song</button>
+      </div>
+    </div>
+
+    <!-- Song Playback -->
+    <div class="text-center mb-5">
+      <div class="card mx-auto" style="width: 100%;">
+        <h5 class="card-title mt-3">Song Playback</h5>
+      </div>
+    </div>
+  </main>
 </body>
+</html>
+
+<script>
+    //#####################################
+    //            DATABASE INPUT
+    //#####################################
+
+    const databaseChordList = JSON.parse('{{data|escapejs}}'); 
+
+
+    //#####################################
+    //        CONST / GLOBAL VARIABES
+    //#####################################
+
+    //FRETBOARD
+
+    const fretboard = document.getElementById("fretboard");
+    var selectedFretsGlobal = [0,0,0,0,0,0];
+
+    const startOfStringElement = `<div class="string row">`;
+    const endOfStringElement = `</div>`;
+
+    const startOfFretElement = `<div class="fret col border-end border-secondary-subtle border-4" style="background-image: url(static/string.png); background-position: center; background-repeat: no-repeat; background-color:#333333;">`;
+    const endOfFretElement = `</div>`;
+
+    const disabledFretElement = `<span class="text-danger font-bold" style="font-size:20px;">X</span>`
+
+    
+    //CHORD SELECT
+    const noteDiv = document.getElementById("note-select-div");
+    const chordDiv = document.getElementById("chord-select-div");
+
+    const startOfNoteButtonElement = `<button class="note-select-button  p-1 sm:p-1 align-middle mb-2 sm:mb-4 text-sm sm:text-base w-1/6 sm:w-1/12 border bg-gray-dark border-dark-subtle text-black col">`;
+    const endOfNoteButtonElement = `</button>`;
+    const startOfChordButtonElement = `<button class="chord-select-button p-1 sm:p-1 align-middle mb-2 sm:mb-4 border bg-gray border-dark-subtle text-sm sm:text-base w-1/6 lg:w-1/12 col">`;
+    const endOfChordButtonElement = `</button>`;
+
+    const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+    const chordTypes = ["Major","Minor","Augmented","Diminished","dim7","7","maj7"];
+    const chordSuffixes = ["","m","aug","dim","dim7","7","maj7"];
+
+    var selectedNoteGlobal = "none";
+    var selectedChordGlobal = "none";
+
+    var chordButtonsGlobal;
+    var noteButtonsGlobal;
+
+    //PLAYING SOUND
+
+    const strings = [string0 = document.createElement("audio"), string1 = document.createElement("audio"), string2 = document.createElement("audio"), string3 = document.createElement("audio"), string4 = document.createElement("audio"), string5 = document.createElement("audio")]
+    const stringbuttons = ["string0button", "string1button", "string2button", "string3button", "string4button", "string5button"];
+    const noteSounds = [["{% static 'audio/String1/String1-Fret0.wav' %}", "{% static 'audio/String1/String1-Fret1.wav' %}", "{% static 'audio/String1/String1-Fret2.wav' %}", "{% static 'audio/String1/String1-Fret3.wav' %}", "{% static 'audio/String1/String1-Fret4.wav' %}", "{% static 'audio/String1/String1-Fret5.wav' %}", "{% static 'audio/String1/String1-Fret6.wav' %}", "{% static 'audio/String1/String1-Fret7.wav' %}", "{% static 'audio/String1/String1-Fret8.wav' %}", "{% static 'audio/String1/String1-Fret9.wav' %}", "{% static 'audio/String1/String1-Fret10.wav' %}", "{% static 'audio/String1/String1-Fret11.wav' %}", "{% static 'audio/String1/String1-Fret12.wav' %}" ], ["{% static 'audio/String2/String2-Fret0.wav' %}", "{% static 'audio/String2/String2-Fret1.wav' %}", "{% static 'audio/String2/String2-Fret2.wav' %}", "{% static 'audio/String2/String2-Fret3.wav' %}", "{% static 'audio/String2/String2-Fret4.wav' %}", "{% static 'audio/String2/String2-Fret5.wav' %}", "{% static 'audio/String2/String2-Fret6.wav' %}", "{% static 'audio/String2/String2-Fret7.wav' %}", "{% static 'audio/String2/String2-Fret8.wav' %}", "{% static 'audio/String2/String2-Fret9.wav' %}", "{% static 'audio/String2/String2-Fret10.wav' %}", "{% static 'audio/String2/String2-Fret11.wav' %}", "{% static 'audio/String2/String2-Fret12.wav' %}" ],
+      ["{% static 'audio/String3/String3-Fret0.wav' %}", "{% static 'audio/String3/String3-Fret1.wav' %}", "{% static 'audio/String3/String3-Fret2.wav' %}", "{% static 'audio/String3/String3-Fret3.wav' %}", "{% static 'audio/String3/String3-Fret4.wav' %}", "{% static 'audio/String3/String3-Fret5.wav' %}", "{% static 'audio/String3/String3-Fret6.wav' %}", "{% static 'audio/String3/String3-Fret7.wav' %}", "{% static 'audio/String3/String3-Fret8.wav' %}", "{% static 'audio/String3/String3-Fret9.wav' %}", "{% static 'audio/String3/String3-Fret10.wav' %}", "{% static 'audio/String3/String3-Fret11.wav' %}", "{% static 'audio/String3/String3-Fret12.wav' %}" ],
+      ["{% static 'audio/String4/String4-Fret0.wav' %}", "{% static 'audio/String4/String4-Fret1.wav' %}", "{% static 'audio/String4/String4-Fret2.wav' %}", "{% static 'audio/String4/String4-Fret3.wav' %}", "{% static 'audio/String4/String4-Fret4.wav' %}", "{% static 'audio/String4/String4-Fret5.wav' %}", "{% static 'audio/String4/String4-Fret6.wav' %}", "{% static 'audio/String4/String4-Fret7.wav' %}", "{% static 'audio/String4/String4-Fret8.wav' %}", "{% static 'audio/String4/String4-Fret9.wav' %}", "{% static 'audio/String4/String4-Fret10.wav' %}", "{% static 'audio/String4/String4-Fret11.wav' %}", "{% static 'audio/String4/String4-Fret12.wav' %}" ],
+      ["{% static 'audio/String5/String5-Fret0.wav' %}", "{% static 'audio/String5/String5-Fret1.wav' %}", "{% static 'audio/String5/String5-Fret2.wav' %}", "{% static 'audio/String5/String5-Fret3.wav' %}", "{% static 'audio/String5/String5-Fret4.wav' %}", "{% static 'audio/String5/String5-Fret5.wav' %}", "{% static 'audio/String5/String5-Fret6.wav' %}", "{% static 'audio/String5/String5-Fret7.wav' %}", "{% static 'audio/String5/String5-Fret8.wav' %}", "{% static 'audio/String5/String5-Fret9.wav' %}", "{% static 'audio/String5/String5-Fret10.wav' %}", "{% static 'audio/String5/String5-Fret11.wav' %}", "{% static 'audio/String5/String5-Fret12.wav' %}" ],
+      ["{% static 'audio/String6/String6-Fret0.wav' %}", "{% static 'audio/String6/String6-Fret1.wav' %}", "{% static 'audio/String6/String6-Fret2.wav' %}", "{% static 'audio/String6/String6-Fret3.wav' %}", "{% static 'audio/String6/String6-Fret4.wav' %}", "{% static 'audio/String6/String6-Fret5.wav' %}", "{% static 'audio/String6/String6-Fret6.wav' %}", "{% static 'audio/String6/String6-Fret7.wav' %}", "{% static 'audio/String6/String6-Fret8.wav' %}", "{% static 'audio/String6/String6-Fret9.wav' %}", "{% static 'audio/String6/String6-Fret10.wav' %}", "{% static 'audio/String6/String6-Fret11.wav' %}", "{% static 'audio/String6/String6-Fret12.wav' %}" ]];
+
+
+
+      function Change_Audio()
+    {
+
+      for (let i = 0; i < strings.length; i++)
+      {
+        strings[i].load();
+        if (selectedFretsGlobal[i] > -1)
+        {
+          strings[i].src = noteSounds[i][selectedFretsGlobal[i]];
+        } else {
+          //mutes disabled frets
+          //works but causes errors
+          strings[i].src = "";
+        }
+
+      }
+        //loadFretboard();
+    }
+
+
+    //#####################################
+    //              FRETBOARD
+    //#####################################
+    
+
+    firstLoadFretboard()
+
+    //functions
+    function generateEnabledFretElement(string, fret)
+    {
+        let note = findNoteOfFret(string, fret);
+        
+
+        const enabledFretElement = `<svg width="30" height="30">
+            <circle cx="50%" cy="50%" r="9" stroke="purple" stroke-width=".5" fill="orange" />
+            <text fill="#000000" font-size="10" font-family="Verdana" x="50%" y="60%" text-anchor="middle">${note}</text>
+        </svg>`;
+
+        return enabledFretElement;
+
+    }
+
+    function findNoteOfFret(string, fret)
+    {
+        let noteList = ["E","F","F#","G","G#","A","A#","B","C","C#","D","D#"]; //for this purpose, E is the lowest note
+        let stringTunings = [0,5,10,15,19,24]; //how many notes is each string tuned up relative to the lowest
+
+        let noteNumber = stringTunings[string];
+        noteNumber += fret;
+        noteNumber = noteNumber % 12;
+        let selectedNote = noteList[noteNumber];
+        return selectedNote;
+    }
+    
+
+
+
+
+
+
+    function loadFretboard() //#### THIS IS THE BIG FUNCTION THAT MAKES THE FRETBOARD ####
+    {
+        //This creates html elements by adding an opening tag, the contents, then the closing tag to a string, then repeats with for loops. See global variables above to see and edit those tags for designing.
+        
+        fretboard.innerHTML = "";
+
+        // 6 strings. (iterates in reverse so the lowest string (string 0) is at the bottom)
+        for (var stringNo = 5; stringNo >= 0; stringNo--) { 
+            
+            let currentStringElement = "";
+            currentStringElement += startOfStringElement;
+
+            // 13 fret positions
+            for (var fretNo = 0; fretNo < 13; fretNo++) { 
+                
+                let currentFretElement = "";
+                currentFretElement += startOfFretElement;
+                
+                // only show the fret as selected if it is currently selected
+                if (selectedFretsGlobal[stringNo] == fretNo){ 
+                    let insideFretElement = generateEnabledFretElement(stringNo, fretNo);
+                    currentFretElement += insideFretElement;
+                }
+
+                // accounting for muted strings (-1 fret)
+                if (selectedFretsGlobal[stringNo] == -1 && fretNo == 0)
+                {
+                    currentFretElement += disabledFretElement;
+                }
+
+                currentFretElement += endOfFretElement;
+                currentStringElement += currentFretElement;
+            }
+            
+            currentStringElement += endOfStringElement;
+            fretboard.innerHTML += currentStringElement;
+        }
+
+        addListenersToFrets();
+        Change_Audio();
+
+    }
+
+
+
+
+
+
+    function addListenersToFrets()
+    {
+        let frets = document.getElementsByClassName("fret");
+        for (var i = 0; i < frets.length; i++){
+            frets[i].addEventListener('click', reloadEvent);
+
+            //getting the string and fret of each fret element from i like this feels like a bad idea but it works
+            frets[i].string = 5 - Math.floor(i / 13);
+            frets[i].fret = i % 13;
+        }
+    }
+
+    function reloadEvent(evt)
+    {
+        //set selected fret to the fret you just clicked
+        let string = evt.currentTarget.string;
+        let fret = evt.currentTarget.fret;
+
+        //if you click on an already selected fret, disable it
+        if (selectedFretsGlobal[string] == fret) {
+          selectedFretsGlobal[string] = -1;
+        } else {
+          selectedFretsGlobal[string] = fret;
+        }
+        loadFretboard();
+    }
+
+    function firstLoadFretboard()
+    {
+        loadFretboard(selectedFretsGlobal)
+    } 
+
+    
+  </script>
+  <script>
+
+
+    //#####################################
+    //            CHORD SELECT
+    //#####################################
+
+    
+
+
+    loadNoteButtons();
+    setNoteButtonListeners();
+    loadChordButtons();
+    setChordButtonListeners();
+
+    function loadNoteButtons()
+    {
+      //Create note buttons
+      noteDiv.innerHTML = "";
+      for (var i = 0; i < notes.length; i++)
+      {
+        let noteButtonElement = startOfNoteButtonElement;
+        noteButtonElement += notes[i];
+        noteButtonElement += endOfNoteButtonElement;
+
+        noteDiv.innerHTML += noteButtonElement;
+      }
+    }
+
+    function setNoteButtonListeners()
+    {
+
+      //add listeners and attributes to note buttons
+      noteButtonsGlobal = document.getElementsByClassName("note-select-button");
+      for (var i = 0; i < noteButtonsGlobal.length; i++){
+        noteButtonsGlobal[i].addEventListener('click', noteButtonClicked);
+        
+        noteButtonsGlobal[i].note = notes[i];
+        
+      }
+    }
+
+    function noteButtonClicked(evt)
+    {
+
+      //highlight clicked button
+      for (var m = 0; m < noteButtonsGlobal.length; m++){
+        noteButtonsGlobal[m].style.backgroundColor = "";
+        
+      }
+      evt.currentTarget.style.backgroundColor = "gold";
+
+      //store clicked note name
+      selectedNoteGlobal = evt.currentTarget.note;
+
+      displayChord();
+    }
+
+
+
+
+
+
+
+    function loadChordButtons()
+    {
+      //Create chord buttons
+      chordDiv.innerHTML = "";
+      for (var i = 0; i < chordTypes.length; i++)
+      {
+        let chordButtonElement = startOfChordButtonElement;
+        chordButtonElement += chordTypes[i];
+        chordButtonElement += endOfChordButtonElement;
+
+        chordDiv.innerHTML += chordButtonElement;
+      }
+    }
+
+    function setChordButtonListeners()
+    {
+
+      //add listeners and attributes to chord buttons
+      chordButtonsGlobal = document.getElementsByClassName("chord-select-button");
+      for (var i = 0; i < chordButtonsGlobal.length; i++){
+        chordButtonsGlobal[i].addEventListener('click', chordButtonClicked);
+        
+        chordButtonsGlobal[i].suffix = chordSuffixes[i];
+      }
+    }
+
+    function chordButtonClicked(evt)
+    {
+      
+      //highlight clicked button
+      for (var l = 0; l < chordButtonsGlobal.length; l++){
+        chordButtonsGlobal[l].style.backgroundColor = "";
+        
+      }
+      evt.currentTarget.style.backgroundColor = "gold";
+
+      //store clicked chord name
+      selectedChordGlobal = evt.currentTarget.suffix;
+
+      displayChord();
+    }
+
+    function displayChord()
+    {
+
+      if (selectedChordGlobal != "none" && selectedNoteGlobal != "none")
+      {
+
+        let finalChordName = selectedNoteGlobal + selectedChordGlobal;
+        let finalChord = databaseChordList.filter((chord) => chord.name == finalChordName)[0];
+        let newFrets = finalChord.frets.slice();
+
+        for (var k = 0; k < newFrets.length; k++)
+        {
+          if (newFrets[k] > -1)
+          {
+            newFrets[k] += finalChord.base - 1;
+          }
+        }
+        
+
+
+        
+        selectedFretsGlobal = newFrets;
+        loadFretboard()
+        
+
+      }
+    }
+
+
+
+
+
+    //#####################################
+    //           PLAYING SOUND
+    //#####################################
+
+
+    
+      
+
+
+
+      
+
+    function playOneString(i){
+      const strumDelay = setTimeout(function() {
+          strings[i].load();
+          strings[i].play();
+          if (i < strings.length - 1){
+            playOneString(i + 1);
+          }
+
+
+      },100);
+
+    }
+    document.getElementById("playbutton").addEventListener("click", function(music){    
+        //Change_Audio();
+        playOneString(0);
+      }, false);
+
+      for (let i = 0; i < stringbuttons.length; i++)
+      {
+        document.getElementById(stringbuttons[i]).addEventListener("click", function(music){
+          //Change_Audio();
+          strings[i].load();
+          strings[i].play();
+      }, false);
+      }
+
+
+
+    //#####################################
+    //       REVERSE CHORD SEARCH
+    //#####################################
+
+    let chordSearchButton = document.getElementById("chord-search-button");
+    let chordSearchDisplay = document.getElementById("chord-search-display");
+    chordSearchButton.addEventListener('click', reverseChordSearch);
+
+    async function reverseChordSearch()
+    {
+      chordSearchDisplay.innerHTML = "...";
+
+
+      // for each fret in the chord, they all must:
+      //    the fret + base - 1 must match the selected fret
+      //    OR, if the fret is -1, the selected fret must be -1
+      let foundChordList = databaseChordList.filter((chord) =>    
+      (chord.frets[0] + chord.base - 1 == selectedFretsGlobal[0] || (chord.frets[0] == -1  && selectedFretsGlobal[0] == -1)) &&
+      (chord.frets[1] + chord.base - 1 == selectedFretsGlobal[1] || (chord.frets[1] == -1  && selectedFretsGlobal[1] == -1)) &&
+      (chord.frets[2] + chord.base - 1 == selectedFretsGlobal[2] || (chord.frets[2] == -1  && selectedFretsGlobal[2] == -1)) &&
+      (chord.frets[3] + chord.base - 1 == selectedFretsGlobal[3] || (chord.frets[3] == -1  && selectedFretsGlobal[3] == -1)) &&
+      (chord.frets[4] + chord.base - 1 == selectedFretsGlobal[4] || (chord.frets[4] == -1  && selectedFretsGlobal[4] == -1)) &&
+      (chord.frets[5] + chord.base - 1 == selectedFretsGlobal[5] || (chord.frets[5] == -1  && selectedFretsGlobal[5] == -1)));
+
+      let foundChord;
+      if (foundChordList.length > 0){
+        foundChord = foundChordList[0].name;
+      } else {
+        foundChord = "No Chords Found";
+      }
+
+      chordSearchDisplay.innerHTML = foundChord;
+    }
+
+</script>
+{% endblock %}
