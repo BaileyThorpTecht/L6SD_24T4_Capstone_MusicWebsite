@@ -40,39 +40,59 @@
         /* Top and bottom margin for button containers */
       }
 
-      .fret {
-        height: 30px;
-        width: 50px;
-      }
+    .fret, .fretlabel {
+      height: 30px;
+      width: 50px;
+    }
 
-      td {
-        vertical-align: middle;
-      }
+    .fretmark, .double-fretmark-1, .double-fretmark-2 {
+      --tw-bg-opacity: 1;
+      background-color: rgba(255,255,255,var(--tw-bg-opacity));
+      content: "";
+      position: absolute;
+      margin-left: -10px;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+    }
 
-    </style>
-  </head>
+    .fretmark {
+      margin-top: 70px;
+
+    }
+
+    .double-fretmark-1 {
+      margin-top: 25px;
+
+    }
+    .double-fretmark-2 {
+      margin-top: 114px;
+      
+    }
+    
+  </style>
+</head>
 
   <body>
     <!-- Header -->
 
-    <main class="container mt-4">
-      <!-- Guide Section -->
-      <div class="text-center mb-5">
-        <div class="card mx-auto" style="width: 100%;">
-          <h5 id="title" class="card-title mt-3">Fretboard</h5>
-          <div Id="fretboard" class="card-body">
-            <!-- Content here -->
-
-          </div>
+  <main class="container mt-4">
+    <!-- Guide Section -->
+    <div class="text-center mb-5">
+      <div class="card mx-auto" style="width: 100%;">
+        <h5 id="title" class="card-title mt-3">Fretboard</h5>
+        <div Id="fretboard" class="card-body">
+          <!-- Content here -->
         </div>
-        <button class="btn btn-sm btn-primary me-2" id="playbutton">Strum</button>
-        <button class="btn btn-sm btn-primary me-2" id="string0button">Play String 1</button>
-        <button class="btn btn-sm btn-primary me-2" id="string1button">Play String 2</button>
-        <button class="btn btn-sm btn-primary me-2" id="string2button">Play String 3</button>
-        <button class="btn btn-sm btn-primary me-2" id="string3button">Play String 4</button>
-        <button class="btn btn-sm btn-primary me-2" id="string4button">Play String 5</button>
-        <button class="btn btn-sm btn-primary me-2" id="string5button">Play String 6</button>
       </div>
+      <button class="btn btn-sm btn-primary me-2" id="playbutton">Strum</button>
+      <button class="btn btn-sm btn-primary me-2" id="string0button">Play String 1</button>
+      <button class="btn btn-sm btn-primary me-2" id="string1button">Play String 2</button>
+      <button class="btn btn-sm btn-primary me-2" id="string2button">Play String 3</button>
+      <button class="btn btn-sm btn-primary me-2" id="string3button">Play String 4</button>
+      <button class="btn btn-sm btn-primary me-2" id="string4button">Play String 5</button>
+      <button class="btn btn-sm btn-primary me-2" id="string5button">Play String 6</button>
+    </div>
 
       <!-- Chord Section -->
       <div class="text-center mb-5">
@@ -209,15 +229,18 @@
   const startOfStringElement = `<div class="string row">`;
   const endOfStringElement = `</div>`;
 
-  const startOfFretElement = `<div class="fret col border-end border-secondary-subtle border-4" style="background-image: url(static/string.png); background-position: center; background-repeat: no-repeat; background-color:#333333;">`;
-  const endOfFretElement = `</div>`;
+    const startOfFretElement = `<div class="fret col border-end border-secondary-subtle border-4" style="background-color: #333333;">`;
+    const endOfFretElement = `</div>`;
 
-  const disabledFretElement = `<span class="text-danger font-bold" style="font-size:20px;">⠀X⠀</span>`
+    const stringImageElement =`<span style="background-image: url(static/string.png); background-position: center; background-repeat: repeat-x; width:calc(99%); height:26px; pointer-events:none; position:absolute;"></span>`
 
+    const disabledFretElement = `<span class="text-danger font-bold" style="font-size:30px; margin:-10px; position:absolute; z-index:2;">X</span>`
 
-  //CHORD SELECT
-  const noteDiv = document.getElementById("note-select-div");
-  const chordDiv = document.getElementById("chord-select-div");
+    const smallScreenFretLimit = 9;
+    
+    //CHORD SELECT
+    const noteDiv = document.getElementById("note-select-div");
+    const chordDiv = document.getElementById("chord-select-div");
 
   const startOfNoteButtonElement = `<button class="note-select-button  p-1 sm:p-1 align-middle mb-2 sm:mb-4 text-sm sm:text-base w-1/6 sm:w-1/12 border bg-gray-dark border-dark-subtle col">`;
   const endOfNoteButtonElement = `</button>`;
@@ -269,7 +292,7 @@
   //#####################################
 
 
-  firstLoadFretboard()
+    firstLoadFretboard();
 
   //functions
   function generateEnabledFretElement(string, fret) {
@@ -277,9 +300,9 @@
     let letter = fullNote.letter;
 
 
-    const enabledFretElement = `<svg width="30" height="30">
+        const enabledFretElement = `<svg  height="20" style=" position:relative; z-index: 1;" class="mw-100">
             <circle cx="50%" cy="50%" r="9" stroke="purple" stroke-width=".5" fill="orange" />
-            <text fill="#000000" font-size="10" font-family="Verdana" x="50%" y="60%" text-anchor="middle">${letter}</text>
+            <text fill="#000000" font-size="10" font-family="Verdana" x="50%" y="65%" text-anchor="middle">${note}</text>
         </svg>`;
 
     return enabledFretElement;
@@ -303,14 +326,57 @@
 
 
 
+    function loadFretNumbers()
+    {
+      let labelRow = "";
+      labelRow += startOfStringElement;
+        for (var fretNo = 0; fretNo < 13; fretNo++) {
+          
+          labelRow += `<div class='fretlabel col '>`
+
+          labelRow += `<p>${fretNo}</p>`
+
+          //add fretmarks
+          if (fretNo == 3 || fretNo == 5 || fretNo == 7 || fretNo == 9){
+            labelRow += `<span class="fretmark"></span>`;
+          }
+          //add double fretmark
+          if (fretNo == 12){
+            labelRow += `<span class="double-fretmark-1"></span>`;
+            labelRow += `<span class="double-fretmark-2"></span>`;
+          }
+          
+          labelRow += `</div>`
+
+        }
+      labelRow += endOfStringElement;
+      fretboard.innerHTML += labelRow;
+
+      let fretLabels = document.getElementsByClassName("fretlabel");
+      let zerothFretLabel = fretLabels[0];
+      
+      //make 0th fretlabel half width
+      setColToHalfWidth(zerothFretLabel);
+      
+      //make higher fretlabels disappear on small screens
+      for(var i = 0; i < fretLabels.length; i++ ){
+        if (i > smallScreenFretLimit){
+
+          fretLabels[i].classList.add("d-none");
+          fretLabels[i].classList.add("d-md-block");
+        }
+      }
+
+    }
 
 
+    function loadFretboard() //#### THIS IS THE BIG FUNCTION THAT MAKES THE FRETBOARD ####
+    {
+        //This creates html elements by adding an opening tag, the contents, then the closing tag to a string, then repeats with for loops. See global variables above to see and edit those tags for designing.
+        
+        fretboard.innerHTML = "";
 
-  function loadFretboard() //#### THIS IS THE BIG FUNCTION THAT MAKES THE FRETBOARD ####
-  {
-    //This creates html elements by adding an opening tag, the contents, then the closing tag to a string, then repeats with for loops. See global variables above to see and edit those tags for designing.
-
-    fretboard.innerHTML = "";
+        loadFretNumbers();
 
     // 6 strings. (iterates in reverse so the lowest string (string 0) is at the bottom)
     for (var stringNo = 5; stringNo >= 0; stringNo--) {
@@ -335,13 +401,14 @@
           currentFretElement += disabledFretElement;
         }
 
-        currentFretElement += endOfFretElement;
-        currentStringElement += currentFretElement;
-      }
-
-      currentStringElement += endOfStringElement;
-      fretboard.innerHTML += currentStringElement;
-    }
+                currentFretElement += endOfFretElement;
+                currentStringElement += currentFretElement;
+            }
+            
+            currentStringElement += stringImageElement;
+            currentStringElement += endOfStringElement;
+            fretboard.innerHTML += currentStringElement;
+        }
 
     addListenersToFrets();
     Change_Audio();
@@ -358,11 +425,33 @@
     for (var i = 0; i < frets.length; i++) {
       frets[i].addEventListener('click', reloadEvent);
 
-      //getting the string and fret of each fret element from i like this feels like a bad idea but it works
-      frets[i].string = 5 - Math.floor(i / 13);
-      frets[i].fret = i % 13;
+            //getting the string and fret of each fret element from i like this feels like a bad idea but it works
+            frets[i].string = 5 - Math.floor(i / 13);
+            frets[i].fret = i % 13;
+        }
+
+        //remove string background from 0th frets
+        for(var i = 0; i < frets.length; i++ ){
+          if (frets[i].fret == 0){
+
+            //frets[i].style.backgroundImage = null;
+            frets[i].style.backgroundColor = null;
+            setColToHalfWidth(frets[i])
+          }
+
+          if (frets[i].fret > smallScreenFretLimit){
+            frets[i].classList.add("d-none");
+            frets[i].classList.add("d-md-block");
+          }
+
+        }
+
     }
-  }
+
+    function setColToHalfWidth(element){
+      element.classList.remove('col');
+      element.classList.add('col-0-half');
+    }
 
   function reloadEvent(evt) {
     //set selected fret to the fret you just clicked
@@ -536,7 +625,7 @@
       }
 
 
-    }, 100);
+      },30);
 
   }
   document.getElementById("playbutton").addEventListener("click", function (music) {
