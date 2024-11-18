@@ -31,6 +31,7 @@ class Chord(models.Model):
     base = models.IntegerField()
     frets = models.JSONField()
     fingers = models.JSONField()
+    isCustom = models.BooleanField(db_default = False)
 
     def __str__(self):
         return self.name

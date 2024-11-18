@@ -1,16 +1,18 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.template import loader
-from .models import Chord
-from musicwebsite.forms import ChordVerificationForm
+from django.urls import reverse
+from .models import Chord, User
 
 from django.core import serializers
 from django.forms.models import model_to_dict
+from django.template.loader import render_to_string
 
-from json import dumps
-from json import dump
+from json import dumps, loads
 
-from .forms import ChordSearchForm
+import pdb
+
+from .forms import ChordForm
 
 
 
@@ -18,38 +20,80 @@ from .forms import ChordSearchForm
 def index(request):
     
     chordList = list(Chord.objects.all())
-    #frets = [chord.frets for chord in chords]
-    
+
     dictList = []
     for x in chordList:
         dictList.append(model_to_dict(x))    
     
     dataJSON = dumps(dictList)
     
-    #with open('data.json', 'w') as f:
-    #    dump(dataJSON, f)
-    
     context = {
         'data' : dataJSON,
+        'chords' : Chord.objects.all() #if this isnt here, then the page loads to quickly and the first ajax request to load the custom chords happens before the database is loaded and it fails to show custom chords lol
+        
     }
     return render(request, 'musicwebsite/index.html', context)
 
-# This view is what process user input into searching the JSON file in the database for related chord
-def chord_search(request):
-    form = ChordSearchForm()
-    results = None
-
-    if request.method == 'POST':
-        form = ChordSearchForm(request.POST)
-        if form.is_valid():
-            frets_input = form.cleaned_data['frets']
-            frets_list = [int(f) for f in frets_input.split(',')]
-
-            # Search for chords that match the frets
-            results = Chord.objects.filter(frets=frets_list)
-
-    return render(request, 'chords/search.html', {'form': form, 'results': results})
+def chord_load(request):
+    data = dict()
+    
+    chordList = list(Chord.objects.all())
+    dictList = []
+    for x in chordList:
+        dictList.append(model_to_dict(x))
+    
+    chords = dumps(dictList)
+    
+    data['chords'] = chords
+    return JsonResponse(data)
 
 
+def chord_create(request):
+    #pdb.set_trace()
+    data = dict()
+    
+    name = request.GET.get("name")
+    base = request.GET.get("base")
+    frets = request.GET.get("frets")
+    fingers = request.GET.get("fingers")
+    isCustom = request.GET.get("isCustom")
+    
+    Chord.objects.create(
+                    name=name,
+                    base=base,
+                    frets=loads(frets), #must loads to make it back into JSON
+                    fingers=loads(fingers), #must loads to make it back into JSON
+                    isCustom=isCustom,
+                    user= User.objects.first() #CURRENTLY GIVES CHORDS TO THE ADMIN INSTEAD OF LOGGED IN USER ############## ToDo
+                )
+    
+    
+    #generates the chord list html including the newly created chord, to be sent back to the javascript
+    chords = Chord.objects.all()
+    data['html_chord_list'] = render_to_string('musicwebsite/partial_chord_list.html', {
+        'chords' : chords
+    })
+    
+    
+    
+    
+    return JsonResponse(data)
+    
+
+def chord_delete(request, id):
+    #pdb.set_trace()
+    data = dict()
+    
+    chord = Chord.objects.get(id=id)
+    chord.delete()
+    
+    #copied code from create_chord view. This is to refresh the table
+    chords = Chord.objects.all()
+    data['html_chord_list'] = render_to_string('musicwebsite/partial_chord_list.html', {
+        'chords' : chords
+    })
+    
+    
+    return JsonResponse(data)
 
 
