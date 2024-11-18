@@ -159,11 +159,11 @@
         <div class="button-container">
           <button class="btn btn-sm btn-primary me-3">Add song</button>
           <button class="btn btn-sm btn-primary me-3">Delete song</button>
-          <button class="btn btn-sm btn-primary me-3">Add Chord</button>
+          <button class="btn btn-sm btn-primary me-3" id="addChord">Add Chord</button>
           <button class="btn btn-sm btn-primary">Delete Chord</button>
         </div>
         <div class="text-center mt-3">
-          <button class="btn btn-lg btn-primary">Play Song</button>
+          <button class="btn btn-lg btn-primary" id="playSong">Play Song</button>
         </div>
       </div>
 
@@ -259,6 +259,8 @@
 
   //PLAYING SOUND
 
+  const songNotes = [];
+
   const strings = [null, null, null, null, null, null];
   const stringbuttons = ["string0button", "string1button", "string2button", "string3button", "string4button", "string5button"];
   const noteSounds = [];
@@ -273,11 +275,11 @@
     noteSounds.push(strings);
   }
 
-  function Change_Audio() {
+  function Change_Audio(changedFrets) {
 
     for (let i = 0; i < strings.length; i++) {
-      if (selectedFretsGlobal[i] > -1) {
-        strings[i] = noteSounds[i][selectedFretsGlobal[i]];
+      if (changedFrets[i] > -1) {
+        strings[i] = noteSounds[i][changedFrets[i]];
       } else {
         strings[i] = null;
       }
@@ -411,7 +413,7 @@
         }
 
     addListenersToFrets();
-    Change_Audio();
+    Change_Audio(selectedFretsGlobal);
 
   }
 
@@ -624,12 +626,18 @@
         playOneString(i + 1);
       }
 
-
-      },30);
+    }, 20);
 
   }
   document.getElementById("playbutton").addEventListener("click", function (music) {
-    //Change_Audio();
+    for (let i = 0; i < strings.length; i++)
+  {
+    if(strings[i] !== null){
+      strings[i].pause();
+      strings[i].currentTime = 0;
+      }
+    
+  }
     playOneString(0);
   }, false);
 
@@ -637,9 +645,39 @@
     document.getElementById(stringbuttons[i]).addEventListener("click", function (music) {
       //Change_Audio();
       if (strings[i] !== null) {
+        strings[i].pause();
+        strings[i].currentTime = 0;
         strings[i].play();
       }
     }, false);
+  }
+
+  document.getElementById("addChord").addEventListener("click", function (music){
+    songNotes.push([selectedFretsGlobal]);
+  })
+
+  document.getElementById("playSong").addEventListener("click", function (music){
+    songPlayback(0)
+  })
+
+  function songPlayback(songProgress)
+  {
+    for (let i = 0; i < strings.length; i++)
+    {
+      if(strings[i] !== null){
+      strings[i].pause();
+      strings[i].currentTime = 0;
+      }
+    }
+    Change_Audio(songNotes[songProgress][0]);
+    playOneString(0);
+    if (songProgress !== songNotes.length -1)
+    {
+      setTimeout(function() 
+      {
+        songPlayback(songProgress+1);
+      }, 2000);
+    }
   }
 
 
