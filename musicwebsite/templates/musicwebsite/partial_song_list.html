@@ -9,9 +9,30 @@
         
         {% endfor %}
     </div>
-    <div class="col-8">
-        <p>{{ selected_song.id }}
-        {% include 'musicwebsite/partial_chord_list.html' with chords=songs.chords %} <!-- does this work? -->
+
+
+
+
+    <div class="col-8">  
+    <table class="table" style="border-collapse:collapse;" id="songchord-table">          
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Frets</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for songchord in selected_songchords %}
+
+
+            {% include 'musicwebsite/partial_chord_list_content.html' with chord=songchord.chord %}
+        <!-- This currently doesnt work. is there some way to get a Song's children despite the foreign key being in the SongChord -->
+         <!-- Or get the list of all SongChords and filter for ones with this song as the parent-->
+          {% endfor %}
+      </tbody>
+    </table>
+            
+
 
         <button type="button"
             data-url="{% url 'song_delete' 1 %}"

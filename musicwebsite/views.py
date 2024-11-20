@@ -90,17 +90,25 @@ def chord_delete(request, id):
 
 
 
+
+
+
+
 def song_list_render(req):
     selectedSongId = req.GET.get("song-id")
-    
+    selectedSong = Song.objects.get(id=selectedSongId)
+    selectedSongChords = selectedSong.songchord_set.all()
+        
     renderContext = {
         'songs' : Song.objects.all(),
-        'selected_song' : Song.objects.get(id=selectedSongId) 
+        'selected_songchords' : selectedSongChords 
     }
     return render_to_string('musicwebsite/partial_song_list.html', renderContext)
     
     
     
+
+
 
 
 

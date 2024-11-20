@@ -37,8 +37,8 @@ class Chord(models.Model):
 class SongChord(models.Model):
 
     # These are the Forgeign Keys to the Song and Chord Models
-    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='songchords')
-    chord = models.ForeignKey(Chord, on_delete=models.CASCADE, related_name='songchords')
+    song = models.ForeignKey(Song, on_delete=models.CASCADE)
+    chord = models.ForeignKey(Chord, on_delete=models.CASCADE)
 
     # These are the fields related to the 'SongChord' model
     position = models.IntegerField()
