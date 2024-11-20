@@ -13,6 +13,12 @@
             <legend class="border-bottom mb-4">Registration</legend>
             {{ form|crispy }}
         </fieldset>
+        <p>
+            By creating an account, you agree to our
+            <a href="{% url 'terms_and_conditions' %}" target="_blank">Terms and Conditions</a>.
+            And our
+            
+        </p>
         <div class="form-group py-3">
             <input type="submit" class="btn btn-outline-primary" value="Register">
             <a href="{% url 'home'%}" class="btn btn-outline-danger">Cancel</a>
