@@ -6,6 +6,7 @@
 
 {% block content %}
 
+<!--All the main frontend code here-->
 <div>
     <form action="" method="POST">
         {% csrf_token %}
@@ -14,13 +15,23 @@
             {{ form|crispy }}
         </fieldset>
         <p>
-            By creating an account, you agree to our
-            <a href="{% url 'terms_and_conditions' %}" target="_blank">Terms and Conditions</a>
-            and our
+            You MUST read and accept both our
+            <a href="{% url 'terms_and_conditions' %}" target="_blank" id="view-terms-link">Terms and Conditions</a>
+            and 
+            <a href="{% url 'privacy_policy' %}" target="_blank" id="view-policy-link">Privacy Policy</a>
+            in order to create an account.
             
         </p>
+        <div id="terms-section" style="display: none;">
+            <input type="checkbox" id="id_agree_to_terms" name="agree_to_terms">
+            <label for="id_agree_to_terms">I agree to the Terms & Conditions</label>
+        </div>
+        <div id="policy-section"  style="display: none;">
+            <input type="checkbox" id="id_agree_to_policy" name="agree_to_policy">
+            <label for="id_agree_to_policy">I agree to the Privacy Policy</label>
+        </div>
         <div class="form-group py-3">
-            <input type="submit" class="btn btn-outline-primary" value="Register">
+            <input type="submit" class="btn btn-outline-primary" value="Register" id="submit-btn" disabled>
             <a href="{% url 'home'%}" class="btn btn-outline-danger">Cancel</a>
         </div>
     </form>
@@ -29,5 +40,39 @@
     </div>
     <p><a href="{% url 'login'%}" class="btn btn-outline-success">Already Have An Account? Click Here To Login</a></p>
 </div>
+
+<!--All the javascript backend code here-->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const termsLink = document.getElementById('view-terms-link');
+        const policyLink = document.getElementById('view-policy-link');
+        const termsSection = document.getElementById('terms-section');
+        const policySection = document.getElementById('policy-section');
+        const termsCheckbox = document.getElementById('id_agree_to_terms');
+        const policyCheckbox = document.getElementById('id_agree_to_policy')
+        const submitBtn = document.getElementById('submit-btn');
+
+        // Listen for clicks on the Terms and Conditions link
+        termsLink.addEventListener('click', function (event) {
+            // Show the checkbox after clicking the link
+            termsSection.style.display = 'block'; //Show the checkbox
+        });
+
+        // Listen for clicks on the Privacy Policy Link
+        policyLink.addEventListener('click', function (event) {
+            // Show the checkbox after clicking the link
+            policySection.style.display = 'block'; //Show the checkbox
+        });
+
+        // Enable the submit button when both checkboxes are ticked
+        function updateSubmitButtonState() {
+            submitBtn.disabled = !(termsCheckbox.checked && policyCheckbox.checked);
+        }
+
+        // Add change event listeners to both checkboxes
+        termsCheckbox.addEventListener('change', updateSubmitButtonState);
+        policyCheckbox.addEventListener('change', updateSubmitButtonState);
+    });
+</script>
 
 {% endblock content %}
