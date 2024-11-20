@@ -710,13 +710,22 @@
       (chord.frets[5] + chord.base - 1 == selectedFretsGlobal[5] || (chord.frets[5] == -1 && selectedFretsGlobal[5] == -1)));
 
     let foundChord;
+    let displayText = "";
+
     if (foundChordList.length > 0) {
-      foundChord = foundChordList[0].name;
+      foundChord = foundChordList[0];
+
+      if (foundChord.isCustom){
+        displayText += "Custom: "
+      }
+
+      displayText += foundChord.name;
+
     } else {
-      foundChord = "No Chords Found";
+      displayText = "No Chords Found";
     }
 
-    chordSearchDisplay.innerHTML = foundChord;
+    chordSearchDisplay.innerHTML = displayText;
   }
 
 
