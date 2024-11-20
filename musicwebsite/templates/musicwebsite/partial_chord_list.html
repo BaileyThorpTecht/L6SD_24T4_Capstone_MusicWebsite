@@ -1,9 +1,8 @@
 <!-- Later, add an if statement to only show the chords if not logged in-->
 
 
-{% for chord in chords %}
+{% for chord in custom_chords %}
 
-  {% if chord.isCustom == True %}
   <!-- Later, add here to only show chords of currently logged in user-->
 
     <tr>
@@ -26,13 +25,10 @@
     </tr>
   
 
-  {% endif %}
 
 {% empty %}
 <tr>
-  <td colspan="4" class="text-center bg-warning">No chord</td>
+  <td colspan="4" class="text-center bg-warning">No Custom Chords</td>
 </tr>
-
-
 {% endfor %}
 

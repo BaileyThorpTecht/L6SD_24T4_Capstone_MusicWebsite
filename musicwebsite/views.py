@@ -18,10 +18,12 @@ from .forms import ChordForm
 
 # The views.
 def index(request):
+    chords = Chord.objects.all()
     
     context = {
-        'chords' : Chord.objects.all(),
-        'songs' : Song.objects.all()
+        'chords' : chords,
+        'songs' : Song.objects.all(),
+        'custom_chords' : chords.filter(isCustom=True),
         
     }
     return render(request, 'musicwebsite/index.html', context)
@@ -63,7 +65,8 @@ def chord_create(request):
     #generates the chord list html including the newly created chord, to be sent back to the javascript
     chords = Chord.objects.all()
     data['html_chord_list'] = render_to_string('musicwebsite/partial_chord_list.html', {
-        'chords' : chords
+        'chords' : chords,
+        'custom_chords' : chords.filter(isCustom=True),
     })
     
     
@@ -82,7 +85,8 @@ def chord_delete(request, id):
     #copied code from create_chord view. This is to refresh the table
     chords = Chord.objects.all()
     data['html_chord_list'] = render_to_string('musicwebsite/partial_chord_list.html', {
-        'chords' : chords
+        'chords' : chords,
+        'custom_chords' : chords.filter(isCustom=True),
     })
     
     

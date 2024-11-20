@@ -5,8 +5,12 @@
         <button type="button"
             data-url="{% url 'song_load' %}"
             data-id = {{ song.id }}
-            class="btn btn-primary  ">{{ song.title }}</button>
+            class="btn btn-primary">{{ song.title }}</button>
         
+        {% empty %}
+        <tr>
+            <td colspan="4" class="text-center bg-warning">Song Empty</td>
+        </tr>
         {% endfor %}
     </div>
 
@@ -34,9 +38,13 @@
         
             <td><button type="button"
               class="btn btn-danger delete-chord-button js-delete-chord">REMOVE</button></td>
-          </tr>
-          {% endwith%}
-          {% endfor %}
+            </tr>
+            {% endwith%}
+            {% empty %}
+            <tr>
+            <td colspan="4" class="text-center bg-warning">Song Empty</td>
+            </tr>
+            {% endfor %}
       </tbody>
     </table>
             
