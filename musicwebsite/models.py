@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 class Song(models.Model):
     
     # This is the Forgeign Key to User aspect of the model
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='songs')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # These are the fields related to the 'Song' model
     title = models.CharField(max_length=50)

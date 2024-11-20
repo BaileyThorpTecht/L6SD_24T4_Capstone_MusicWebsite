@@ -1,5 +1,4 @@
-var selectedSongId = 4;
-
+var selectedSongId = 0;
 function updateSongList(innerHtml){
     $("#js-song-container").html(innerHtml);
 
@@ -14,12 +13,14 @@ function updateSongList(innerHtml){
     }
 }
 
-function doSongAjaxRequest(btn){
+function doSongAjaxRequest(btn, data = {}){
+    data["song-id"] = selectedSongId;
+
     $.ajax({
         url: btn.attr("data-url"),
         type: 'get',
         dataType: 'json',
-        data: {"song-id" : selectedSongId},
+        data: data,
     
         success: function (data) {
           updateSongList(data.html_song_list);
@@ -32,8 +33,20 @@ $("#js-song-section").on("click", ".js-create-song", createSong)
 
 function createSong(){
   var btn = $(this);
+  let data = {};
 
-  doSongAjaxRequest(btn);
+  let inputSongName = $("#js-song-name-input").val();
+
+  //if  is not null or whitespace
+  if (inputSongName || inputSongName.trim()) {
+    data["song-name"] = inputSongName;
+  } else {
+    data["song-name"] = "New Song"
+  }
+  
+  $("#js-song-name-input").val("");
+
+  doSongAjaxRequest(btn, data);
 
 }
 

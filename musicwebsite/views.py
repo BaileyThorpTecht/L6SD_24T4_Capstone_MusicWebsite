@@ -96,7 +96,7 @@ def chord_delete(request, id):
 
 def song_list_render(req):
     selectedSongId = req.GET.get("song-id")
-    selectedSong = Song.objects.get(id=selectedSongId)
+    selectedSong = Song.objects.filter(id=selectedSongId).first()
     selectedSongChords = selectedSong.songchord_set.all()
         
     renderContext = {
@@ -115,11 +115,15 @@ def song_list_render(req):
 
 def song_create(request):
     data = dict()
+    #pdb.set_trace()
     
-    Song.objects.create(
-        title="newsong",
-        user = User.objects.first(),
-    )
+    try:
+        Song.objects.create(
+            title = request.GET.get("song-name"),
+            user = User.objects.first(),
+        )
+    except Exception as e:
+        print(e)
     
     
     data['html_song_list'] = song_list_render(request)  
