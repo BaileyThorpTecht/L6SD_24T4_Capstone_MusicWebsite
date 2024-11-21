@@ -269,17 +269,19 @@
     noteSounds.push(strings);
   }
 
-  function Change_Audio(changedFrets) {
+  //input the frets you want to play
+  function getStringSounds(frets) {
 
-    for (let i = 0; i < strings.length; i++) {
-      if (changedFrets[i] > -1) {
-        strings[i] = noteSounds[i][changedFrets[i]];
+    let stringSounds = [null, null, null, null, null, null]
+    for (let i = 0; i < stringSounds.length; i++) {
+      if (frets[i] > -1) {
+        stringSounds[i] = noteSounds[i][frets[i]];
       } else {
         strings[i] = null;
       }
-
     }
-    //loadFretboard();
+
+    return stringSounds;
   }
 
 
@@ -416,8 +418,6 @@
         }
 
     addListenersToFrets();
-    Change_Audio(selectedFretsGlobal);
-
   }
 
 
@@ -620,38 +620,58 @@
 
 
 
-  function playOneString(i) {
-    const strumDelay = setTimeout(function () {
-      if (strings[i] !== null) {
-        strings[i].play();
-      }
-      if (i < strings.length - 1) {
-        playOneString(i + 1);
-      }
+  function playAllStrings(frets) {
 
-    }, 40);
+    let stringAudioList = getStringSounds(frets);
 
-  }
-  document.getElementById("playbutton").addEventListener("click", function (music) {
-    for (let i = 0; i < strings.length; i++)
-  {
-    if(strings[i] !== null){
-      strings[i].pause();
-      strings[i].currentTime = 0;
-      }
+
+    //stop all previous sounds from ringing out when the new sounds play
+    noteSounds.forEach((stringSounds) => {
+      stringSounds.forEach((fretSound) => {
+        fretSound.pause();
+      })
+    })
+
+    //play sounds
+    stringAudioList.forEach((audio, index) => {
+      setTimeout(() =>{
+        if(audio){
+          audio.currentTime = 0;
+          audio.play();
+        }
+        }, index * 30);
+    });
+
     
+
   }
-    playOneString(0);
+
+  function playOneString(string, fret) {
+    
+    let stringAudio = noteSounds[string][fret];
+
+    noteSounds[string].forEach((fretSound) => {
+      fretSound.pause();
+    })
+
+
+    if (stringAudio){
+      stringAudio.currentTime = 0;
+      stringAudio.play();
+    }
+
+  }
+
+
+  document.getElementById("playbutton").addEventListener("click", function (music) {
+    
+    playAllStrings(selectedFretsGlobal);
+    
   }, false);
 
   for (let i = 0; i < stringbuttons.length; i++) {
     document.getElementById(stringbuttons[i]).addEventListener("click", function (music) {
-      //Change_Audio();
-      if (strings[i] !== null) {
-        strings[i].pause();
-        strings[i].currentTime = 0;
-        strings[i].play();
-      }
+        playOneString(i, selectedFretsGlobal[i]);
     }, false);
   }
 
@@ -673,8 +693,8 @@
       strings[i].currentTime = 0;
       }
     }
-    Change_Audio(songNotes[songProgress][0]);
-    playOneString(0);
+    //Change_Audio(songNotes[songProgress][0]); redundant funciton, now getStringSounds(frets)
+    //playOneString(0); redundant function, now playAllStrings(frets)
     if (songProgress !== songNotes.length -1)
     {
       setTimeout(function() 
@@ -838,11 +858,9 @@ function selectCustomChord() {
   let customBase = customChord.base;
 
   changeGlobalFrets(customFrets, customBase);
-
-  if (btn.attr("data-play") == "true"){
-    playOneString(0);
-  }
+  
 }
+
 
 // ## LOAD ON NEW SONGCHORD CREATION ##
 
@@ -862,7 +880,17 @@ function reloadCustomChords(){
 
 // ## PLAY CHORD ##
 
-$("#chord-table").on("click", ".js-play-chord", selectCustomChord);
+$(document).on("click", ".js-play-chord", playCustomChord); //this gets from both the chord list and songchord list
+
+function playCustomChord() {
+  var btn = $(this);
+  let customChordId = btn.attr("data-id");
+  let customChord = databaseChordList.find((chord) => chord.id == customChordId);
+  let customFrets = customChord.frets;
+  
+  playAllStrings(customFrets);
+
+}
 
 
 

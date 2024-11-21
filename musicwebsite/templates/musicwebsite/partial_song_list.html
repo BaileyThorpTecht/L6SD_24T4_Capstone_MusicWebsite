@@ -58,7 +58,8 @@ For styling:
             <td>{{ chord.frets }}</td>
         
             <td><button type="button"
-              class="btn btn-primary js-play-chord">Play - doesnt work?</button></td>
+                data-id="{{ chord.id }}"
+                class="btn btn-primary js-play-chord">Play</button></td>
         
             <td><button type="button"
                 data-url="{% url 'song_remove' songchord.id %}"
