@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="home"),
+    re_path(r'^chords/read/$', views.chord_read, name='chord_read'),
     re_path(r'^chords/load/$', views.chord_load, name='chord_load'),
     re_path(r'^chords/create/$', views.chord_create, name='chord_create'),
     re_path(r'^chords/(?P<id>\d+)/delete/$', views.chord_delete, name='chord_delete'),

@@ -24,6 +24,10 @@ function doSongAjaxRequest(btn, data = {}){
     
         success: function (data) {
           updateSongList(data.html_song_list);
+
+          //this is put here so it shows a custom chord being created when a new chord is added to a song. it must be here in 'success' so it happens in the right order, but it happens more often than it needs to. but its fine
+          reloadCustomChords();
+
         }
       });
 }
@@ -47,6 +51,8 @@ function createSong(){
   $("#js-song-name-input").val("");
 
   doSongAjaxRequest(btn, data);
+
+  //refresh chord list
 
 }
 

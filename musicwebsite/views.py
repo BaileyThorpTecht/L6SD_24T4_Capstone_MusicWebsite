@@ -28,7 +28,7 @@ def index(request):
     }
     return render(request, 'musicwebsite/index.html', context)
 
-def chord_load(request):
+def chord_read(request):
     data = dict()
     
     chordList = list(Chord.objects.all())
@@ -39,6 +39,22 @@ def chord_load(request):
     chords = dumps(dictList)
     
     data['chords'] = chords
+    return JsonResponse(data)
+
+
+def chord_load(request):
+    data = dict()
+    
+    #generates the chord list html including any changes, to be sent back to the javascript
+    chords = Chord.objects.all()
+    data['html_chord_list'] = render_to_string('musicwebsite/partial_chord_list.html', {
+        'chords' : chords,
+        'custom_chords' : chords.filter(isCustom=True),
+    })
+    
+    
+    
+    
     return JsonResponse(data)
 
 
@@ -62,7 +78,7 @@ def chord_create(request):
                 )
     
     
-    #generates the chord list html including the newly created chord, to be sent back to the javascript
+    #copied code from load_chord view. This is to refresh the table
     chords = Chord.objects.all()
     data['html_chord_list'] = render_to_string('musicwebsite/partial_chord_list.html', {
         'chords' : chords,
@@ -82,7 +98,7 @@ def chord_delete(request, id):
     chord = Chord.objects.get(id=id)
     chord.delete()
     
-    #copied code from create_chord view. This is to refresh the table
+    #copied code from load_chord view. This is to refresh the table
     chords = Chord.objects.all()
     data['html_chord_list'] = render_to_string('musicwebsite/partial_chord_list.html', {
         'chords' : chords,

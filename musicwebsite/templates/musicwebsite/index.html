@@ -194,7 +194,7 @@
   function loadDatabase() {
 
     $.ajax({
-      url: '/chords/load/',
+      url: '/chords/read/',
       type: 'get',
       dataType: 'json',
       beforeSend: function () {
@@ -830,6 +830,22 @@ function selectCustomChord() {
   }
 }
 
+// ## LOAD ON NEW SONGCHORD CREATION ##
+
+function reloadCustomChords(){
+
+  $.ajax({
+    url: '/chords/load/',
+    type: 'get',
+    dataType: 'json',
+    
+    success: function (data) {
+      
+      updateCustomChordList(data.html_chord_list);
+    }
+  });
+}
+
 // ## PLAY CHORD ##
 
 $("#chord-table").on("click", ".js-play-chord", selectCustomChord);
@@ -838,13 +854,14 @@ $("#chord-table").on("click", ".js-play-chord", selectCustomChord);
 
 
 
-//#####################################
-//            SAVING SONGS
-//#####################################
-
-
 </script>
 
+
+
+<!--
+#####################################
+            SAVING SONGS
+#####################################-->
 <script src="{% static '/js/songs.js' %}"></script>
 
 {% endblock %}
