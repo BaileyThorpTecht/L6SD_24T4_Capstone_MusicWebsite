@@ -146,6 +146,46 @@ def song_load(request):
 def song_update(request):
     data = dict()
     
+    chosenFrets = loads(request.GET.get("selected-frets"))
+    chords = Chord.objects.all()
+    
+    #check if a chord with those frets exists
+    matched = False
+    matchedChord = False
+    for chord in chords:
+        checkingFrets = chord.frets
+        
+        for i in range(6):          
+            if ((checkingFrets[i] == chosenFrets[i] + chord.base - 1) or (checkingFrets[i] == chosenFrets[i] == -1)):
+                if (i == 5):
+                    matched = True
+                    break
+            else:
+                break
+            
+        if (matched):
+            matchedChord = chord
+            break
+        
+    #if a chord was not found, make one
+    if not matchedChord:
+        matchedChord = Chord.objects.create(
+            name="aaaab",
+            base=1,
+            frets=chosenFrets,
+            fingers=[1,2,3,4,0,0],
+            isCustom=True,
+            user= User.objects.first(), #CURRENTLY GIVES CHORDS TO THE ADMIN INSTEAD OF LOGGED IN USER ############## ToDo
+    
+        )
+    
+    SongChord.objects.create(
+        song=Song.objects.get(id=request.GET.get("song-id")),
+        chord=matchedChord,
+        position=1,
+        length=1,
+    )
+    
     
     data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)

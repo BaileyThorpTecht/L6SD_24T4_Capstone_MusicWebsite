@@ -51,6 +51,7 @@ function createSong(){
 }
 
 $("#js-song-section").on("click", ".js-load-song", loadSong)
+$("#chord-table").on("click", ".js-load-song", loadSong)
 
 function loadSong(){
   var btn = $(this);
@@ -58,6 +59,18 @@ function loadSong(){
 
   doSongAjaxRequest(btn);
 
+}
+
+$("#js-song-container").on("click", ".js-update-song", updateSong)
+
+function updateSong(){
+  var btn = $(this);
+  let data = {};
+
+  //this unfortunately has to interact with the previous javascript of the fretboard
+  data["selected-frets"] = JSON.stringify(selectedFretsGlobal);
+
+  doSongAjaxRequest(btn, data);
 }
 
 $("#js-song-container").on("click", ".js-delete-song", deleteSong)
@@ -72,3 +85,20 @@ function deleteSong(){
   doSongAjaxRequest(btn, data);
 }
 
+//I need to load the songs from outside this neat js file, so i have to copy and paste to make this messy function
+function doSongLoadRequestOneOff(){
+    let data = {};
+    data["song-id"] = selectedSongId;
+    var btn = $(".js-load-song");
+
+    $.ajax({
+        url: btn.attr("data-url"),
+        type: 'get',
+        dataType: 'json',
+        data: data,
+    
+        success: function (data) {
+          updateSongList(data.html_song_list);
+        }
+      }); 
+}

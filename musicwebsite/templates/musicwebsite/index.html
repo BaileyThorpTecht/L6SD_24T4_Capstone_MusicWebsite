@@ -804,8 +804,10 @@ function deleteCustomChord(){
     success: function (data) {
       //after the ajax call is done, update the table body to include the new chord
       updateCustomChordList(data.html_chord_list);
+      doSongLoadRequestOneOff();
     }
   });
+
 
 }
 
