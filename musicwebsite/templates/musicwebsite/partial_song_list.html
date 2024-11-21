@@ -5,19 +5,20 @@
         <button type="button"
             data-url="{% url 'song_load' %}"
             data-id = {{ song.id }}
-            class="btn btn-primary">{{ song.title }}</button>
+            class="btn btn-primary js-load-song">{{ song.title }}</button>
         
         {% empty %}
         <tr>
-            <td colspan="4" class="text-center bg-warning">Song Empty</td>
+            <td colspan="4" class="text-center bg-warning">No Songs</td>
         </tr>
         {% endfor %}
     </div>
 
 
 
-
-    <div class="col-8">  
+    <div class="col-8"> 
+    {% if selected_song %}
+     
     <table class="table" style="border-collapse:collapse;" id="songchord-table">          
       <thead>
         <tr>
@@ -51,8 +52,22 @@
 
 
         <button type="button"
-            data-url="{% url 'song_delete' 1 %}"
+            data-url="{% url 'song_delete' %}"
             class="btn btn-primary js-delete-song">Delete song</button>
+        
+        <button type="button"
+                data-url="{% url 'song_delete' %}"
+                class="btn btn-primary js-update-song" id="addChord">Add Chord</button>
+
+
+    {% else %}
+
+    <tr>
+        <td colspan="4" class="text-center bg-warning">No Chosen Song</td>
+    </tr>
+
+    {% endif %}
+
 
     </div>
 </div>

@@ -101,11 +101,15 @@ def chord_delete(request, id):
 def song_list_render(req):
     selectedSongId = req.GET.get("song-id")
     selectedSong = Song.objects.filter(id=selectedSongId).first()
-    selectedSongChords = selectedSong.songchord_set.all()
+    if (selectedSong):
+        selectedSongChords = selectedSong.songchord_set.all()
+    else:
+        selectedSongChords = SongChord.objects.none()
         
     renderContext = {
         'songs' : Song.objects.all(),
-        'selected_songchords' : selectedSongChords 
+        'selected_song' : selectedSong,
+        'selected_songchords' : selectedSongChords,
     }
     return render_to_string('musicwebsite/partial_song_list.html', renderContext)
     
@@ -119,7 +123,7 @@ def song_list_render(req):
 
 def song_create(request):
     data = dict()
-    #pdb.set_trace()
+    #   pdb.set_trace()
     
     try:
         Song.objects.create(
