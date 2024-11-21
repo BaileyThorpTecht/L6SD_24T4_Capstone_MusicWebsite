@@ -93,6 +93,22 @@ function deleteSong(){
   doSongAjaxRequest(btn, data);
 }
 
+
+$("#js-song-container").on("click", ".js-remove-song", removeSong)
+
+function removeSong(){
+  var btn = $(this);
+  let data = {};
+
+  doSongAjaxRequest(btn, data);
+}
+
+
+
+
+
+
+
 //I need to load the songs from outside this neat js file, so i have to copy and paste to make this messy function
 function doSongLoadRequestOneOff(){
     let data = {};

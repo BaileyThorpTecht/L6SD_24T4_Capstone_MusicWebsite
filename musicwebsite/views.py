@@ -217,3 +217,11 @@ def song_delete(request):
     data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
 
+def song_remove(request, id):
+    data = dict()
+    
+    SongChord.objects.filter(id=id).delete()
+        
+    data['html_song_list'] = song_list_render(request)  
+    return JsonResponse(data)
+

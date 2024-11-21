@@ -61,7 +61,10 @@ For styling:
               class="btn btn-primary js-play-chord">Play - doesnt work?</button></td>
         
             <td><button type="button"
-              class="btn btn-danger delete-chord-button js-delete-chord">REMOVE</button></td>
+                data-url="{% url 'song_remove' songchord.id %}"
+                class="btn btn-danger js-remove-song">REMOVE</button>
+            </td>
+              
             </tr>
             {% endwith%}
             {% empty %}
