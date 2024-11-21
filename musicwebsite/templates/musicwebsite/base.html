@@ -53,18 +53,17 @@
 
             {% if user.is_authenticated %}
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle"dropdown" aria-expanded="false"><h3>
-                    🗿
-                    <li><a href="{% url 'profile' %}" class="dropdown-item">Profile</a></li>
-                    <li><a href="{% url 'logout' %}" class="dropdown-item">Log Out</a></li>
-                </h3></a>
-                <ul class="dropdown-menu dropdown-menu-end">
-
-                    {% if user.is_superuser %}
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a href="/admin" class="dropdown-item">Admin</a></li>
-                    {% endif %}
-                </ul>
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><h3>
+                🗿
+              </h3></a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
+                {% if user.is_superuser %}
+                  <li><hr class="dropdown-divider" /></li>
+                  <li><a class="dropdown-item" href="/admin">Admin</a></li>
+                {% endif %}
+              </ul>
             </li>
             {% else %}
             <div class="navbar-nav">
