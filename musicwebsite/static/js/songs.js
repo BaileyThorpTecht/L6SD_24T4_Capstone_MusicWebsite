@@ -64,9 +64,11 @@ $("#js-song-container").on("click", ".js-delete-song", deleteSong)
 
 function deleteSong(){
   var btn = $(this);
-  if(selectedSongId == btn.attr("data.id")) { selectedSongId = 0;}
+  let data = {};
 
-  doSongAjaxRequest(btn);
+  data["delete-id"] = selectedSongId;
+  selectedSongId = 0;
 
+  doSongAjaxRequest(btn, data);
 }
 

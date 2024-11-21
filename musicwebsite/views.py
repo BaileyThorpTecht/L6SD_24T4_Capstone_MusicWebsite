@@ -123,7 +123,7 @@ def song_list_render(req):
 
 def song_create(request):
     data = dict()
-    #   pdb.set_trace()
+    print(request.GET)
     
     try:
         Song.objects.create(
@@ -139,7 +139,6 @@ def song_create(request):
 
 def song_load(request):
     data = dict()
-    selectedSongId = request.GET.get("song-id")
     
     data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
@@ -154,6 +153,10 @@ def song_update(request):
 def song_delete(request):
     data = dict()
     
+    deleteId = request.GET.get("delete-id")
+    Song.objects.filter(id=deleteId).delete()
+    
+    print(request.GET)
     
     data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
