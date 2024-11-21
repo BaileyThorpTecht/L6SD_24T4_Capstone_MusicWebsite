@@ -182,11 +182,11 @@ def song_update(request):
         if (matched):
             matchedChord = chord
             break
-        
+
     #if a chord was not found, make one
     if not matchedChord:
         matchedChord = Chord.objects.create(
-            name="aaaab",
+            name=request.GET.get("default-name"),
             base=1,
             frets=chosenFrets,
             fingers=[1,2,3,4,0,0],

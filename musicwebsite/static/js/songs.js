@@ -75,6 +75,8 @@ function updateSong(){
 
   //this unfortunately has to interact with the previous javascript of the fretboard
   data["selected-frets"] = JSON.stringify(selectedFretsGlobal);
+  //generate a default name in case a new chord needs to be created in the view (unfortunately does this every time because bad coding)
+  data["default-name"] = generateDefaultChordName(selectedFretsGlobal);
 
   doSongAjaxRequest(btn, data);
 }

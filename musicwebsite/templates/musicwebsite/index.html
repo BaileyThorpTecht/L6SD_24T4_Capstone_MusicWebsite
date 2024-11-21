@@ -306,16 +306,25 @@
   }
 
   function findNoteOfFret(string, fret) {
-    let noteList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-    let stringTunings = [28, 33, 38, 43, 47, 52]; //how many notes is each string tuned up relative C0
+    if (fret == -1){
+      return {
+        //may be issue of octave returning empty string instead of a number 
+        octave: "",
+        letter: "",
+      }
+    } else{
 
-    let noteNumber = stringTunings[string];
-    noteNumber += fret;
-    let selectedNote = noteList[noteNumber % 12];
-    let octave = Math.floor(noteNumber / 12);
-    return {
-      octave: octave,
-      letter: selectedNote,
+      let noteList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+      let stringTunings = [28, 33, 38, 43, 47, 52]; //how many notes is each string tuned up relative C0
+      
+      let noteNumber = stringTunings[string];
+      noteNumber += fret;
+      let selectedNote = noteList[noteNumber % 12];
+      let octave = Math.floor(noteNumber / 12);
+      return {
+        octave: octave,
+        letter: selectedNote,
+      }
     }
   }
 
@@ -740,6 +749,7 @@ function replaceDigitWithSubscript(num) {
       return subscriptList[num];
     }
   }
+  return num
 }
 
 
@@ -756,14 +766,7 @@ function createCustomChord() {
   //if customName is null or whitespace
   if (!customName || !customName.trim())
   {
-    //have the name just be the list of notes being played
-    defaultCustomName = "";
-    for (i = 0; i < 6; i++){
-      let fullNote = findNoteOfFret(i, customFrets[i]);
-      defaultCustomName +=  fullNote.letter + replaceDigitWithSubscript(fullNote.octave);
-    }
-    customName = defaultCustomName;
-
+    customName = generateDefaultChordName(customFrets);
   }
 
   let customChordData = {
@@ -787,6 +790,17 @@ function createCustomChord() {
     }
   });
 };
+
+function generateDefaultChordName(frets) {
+  //have the name just be the list of notes being played
+  defaultCustomName = "";
+  for (i = 0; i < 6; i++){
+    let fullNote = findNoteOfFret(i, frets[i]);
+    defaultCustomName +=  fullNote.letter + replaceDigitWithSubscript(fullNote.octave);
+  }
+
+  return defaultCustomName
+}
 
 
 
