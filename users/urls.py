@@ -1,7 +1,7 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from . import views
-from .views import terms_and_conditions, privacy_policy
+from .views import terms_and_conditions, privacy_policy, FAQ
 
 
 
@@ -16,5 +16,6 @@ urlpatterns = [
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="reset-password-complete.html"), name="reset-password-complete"),
     path('terms-and-conditions/', terms_and_conditions, name='terms_and_conditions'),
     path('privacy-policy/', privacy_policy, name='privacy_policy'),
+    path('F-A-Q/', FAQ, name='FAQ'),
     path('', include('django.contrib.auth.urls')),
 ]
