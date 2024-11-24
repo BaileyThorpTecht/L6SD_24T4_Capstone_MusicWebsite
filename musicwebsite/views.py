@@ -97,3 +97,8 @@ def chord_delete(request, id):
     return JsonResponse(data)
 
 
+def privacy_policy(request):
+    return render(request, 'musicwebsite/privacy_policy.html')
+
+def landing_page(request):
+    return render(request, 'musicwebsite/landing_page.html')

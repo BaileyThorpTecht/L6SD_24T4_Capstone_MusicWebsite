@@ -69,6 +69,23 @@
       margin-top: 114px;
       
     }
+
+    /* Smooth fade-out effect */
+    #loading-screen.fade-out {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    /* Background video styling */
+    .back-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+    }
     
   </style>
 </head>
@@ -181,7 +198,15 @@
           </div>
         </div>
       </div>
-      
+
+      <!-- Loading Screen -->
+      <div id="loading-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; align-items: center; justify-content: center; z-index: 9999;">
+        <div id="lottie-container" style="width: 300px; height: 300px;"></div>
+      </div>
+
+      <!-- Include Lottie Web -->
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.11.0/lottie.min.js"></script>
     </main>
   </body>
 </html>
@@ -829,6 +854,28 @@ function selectCustomChord() {
 $("#chord-table").on("click", ".js-play-chord", selectCustomChord);
 
 
+// ########################################
+// ##         Loading Screen             ##
+// ########################################
+
+var animation = lottie.loadAnimation({
+  container: document.getElementById('lottie-container'),
+  renderer: 'svg',
+  loop: true,
+  autoplay: true,
+  path: "{% static 'videos/LottieLoadingScreen.json' %}" // Path to your Lottie JSON file
+});
+
+// Extend display time for the loading screen
+window.addEventListener('load', function () {
+  var loadingScreen = document.getElementById('loading-screen');
+  setTimeout(function () {
+      loadingScreen.classList.add('fade-out'); // Add fade-out class after 2.5 seconds
+      setTimeout(function () {
+          loadingScreen.style.display = 'none'; // Hide after fade-out
+      }, 500); // Match CSS transition duration
+  }, 1900); // Delay for 2.5 seconds
+});
 
   
 </script>

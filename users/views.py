@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from users.forms import UserRegisterForm
+from .forms import UserRegisterForm, MemberForm, Member
 from .tasks import send_registration_confirmation
 from django.contrib import messages
 from . import forms
@@ -20,11 +20,12 @@ def register_page(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
+            Member.objects.create(user=user)  # Create a Member object after User is created
             send_registration_confirmation.delay(user.id)
             return redirect('home')
     else:
         form = UserRegisterForm()
-    return render(request, 'register.html', { 'form' : form })
+    return render(request, 'register.html', {'form': form})
 
 
 # Login
@@ -52,6 +53,24 @@ def profile_page(request):
         return render(request, 'profile.html')
     else:
         return redirect('login')
+
+@login_required()
+def accountSettings(request):
+    try:
+        member = request.user.member
+    except Member.DoesNotExist:
+        member = Member.objects.create(user=request.user)  # Create a Member object if it doesn't exist
+    
+    form = MemberForm(instance=member)
+    
+    if request.method == 'POST':
+        form = MemberForm(request.POST, request.FILES, instance=member)
+        if form.is_valid():
+            form.save()
+    
+    context = {'form': form}
+    return render(request, 'users/account-settings.html', context)
+
 
 # @login_required
 # def delete_account(request):
