@@ -7,12 +7,9 @@ from .models import *
 from django.core import serializers
 from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
-
 from json import dumps, loads
 
 import pdb
-
-from .forms import ChordForm
 
 
 
@@ -206,6 +203,20 @@ def song_update(request):
     data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
 
+def song_update_from_chords(request, id):
+    data = dict()
+    
+    SongChord.objects.create(
+        song=Song.objects.get(id=request.GET.get("song-id")),
+        chord=Chord.objects.get(id=id),
+        position=1,
+        length=1,
+    )
+    
+    data['html_song_list'] = song_list_render(request)  
+    return JsonResponse(data)
+
+
 def song_delete(request):
     data = dict()
     
@@ -224,4 +235,9 @@ def song_remove(request, id):
         
     data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
+
+
+
+
+
 

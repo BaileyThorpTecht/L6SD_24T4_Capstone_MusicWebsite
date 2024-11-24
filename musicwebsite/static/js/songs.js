@@ -1,3 +1,4 @@
+
 var selectedSongId = 0;
 function updateSongList(innerHtml){
     $("#js-song-container").html(innerHtml);
@@ -80,6 +81,16 @@ function updateSong(){
 
   doSongAjaxRequest(btn, data);
 }
+
+$("#chord-table").on("click", ".js-add-chord-to-song", updateSongFromChordList)
+
+function updateSongFromChordList() {
+  var btn = $(this);
+  let data = {};
+
+  doSongAjaxRequest(btn, data);
+}
+
 
 $("#js-song-container").on("click", ".js-delete-song", deleteSong)
 

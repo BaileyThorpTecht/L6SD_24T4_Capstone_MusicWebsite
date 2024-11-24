@@ -1,3 +1,5 @@
+{% load filters %}
+
 <!-- Later, add an if statement to only show the chords if not logged in-->
 
 
@@ -6,8 +8,12 @@
   <!-- Later, add here to only show chords of currently logged in user-->
 
     <tr>
+      <td><button type="button"
+        data-url="{% url 'song_update_from_chords' chord.id %}"
+        class="btn btn-info js-add-chord-to-song">+</button></td>
+
       <td>{{ chord.name }}</td>
-      <td>{{ chord.frets }}</td>
+      <td>{{ chord.frets|clean_array }}</td>
 
       <td><button type="button"
         data-id="{{ chord.id }}"
