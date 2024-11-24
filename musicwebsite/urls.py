@@ -13,4 +13,6 @@ urlpatterns = [
     re_path(r'^chords/(?P<id>\d+)/songs/update$', views.song_update_from_chords, name='song_update_from_chords'),
     re_path(r'^songs/delete$', views.song_delete, name='song_delete'), #deletes entire song
     re_path(r'^songs/(?P<id>\d+)/remove/$', views.song_remove, name='song_remove'), #deletes songchord from song
+    re_path(r'^songs/play/$', views.song_play, name='song_play'),
+    
 ]

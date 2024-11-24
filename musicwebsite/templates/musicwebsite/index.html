@@ -161,7 +161,7 @@
           </div>
         </div>
         <div class="text-center mt-3">
-          <button class="btn btn-lg btn-primary" id="playSong">Play Song</button>
+          <button class="btn btn-lg btn-primary js-play-song" id="playSong">Play Song</button>
         </div>
       </div>
 
@@ -622,23 +622,17 @@
 
 
 
-
-
   function playAllStrings(frets) {
 
     let stringAudioList = getStringSounds(frets);
 
-
-    //stop all previous sounds from ringing out when the new sounds play
-    noteSounds.forEach((stringSounds) => {
-      stringSounds.forEach((fretSound) => {
-        fretSound.pause();
-      })
-    })
-
     //play sounds
     stringAudioList.forEach((audio, index) => {
       setTimeout(() =>{
+        noteSounds[index].forEach((fretSound) => {
+          fretSound.pause();
+        })
+
         if(audio){
           audio.currentTime = 0;
           audio.play();
@@ -646,10 +640,7 @@
         }, index * 30);
     });
 
-    
-
   }
-
   function playOneString(string, fret) {
     
     let stringAudio = noteSounds[string][fret];
@@ -909,5 +900,11 @@ function playCustomChord() {
             SAVING SONGS
 #####################################-->
 <script src="{% static '/js/songs.js' %}"></script>
+
+<!--
+#####################################
+            PLAYING SONGS
+#####################################-->
+<script src="{% static '/js/play_songs.js' %}"></script>
 
 {% endblock %}
