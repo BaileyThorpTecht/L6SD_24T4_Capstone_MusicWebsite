@@ -1,8 +1,10 @@
 
 var selectedSongId = 0;
 function updateSongList(innerHtml){
+    //update list of songchords
     $("#js-song-container").html(innerHtml);
 
+    //highlight selected song
     if (selectedSongId){
         let btns = $(".js-load-song")
         btns.removeClass("btn-danger");
@@ -11,7 +13,14 @@ function updateSongList(innerHtml){
             return $(this).attr("data-id") == selectedSongId
         });
         selectedButton.addClass("btn-danger");
-    }
+        
+        //disable/enable play button if no song selected
+        $(".js-play-song").removeClass("disabled")
+      }else{
+        $(".js-play-song").addClass("disabled")
+
+
+      }
 }
 
 function doSongAjaxRequest(btn, data = {}){

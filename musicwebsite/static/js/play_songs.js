@@ -1,5 +1,4 @@
 var songInterval;
-
 $(document).on("click", ".js-play-song", getCurrentChords)
 //this could be 'loadSongPlayer' if we figure out how to make an actual player
 function getCurrentChords() {
@@ -12,11 +11,12 @@ function getCurrentChords() {
         dataType: 'json',
         data: data,
         success: function (data) {
-
-          let fretsList = JSON.parse(data.frets_list);
-          let chords = JSON.parse(data.chords);
-
-          playSong(chords);
+          if (data.success)
+          {
+            let chords = JSON.parse(data.chords);
+            
+            playSong(chords);
+          }
           //test();
 
         }
@@ -39,13 +39,19 @@ function playSong(chords) {
   let strumIndex = 0;
   let chord;
 
+  let tableRows = $(".js-songchord-row");
 
-  //playsong
-  songInterval = setInterval(function (){
+  // ################### playsong
+  songInterval = setInterval(function () {
+
+    $(".js-beat-counter").html(strumIndex + 1);  
 
     //if its the start of a new chord, change the chord
     if (strumIndex == 0) {
       chord = chords[chordIndex];
+
+      tableRows.removeClass("table-warning");
+      tableRows.slice(chordIndex, chordIndex + 1).addClass("table-warning");
     }
     
     //if it is meant to strum, play
@@ -58,7 +64,7 @@ function playSong(chords) {
     if (strumIndex == strumsPerChord){
       strumIndex = 0;
       chordIndex++;
-      if (chordIndex > chords.length){
+      if (chordIndex >= chords.length){
         stopSong();
       }
     }
@@ -71,6 +77,11 @@ $(document).on("click", ".js-stop-song", stopSong)
 
 function stopSong() {
   clearInterval(songInterval);
+
   $(".js-play-song").css("display","inline");
   $(".js-stop-song").css("display","none");
+
+  $(".js-songchord-row").removeClass("table-warning");
+  $(".js-beat-counter").html("...");  
+
 }
