@@ -240,11 +240,11 @@ def song_remove(request, id):
 
 def song_play(request):
     data = dict()
-
+    pdb.set_trace()
     
     songId = request.GET.get("song-id")
-    song = Song.objects.get(id=songId)
-    if song:
+    if songId != 0:
+        song = Song.objects.get(id=songId)
         songChords = song.songchord_set.all()
         
         fretsList = list()
@@ -252,8 +252,6 @@ def song_play(request):
         for songChord in songChords:
             fretsList.append(songChord.chord.frets)
             chordList.append(model_to_dict(songChord.chord))
-        
-        
             
         data['frets_list'] = dumps(fretsList)
         data['chords'] = dumps(chordList)
