@@ -49,7 +49,3 @@ def chord_search(request):
             results = Chord.objects.filter(frets=frets_list)
 
     return render(request, 'chords/search.html', {'form': form, 'results': results})
-
-
-
-
