@@ -32,6 +32,7 @@ class Chord(models.Model):
     frets = models.JSONField()
     fingers = models.JSONField()
     isCustom = models.BooleanField(db_default = False)
+    image = models.CharField(max_length=99999, db_default="")
 
     def __str__(self):
         return self.name

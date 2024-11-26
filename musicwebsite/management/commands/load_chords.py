@@ -2,6 +2,7 @@ import json
 from django.core.management.base import BaseCommand
 from musicwebsite.models import Chord
 from django.contrib.auth.models import User
+from musicwebsite import views
 
 class Command(BaseCommand):
     help = 'Load chord data from JSON file'
@@ -26,7 +27,8 @@ class Command(BaseCommand):
                     base=chord['base'],
                     frets=chord['frets'],  # This is a list, thanks to JSONField
                     fingers=chord['fingers'],  # Another list from JSONField
-                    user=user  # Associate the chord with a specific user
+                    user=user,  # Associate the chord with a specific user
+                    image=views.chord_draw(chord['frets'], chord['base']),
                 )
 
         self.stdout.write(self.style.SUCCESS('Successfully loaded chord data'))
