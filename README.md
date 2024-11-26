@@ -16,6 +16,8 @@ Pip install packages
 - django-celery-results
 - eventlet
 - redis
+- matplotlib
+- numpy
 
 Extentions Needed:
 - SQLite

@@ -14,11 +14,32 @@ import pdb
 
 from .forms import ChordForm
 
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy
 from PIL import Image
 import io
 import base64   
+
+def getBaseFromFrets(frets):
+    base = 1
+    #the base is the lowest non- 0, non- -1 fret
+    positiveFrets = [fret for fret in frets if fret > 0] #exclude 0 and -1
+    
+    if positiveFrets:
+        base = min(positiveFrets)
+    else:
+        base = 1
+        
+    for i in range(6):
+        if frets[i] > 0:
+            frets[i] = frets[i] - base + 1
+            #change frets to account for the base
+    
+    return base, frets
+
+
 
 # The views.
 def index(request):
@@ -122,7 +143,7 @@ def chord_draw(frets, base):
     plt.savefig(img, format='PNG')
     img.seek(0)
     plt.close(fig)
-
+ 
 
     str_equivalent_image = str(base64.b64encode(img.getvalue()).decode())
     img_src = "data:image/png;base64," + str_equivalent_image
@@ -137,14 +158,17 @@ def chord_create(request):
 
     name = request.GET.get("name")
     base = request.GET.get("base")
-    frets = request.GET.get("frets")
-    fingers = request.GET.get("fingers")
+    frets = loads(request.GET.get("frets"))
+    fingers = loads(request.GET.get("fingers"))
     isCustom = request.GET.get("isCustom")
+    
+    base, frets = getBaseFromFrets(frets)
+    
     Chord.objects.create(
                     name=name,
                     base=base,
-                    frets=loads(frets), #must loads to make it back into JSON
-                    fingers=loads(fingers), #must loads to make it back into JSON
+                    frets=frets,
+                    fingers=fingers, 
                     isCustom=isCustom,
                     user= User.objects.first(), #CURRENTLY GIVES CHORDS TO THE ADMIN INSTEAD OF LOGGED IN USER ############## ToDo
                     image=chord_draw(frets,base)
