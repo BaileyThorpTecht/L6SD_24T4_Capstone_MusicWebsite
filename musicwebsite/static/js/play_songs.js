@@ -27,12 +27,30 @@ function playSong(chords) {
   $(".js-play-song").css("display","none");
   $(".js-stop-song").css("display","inline");
 
-
   //4 beats in a bar, each chord is 1 bar
-  let bpm = 40;
-  let strumPattern = [true,false,true,false,true,false,true,false]
+  let bpm = 100;
+  let strumPattern = ["d","","d","","d","u","d",""];
+
+  let inputBpm = $(".js-bpm-input").val();
+  if (inputBpm) { bpm = inputBpm;}
+
+  let inputPattern = $(".js-pattern-input").val();
+  if (inputPattern) {
+  
+    strumPattern = [];
+    for (let b of inputPattern){
+      if (b.toLowerCase() == "u") {strumPattern.push("u");} //u for up
+      else if (b.toLowerCase() == "d") {strumPattern.push("d");} //d for down
+      else if (b == " " || b == "," || b == "." || b == "-" || b == "_" || b == "/") {} //if its a spacer character, ignore it
+      else {strumPattern.push("");} //anything else is a rest
+    }
+
+  }
+
+
+
   let strumsPerChord = strumPattern.length
-  let timeBetweenChords = (60/ bpm) * 4 * 1000; //bpm => seconds per beat * 1000 milliseconds per second * 4 beats per bar
+  let timeBetweenChords = (60/bpm) * 8 * 1000; //bpm => seconds per beat * 1000 milliseconds per second * 8 beats per bar
   let timeBetweenStrums = timeBetweenChords / strumsPerChord; //8 strums per bar (per chord)
 
   let chordIndex = 0;
@@ -55,8 +73,11 @@ function playSong(chords) {
     }
     
     //if it is meant to strum, play
-    if (strumPattern[strumIndex]) {
-      playAllStrings(chord.frets)
+    if (strumPattern[strumIndex] == "d") {
+      playAllStrings(chord.frets);
+    }
+    else if (strumPattern[strumIndex] == "u"){
+      playAllStringsReverse(chord.frets);
     }
 
     //increment strum index. when it reaches the end of the bar, reset it and increment chordIndex. If it went through all the chords, stop

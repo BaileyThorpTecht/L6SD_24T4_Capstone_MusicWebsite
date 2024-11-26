@@ -146,8 +146,7 @@
           </div>
           <div id="custom-chord-buttons" class="button-container">
             <input class="js-chord-name-input me-2 align-middle" placeholder="Chord name..."></input>
-            <button class="btn btn-sm btn-secondary me-2 js-create-chord">Save Chord</button>
-            <button class="btn btn-sm btn-secondary me-2">Clear</button>
+            <button class="btn btn-sm btn-primary me-2 js-create-chord">Save Chord</button>
           </div>
         </div>
       </div>
@@ -164,23 +163,21 @@
           <label class="large js-beat-counter" id="playSong">...</label>
           <button class="btn btn-lg btn-primary js-play-song disabled" id="playSong">Play Song</button>
           <button class="btn btn-lg btn-primary js-stop-song" style="display:none;">Stop</button>
+
+          <br>
+
+          <label class="mt-4">bpm: </label>
+          <input class="js-bpm-input me-2" placeholder="100"></input>
+          <label>Strum Pattern: </label>
+          <input class="js-pattern-input" placeholder="D X D X D U D X"></input>
+
+          <br>
+
+          <label class="mt-2 text-muted">D for down, U for up, X for rest. Spaces are optional</label>
+          
         </div>
       </div>
 
-      <!-- Song Playback -->
-      <div class="text-center mb-5">
-        <div class="card mx-auto" style="width: 100%;">
-          <h5 class="card-title mt-3">Song Playback</h5>
-        </div>
-      </div>
-
-
-      <div class="modal fade" id="modal-chord">
-        <div class="modal-dialog">
-          <div class="modal-content">
-          </div>
-        </div>
-      </div>
       
     </main>
   </body>
@@ -643,6 +640,25 @@
     });
 
   }
+
+  function playAllStringsReverse(frets) {
+    let stringAudioList = getStringSounds(frets);
+
+    //play sounds
+    stringAudioList.slice().reverse().forEach((audio, index) => {
+      setTimeout(() =>{
+        noteSounds[5-index].forEach((fretSound) => {
+          fretSound.pause();
+        })
+
+        if(audio){
+          audio.currentTime = 0;
+          audio.play();
+        }
+        }, index * 30);
+    });
+  }
+
   function playOneString(string, fret) {
     
     let stringAudio = noteSounds[string][fret];
