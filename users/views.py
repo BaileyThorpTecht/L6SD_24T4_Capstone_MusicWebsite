@@ -11,21 +11,51 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.http import HttpResponseForbidden
 from django.core.mail import send_mail
+from django.conf import settings
+import requests
 
 # Create your views here.
 
 # Registration
+# def register_page(request):
+#     if request.method == 'POST':
+#         form = UserRegisterForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             Member.objects.create(user=user)  # Create a Member object after User is created
+#             send_registration_confirmation.delay(user.id)
+#             return redirect('home')
+#     else:
+#         form = UserRegisterForm()
+#     return render(request, 'register.html', {'form': form})
+
 def register_page(request):
-    if request.method == 'POST':
+    if request.method == "POST":
+        recaptcha_token = request.POST.get('recaptcha_token')
+        recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify'
+        recaptcha_data = {
+            'secret' : settings.REGISTER_RECAPTCHA_PRIVATE_KEY,
+            'response' : recaptcha_token
+        }
+        recaptcha_response = requests.post(recaptcha_url, data = recaptcha_data).json()
+        
+        if not recaptcha_response.get('success', False):
+            messages.error(request, "Invalid reCAPTCHA. Please try again.")
+            return render(request, 'register.html', {'form' : UserRegisterForm()})
+        
+        # Proceed with the registration process
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            Member.objects.create(user=user)  # Create a Member object after User is created
+            Member.objects.create(user = user)
             send_registration_confirmation.delay(user.id)
             return redirect('home')
+        else:
+            form = UserRegisterForm()
+            return render(request, 'register.html', {'form' : form})
     else:
         form = UserRegisterForm()
-    return render(request, 'register.html', {'form': form})
+        return render(request, 'register.html', {'form' : form})
 
 
 # Login

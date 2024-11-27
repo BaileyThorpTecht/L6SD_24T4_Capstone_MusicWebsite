@@ -7,14 +7,15 @@
 {% block content %}
 
 <div>
-    <form action="" method="POST">
+    <form id="register-form" action="" method="POST" onsubmit="onSubmit(event)">
         {% csrf_token %}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Registration</legend>
             {{ form|crispy }}
+            <input type="hidden" id="id_recaptcha_token" name="recaptcha_token">
         </fieldset>
         <div class="form-group py-3">
-            <input type="submit" class="btn btn-outline-primary" value="Register">
+            <button type="submit" class="btn btn-primary" id="registerButton" disabled>Register</button>
             <a href="{% url 'home'%}" class="btn btn-outline-danger">Cancel</a>
         </div>
     </form>
@@ -22,6 +23,109 @@
         <a href="{% url 'home' %}" class="text-muted"></a>
     </div>
     <p><a href="{% url 'login'%}" class="btn btn-outline-success">Already Have An Account? Click Here To Login</a></p>
+</div>`
+`
+{% comment %} Terms & Conditions Modal {% endcomment %}
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel">Terms & Conditions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Add your Terms & Conditions content here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+{% comment %} Privacy Policy Modal {% endcomment %}
+<div class="modal fade" id="privacyModal" tabindex=-1 aria-labelledby="privacyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Here goes the Privacy Policy body</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.google.com/recaptcha/enterprise.js?render={{ REGISTER_RECAPTCHA_PUBLIC_KEY }}"></script>
+<script>
+    let recaptchaVerified = false;
+
+    // Function to check all conditions and toggle the button
+    function toggleRegisterButton() {
+        const termsCheckbox = document.getElementById("termsCheckbox");
+        const privacyCheckbox = document.getElementById("privacyCheckbox");
+        const registerButton = document.getElementById("registerButton");
+
+        if (termsCheckbox.checked && privacyCheckbox.checked) {
+            registerButton.disabled = false;
+        } else {
+            registerButton.disabled = true;
+        }
+    }
+
+    // Validate reCAPTCHA and store the token
+    function validateRecaptcha() {
+        grecaptcha.enterprise.ready(async () => {
+            const token = await grecaptcha.enterprise.execute('{{ REGISTER_RECAPTCHA_PUBLIC_KEY }}', { action: 'submit' });
+            document.getElementById('id_recaptcha_token').value = token;
+
+            // Verify reCAPTCHA on the client side (for UI purposes)
+            if (token) {
+                recaptchaVerified = true;
+            } else {
+                recaptchaVerified = false;
+            }
+            toggleRegisterButton(); // Re-check button status
+        });
+    }
+
+    // Trigger reCAPTCHA when the page loads or when terms/privacy are clicked
+    document.addEventListener("DOMContentLoaded", validateRecaptcha);
+    document.getElementById("termsCheckbox").addEventListener("change", toggleRegisterButton);
+    document.getElementById("privacyCheckbox").addEventListener("change", toggleRegisterButton);
+
+    // Update reCAPTCHA validation periodically to ensure it remains valid
+    setInterval(validateRecaptcha, 30000); // Validate every 30 seconds
+</script>
+
+{% comment %} <script>
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+        event.preventDefault();  // Prevent the form from submitting immediately
+   
+        grecaptcha.ready(function() {
+          grecaptcha.execute('6LcEO4sqAAAAAM4wDLrKR4BjMlGYEyKnbAqd3edU', { action: 'submit' }).then(function(token) {
+            // Add the token to the form as a hidden input
+            let recaptchaResponse = document.createElement('input');
+            recaptchaResponse.setAttribute('type', 'hidden');
+            recaptchaResponse.setAttribute('name', 'g-recaptcha-response');
+            recaptchaResponse.setAttribute('value', token);
+            document.getElementById('registerForm').appendChild(recaptchaResponse);
+
+            // Append the token to the form before submission
+            document.getElementById('registerForm').appendChild(recaptchaResponse);
+   
+            // Submit the form once the token is added
+            document.getElementById('registerForm').submit();
+
+            console.log('reCAPTCHA Token:', token);
+          });
+        });
+      });
+</script> {% endcomment %}
 
 {% endblock content %}
