@@ -13,9 +13,10 @@
             <a href="{% url 'profile' %}" class="btn btn-warning"> &#8592; Back To Profile</a>
             <hr>
             <h3 style="text-align: center">Account Settings</h3>
-            <img src="{{ request.user.member.profile_pic.url|default:'/path/to/default-image.jpg' }}" 
-                alt="Profile Picture" 
-                class="profile-pic">
+            <img src="{% if request.user.member.profile_pic %}{{ request.user.member.profile_pic.url }}{% else %}{{ 'request.user.member.profile-pic-fallback.jpg' }}{% endif %}" 
+              alt="Profile Picture" 
+              class="profile-pic"
+            >
         </div>
     </div>
     <div class="col-md-9">

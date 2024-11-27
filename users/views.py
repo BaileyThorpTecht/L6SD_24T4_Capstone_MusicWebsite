@@ -71,6 +71,11 @@ def accountSettings(request):
     context = {'form': form}
     return render(request, 'users/account-settings.html', context)
 
+def some_view(request):
+    member = request.user.member
+    profile_pic_url = member.profile_pic.url if member.profile_pic else '/static/images/profile-pic-fallback.png'
+    return render(request, 'template.html', {'profile_pic_url': profile_pic_url})
+
 
 # @login_required
 # def delete_account(request):

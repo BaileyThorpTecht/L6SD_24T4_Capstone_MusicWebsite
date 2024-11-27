@@ -24,51 +24,54 @@
   {% comment %} Navbar {% endcomment %}
   <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'home'%}">Logo</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarColor01">
-        <ul class="navbar-nav me-auto">
-          {% comment %} <li class="nav-item">
-            <a class="nav-link active" href="#">Header
-              <span class="visually-hidden">(current)</span>
-            </a>
-          </li> {% endcomment %}
-          <li>
-            {% comment %} <button class="nav-link active" onclick="lightingmode()">Light/Dark mode</button> {% endcomment %}
-            <button class="nav-link active" onclick="lightingmode()">◑</button>
-          </li>
-        </ul>
-        {% if user.is_authenticated %}
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            {% comment %} <h3>
-              🗿
-            </h3> {% endcomment %}
-            <img 
-              src="{{ request.user.member.profile_pic.url }}" 
-              alt="Profile Picture" 
-              class="nav-profile-pic">
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
-            <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
-            {% if user.is_superuser %}
-              <li><hr class="dropdown-divider" /></li>
-              <li><a class="dropdown-item" href="/admin">Admin</a></li>
+        <!-- Logo -->
+        <a class="navbar-brand" href="{% url 'home' %}">Logo</a>
+
+        <!-- Light/Dark Mode Button -->
+        <button class="btn btn-light mx-3" onclick="lightingmode()">◑</button>
+
+        <!-- Hamburger Menu for Small Screens -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Links and Profile Picture -->
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav me-auto">
+                <!-- Add other navbar items here if needed -->
+            </ul>
+            {% if user.is_authenticated %}
+                <!-- Profile Picture and Dropdown -->
+                <li class="nav-item dropdown ms-auto d-flex align-items-center">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{% if request.user.member.profile_pic %}{{ request.user.member.profile_pic.url }}{% else %}{% static 'images/profile-pic-fallback.png' %}{% endif %}" alt="Profile Picture" class="nav-profile-pic">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
+                        {% if user.is_superuser %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/admin">Admin</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% else %}
+                <div class="navbar-nav ms-auto">
+                    <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
+                    <a href="{% url 'register' %}" class="nav-item nav-link">Register</a>
+                </div>
             {% endif %}
-          </ul>
-        </li>
-        {% else %}
-        <div class="navbar-nav">
-            <a href="{% url 'login' %}" class="nav-item nav-link">Login</button></a>
-            <a href="{% url 'register' %}" class="nav-item nav-link">Register</button></a>
         </div>
-        {% endif %}
-      </div>
     </div>
   </nav>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; align-items: center; justify-content: center; z-index: 9999;">
+    <div id="lottie-container" style="width: 300px; height: 300px;"></div>
+  </div>
+=======
+  <!-- Include Lottie Web -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.11.0/lottie.min.js"></script>
 
   {% comment %} Content {% endcomment %}
   <div class="container mt-4">
@@ -194,7 +197,7 @@
           data-mdb-ripple-init
           class="btn text-white btn-floating m-1"
           style="background-color: #ac2bac;"
-          href="#!"
+          href="https://www.instagram.com/chordialcorporation/"
           role="button"
           ><i class="fab fa-instagram"></i
         ></a>
@@ -273,6 +276,7 @@
   </footer>
   <!-- Footer -->
     
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+pP5OGMhkB3JzEKYXcD8Z1lgQk75kt1+qBpeEvO8RP25GzknV2KtF6BqM0U2Ls" crossorigin="anonymous"></script>
 </body>
 </html>
 
@@ -287,4 +291,27 @@
       document.documentElement.setAttribute('data-bs-theme','dark');
     }
   }
+
+  // ########################################
+  // ##         Loading Screen             ##
+  // ########################################
+
+  var animation = lottie.loadAnimation({
+    container: document.getElementById('lottie-container'),
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    path: "{% static 'videos/LottieLoadingScreen.json' %}" // Path to your Lottie JSON file
+  });
+
+  // Extend display time for the loading screen
+  window.addEventListener('load', function () {
+    var loadingScreen = document.getElementById('loading-screen');
+    setTimeout(function () {
+        loadingScreen.classList.add('fade-out'); // Add fade-out class after 150 milliseconds
+        setTimeout(function () {
+            loadingScreen.style.display = 'none'; // Hide after fade-out
+        }, 500); // Match CSS transition duration
+    }, 150); // Delay for 150 milliseconds
+  });
 </script>
