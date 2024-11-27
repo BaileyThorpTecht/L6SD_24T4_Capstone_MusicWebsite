@@ -103,29 +103,4 @@
     setInterval(validateRecaptcha, 30000); // Validate every 30 seconds
 </script>
 
-{% comment %} <script>
-    document.getElementById('registerForm').addEventListener('submit', function(event) {
-        event.preventDefault();  // Prevent the form from submitting immediately
-   
-        grecaptcha.ready(function() {
-          grecaptcha.execute('6LcEO4sqAAAAAM4wDLrKR4BjMlGYEyKnbAqd3edU', { action: 'submit' }).then(function(token) {
-            // Add the token to the form as a hidden input
-            let recaptchaResponse = document.createElement('input');
-            recaptchaResponse.setAttribute('type', 'hidden');
-            recaptchaResponse.setAttribute('name', 'g-recaptcha-response');
-            recaptchaResponse.setAttribute('value', token);
-            document.getElementById('registerForm').appendChild(recaptchaResponse);
-
-            // Append the token to the form before submission
-            document.getElementById('registerForm').appendChild(recaptchaResponse);
-   
-            // Submit the form once the token is added
-            document.getElementById('registerForm').submit();
-
-            console.log('reCAPTCHA Token:', token);
-          });
-        });
-      });
-</script> {% endcomment %}
-
 {% endblock content %}

@@ -17,18 +17,6 @@ import requests
 # Create your views here.
 
 # Registration
-# def register_page(request):
-#     if request.method == 'POST':
-#         form = UserRegisterForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             Member.objects.create(user=user)  # Create a Member object after User is created
-#             send_registration_confirmation.delay(user.id)
-#             return redirect('home')
-#     else:
-#         form = UserRegisterForm()
-#     return render(request, 'register.html', {'form': form})
-
 def register_page(request):
     if request.method == "POST":
         recaptcha_token = request.POST.get('recaptcha_token')
