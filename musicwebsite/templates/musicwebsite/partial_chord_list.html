@@ -13,8 +13,7 @@
         class="btn btn-info js-add-chord-to-song">+</button></td>
 
       <td>{{ chord.name }}</td>
-      <td>{{ chord.frets|clean_array }}</td>
-
+      <td><img src="{{ chord.image }}" style="width:140px;" alt="{{ chord.name|clean_array }}"></td>
       <td><button type="button"
         data-id="{{ chord.id }}"
         class="btn btn-primary js-play-chord">Play</button></td>

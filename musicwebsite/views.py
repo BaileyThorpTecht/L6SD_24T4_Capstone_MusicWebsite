@@ -11,11 +11,69 @@ from json import dumps, loads
 
 import pdb
 
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import numpy
+from PIL import Image
+import io
+import base64
+from .forms import ChordForm   
+
+def getBaseFromFrets(frets):
+    base = 1
+    #the base is the lowest non- 0, non- -1 fret
+    positiveFrets = [fret for fret in frets if fret > 0] #exclude 0 and -1
+    
+    if positiveFrets:
+        base = min(positiveFrets)
+    else:
+        base = 1
+        
+    for i in range(6):
+        if frets[i] > 0:
+            frets[i] = frets[i] - base + 1
+            #change frets to account for the base
+    
+    return base, frets
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import numpy
+from PIL import Image
+import io
+import base64   
+
+def getBaseFromFrets(frets):
+    base = 1
+    #the base is the lowest non- 0, non- -1 fret
+    positiveFrets = [fret for fret in frets if fret > 0] #exclude 0 and -1
+    
+    if positiveFrets:
+        base = min(positiveFrets)
+    else:
+        base = 1
+        
+    for i in range(6):
+        if frets[i] > 0:
+            frets[i] = frets[i] - base + 1
+            #change frets to account for the base
+    
+    return base, frets
+
 
 
 # The views.
 def index(request):
-    chords = Chord.objects.all()
+
+    chordList = list(Chord.objects.all())
+
+    dictList = []
+    for x in chordList:
+        dictList.append(model_to_dict(x))    
+    
+    dataJSON = dumps(dictList)
     
     context = {
         'chords' : chords,
@@ -25,7 +83,19 @@ def index(request):
     }
     return render(request, 'musicwebsite/index.html', context)
 
-def chord_read(request):
+def chord_list_render(req):
+    chords = Chord.objects.all()
+
+
+    return render_to_string('musicwebsite/partial_chord_list.html', {
+        'chords' : chords,
+    })
+
+
+
+
+
+def chord_load(request):
     data = dict()
     
     chordList = list(Chord.objects.all())
@@ -54,33 +124,100 @@ def chord_load(request):
     
     return JsonResponse(data)
 
+def chord_draw(frets, base):
+    base = int(base)
+    try:
+        frets = loads(frets)
+    except:
+        pass
+    chord = []
+
+
+
+    for i in range(0,6):
+        chord.append([frets[i]+.5,i])
+
+    fig, ax = plt.subplots(figsize=(5, 13))
+
+    maxfret = max(base+4, max(frets))
+    # Draw the fretboard
+    ax.set_ylim(base, maxfret+1)
+    ax.set_xlim(-1, 6)
+    ax.set_yticks(numpy.arange(base, maxfret+1))
+    ylabel = [str('') for i in range(base, maxfret+1)]
+    ylabel[0] = "\n" + str(base) + "fr."
+    ax.set_yticklabels(ylabel, fontsize=30)
+    ax.set_xticks(numpy.arange(0, 6))
+    ax.set_xticklabels(['', '', '', '', '', ''], fontsize=30)
+    ax.xaxis.tick_top()
+
+    # Draw the fret lines
+    for i in range(0, 6):
+        ax.axvline(i, color='black', lw=3)
+    
+    for i in range(base, maxfret+1):
+        plt.axhline(i, color='black', lw=3, xmax=.85, xmin=.15)
+
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+
+    plt.gca().invert_yaxis()
+
+
+    # Plot custom fret positions
+    labels = [item.get_text() for item in ax.get_xticklabels()]
+    for fret, string in chord:
+        if fret == -0.5:
+            labels[string] = 'X'
+        elif fret == 0.5:
+            labels[string] = 'O'
+        else:
+            ax.plot(string, fret+base-1, 'o', color='black', markersize=30)
+
+    ax.set_xticklabels(labels)
+
+    fig.set_size_inches(6,4.4)
+    
+    img = io.BytesIO()
+    plt.savefig(img, format='PNG', bbox_inches="tight")
+    img.seek(0)
+    plt.close(fig)
+
+    str_equivalent_image = str(base64.b64encode(img.getvalue()).decode())
+    img_src = "data:image/png;base64," + str_equivalent_image
+
+    return img_src
 
 def chord_create(request):
     #pdb.set_trace()
     data = dict()
-    
+
+
+
     name = request.GET.get("name")
     base = request.GET.get("base")
-    frets = request.GET.get("frets")
-    fingers = request.GET.get("fingers")
+    frets = loads(request.GET.get("frets"))
+    fingers = loads(request.GET.get("fingers"))
     isCustom = request.GET.get("isCustom")
+    
+    base, frets = getBaseFromFrets(frets)
     
     Chord.objects.create(
                     name=name,
                     base=base,
-                    frets=loads(frets), #must loads to make it back into JSON
-                    fingers=loads(fingers), #must loads to make it back into JSON
+                    frets=frets,
+                    fingers=fingers, 
                     isCustom=isCustom,
-                    user= User.objects.first() #CURRENTLY GIVES CHORDS TO THE ADMIN INSTEAD OF LOGGED IN USER ############## ToDo
+                    user= User.objects.first(), #CURRENTLY GIVES CHORDS TO THE ADMIN INSTEAD OF LOGGED IN USER ############## ToDo
+                    image=chord_draw(frets,base)
                 )
     
     
-    #copied code from load_chord view. This is to refresh the table
-    chords = Chord.objects.all()
-    data['html_chord_list'] = render_to_string('musicwebsite/partial_chord_list.html', {
-        'chords' : chords,
-        'custom_chords' : chords.filter(isCustom=True),
-    })
+    #generates the chord list html including the newly created chord, to be sent back to the javascript
+    data['html_chord_list'] = chord_list_render(request)
+
     
     
     
@@ -97,10 +234,7 @@ def chord_delete(request, id):
     
     #copied code from load_chord view. This is to refresh the table
     chords = Chord.objects.all()
-    data['html_chord_list'] = render_to_string('musicwebsite/partial_chord_list.html', {
-        'chords' : chords,
-        'custom_chords' : chords.filter(isCustom=True),
-    })
+    data['html_chord_list'] = chord_list_render(request)
     
     
     return JsonResponse(data)
