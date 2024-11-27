@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 {% extends "musicwebsite/base.html" %}
 
 {% block title %}Home - Music Website{% endblock %}
@@ -12,7 +11,8 @@
     {% load static %}
 
     <!-- Bootstrap JS for functionality -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+    ></script>
 
     <!-- Scripts -->
 
@@ -253,7 +253,7 @@
     const startOfFretElement = `<div class="fret col border-end border-secondary-subtle border-4" style="background-color: #333333;">`;
     const endOfFretElement = `</div>`;
 
-    const stringImageElement =`<span style="background-image: url(static/string.png); background-position: center; background-repeat: repeat-x; width:calc(99%); height:26px; pointer-events:none; position:absolute;"></span>`
+    const stringImageElement =`<span style="background-image: url(/static/string.png); background-position: center; background-repeat: repeat-x; width:calc(99%); height:26px; pointer-events:none; position:absolute;"></span>`
 
     const disabledFretElement = `<span class="text-danger font-bold" style="font-size:30px; margin:-10px; position:absolute; z-index:2;">X</span>`
 
