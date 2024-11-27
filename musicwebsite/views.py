@@ -104,10 +104,9 @@ def chord_draw(frets, base):
     ax.set_ylim(base, maxfret+1)
     ax.set_xlim(-1, 6)
     ax.set_yticks(numpy.arange(base, maxfret+1))
-    ax.set_yticklabels([str('') for i in range(base, maxfret+1)], fontsize=30)
-    ylabel = [item.get_text() for item in ax.get_yticklabels()]
-    ylabel[0] = base
-    ax.set_yticklabels(ylabel)
+    ylabel = [str('') for i in range(base, maxfret+1)]
+    ylabel[0] = "\n" + str(base) + "fr."
+    ax.set_yticklabels(ylabel, fontsize=30)
     ax.set_xticks(numpy.arange(0, 6))
     ax.set_xticklabels(['', '', '', '', '', ''], fontsize=30)
     ax.xaxis.tick_top()
@@ -135,17 +134,16 @@ def chord_draw(frets, base):
         elif fret == 0.5:
             labels[string] = 'O'
         else:
-            ax.plot(string, fret, 'o', color='black', markersize=30)
+            ax.plot(string, fret+base-1, 'o', color='black', markersize=30)
 
     ax.set_xticklabels(labels)
 
-    fig.set_size_inches(3,4)
+    fig.set_size_inches(6,4.4)
     
     img = io.BytesIO()
-    plt.savefig(img, format='PNG')
+    plt.savefig(img, format='PNG', bbox_inches="tight")
     img.seek(0)
     plt.close(fig)
- 
 
     str_equivalent_image = str(base64.b64encode(img.getvalue()).decode())
     img_src = "data:image/png;base64," + str_equivalent_image
