@@ -598,14 +598,23 @@
 
 
   function changeGlobalFrets(frets, base){
-    for (var k = 0; k < frets.length; k++) {
-      if (frets[k] > -1) {
-        frets[k] += base - 1;
-      }
-    }
+
+    frets = addBaseToFrets(frets, base);
 
     selectedFretsGlobal = frets;
     loadFretboard()
+  }
+
+  function addBaseToFrets(frets, base){
+    newFrets = frets.slice();
+    for (var k = 0; k < newFrets.length; k++) {
+      if (newFrets[k] > 0) {
+        newFrets[k] += base - 1;
+      }
+    }
+
+    return newFrets;
+    
   }
 
 
@@ -688,35 +697,6 @@
     }, false);
   }
 
-  /* POSSIBLY REDUNDANT SONG PLAYING CODE ##################################################################
-  document.getElementById("addChord").addEventListener("click", function (music){
-    songNotes.push([selectedFretsGlobal]);
-  })
-
-  document.getElementById("playSong").addEventListener("click", function (music){
-    songPlayback(0)
-  })
-
-  function songPlayback(songProgress)
-  {
-    for (let i = 0; i < strings.length; i++)
-    {
-      if(strings[i] !== null){
-      strings[i].pause();
-      strings[i].currentTime = 0;
-      }
-    }
-    //Change_Audio(songNotes[songProgress][0]); redundant funciton, now getStringSounds(frets)
-    //playOneString(0); redundant function, now playAllStrings(frets)
-    if (songProgress !== songNotes.length -1)
-    {
-      setTimeout(function() 
-      {
-        songPlayback(songProgress+1);
-      }, 2000);
-    }
-  }
-*/
 
 
   //#####################################
@@ -900,8 +880,12 @@ function playCustomChord() {
   let customChordId = btn.attr("data-id");
   let customChord = databaseChordList.find((chord) => chord.id == customChordId);
   let customFrets = customChord.frets;
+
+  let customBase = customChord.base;
+
+  let actualFrets = addBaseToFrets(customFrets, customBase);
   
-  playAllStrings(customFrets);
+  playAllStrings(actualFrets);
 
 }
 

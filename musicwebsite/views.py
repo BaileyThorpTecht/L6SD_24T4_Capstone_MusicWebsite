@@ -169,7 +169,7 @@ def song_update(request):
         checkingFrets = chord.frets
         
         for i in range(6):          
-            if ((checkingFrets[i] == chosenFrets[i] + chord.base - 1) or (checkingFrets[i] == chosenFrets[i] == -1)):
+            if ((chosenFrets[i] == checkingFrets[i] + chord.base - 1) or (checkingFrets[i] == chosenFrets[i] == -1)):
                 if (i == 5):
                     matched = True
                     break

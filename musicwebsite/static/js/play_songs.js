@@ -56,6 +56,7 @@ function playSong(chords) {
   let chordIndex = 0;
   let strumIndex = 0;
   let chord;
+  let frets;
 
   let tableRows = $(".js-songchord-row");
 
@@ -67,6 +68,7 @@ function playSong(chords) {
     //if its the start of a new chord, change the chord
     if (strumIndex == 0) {
       chord = chords[chordIndex];
+      frets = addBaseToFrets(chord.frets, chord.base)
 
       tableRows.removeClass("table-warning");
       tableRows.slice(chordIndex, chordIndex + 1).addClass("table-warning");
@@ -74,10 +76,10 @@ function playSong(chords) {
     
     //if it is meant to strum, play
     if (strumPattern[strumIndex] == "d") {
-      playAllStrings(chord.frets);
+      playAllStrings(frets);
     }
     else if (strumPattern[strumIndex] == "u"){
-      playAllStringsReverse(chord.frets);
+      playAllStringsReverse(frets);
     }
 
     //increment strum index. when it reaches the end of the bar, reset it and increment chordIndex. If it went through all the chords, stop
