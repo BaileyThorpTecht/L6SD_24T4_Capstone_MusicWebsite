@@ -104,17 +104,20 @@ def chord_draw(frets, base):
     ax.set_ylim(base, maxfret+1)
     ax.set_xlim(-1, 6)
     ax.set_yticks(numpy.arange(base, maxfret+1))
-    ax.set_yticklabels([str(i) for i in range(base, maxfret+1)], fontsize=30)
+    ax.set_yticklabels([str('') for i in range(base, maxfret+1)], fontsize=30)
+    ylabel = [item.get_text() for item in ax.get_yticklabels()]
+    ylabel[0] = base
+    ax.set_yticklabels(ylabel)
     ax.set_xticks(numpy.arange(0, 6))
     ax.set_xticklabels(['', '', '', '', '', ''], fontsize=30)
     ax.xaxis.tick_top()
 
     # Draw the fret lines
     for i in range(0, 6):
-        ax.axvline(i, color='black', lw=1)
+        ax.axvline(i, color='black', lw=3)
     
     for i in range(base, maxfret+1):
-        plt.axhline(i, color='black', lw=1, xmax=.85, xmin=.15)
+        plt.axhline(i, color='black', lw=3, xmax=.85, xmin=.15)
 
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -123,22 +126,21 @@ def chord_draw(frets, base):
 
     plt.gca().invert_yaxis()
 
+
     # Plot custom fret positions
     labels = [item.get_text() for item in ax.get_xticklabels()]
     for fret, string in chord:
-        print(fret)
-        print(string)
-        print(fret + string)
         if fret == -0.5:
             labels[string] = 'X'
         elif fret == 0.5:
             labels[string] = 'O'
         else:
-            ax.plot(string, fret, 'o', color='red', markersize=30)
+            ax.plot(string, fret, 'o', color='black', markersize=30)
 
     ax.set_xticklabels(labels)
-    print(labels)
 
+    fig.set_size_inches(3,4)
+    
     img = io.BytesIO()
     plt.savefig(img, format='PNG')
     img.seek(0)
