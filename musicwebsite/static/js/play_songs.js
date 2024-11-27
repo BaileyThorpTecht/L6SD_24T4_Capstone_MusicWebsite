@@ -28,8 +28,8 @@ function playSong(chords) {
   $(".js-stop-song").css("display","inline");
 
   //4 beats in a bar, each chord is 1 bar
-  let bpm = 100;
-  let strumPattern = ["d","","d","","d","u","d",""];
+  let bpm = 80;
+  let strumPattern = ["d","","d","","d","","d",""];
 
   let inputBpm = $(".js-bpm-input").val();
   if (inputBpm) { bpm = inputBpm;}
