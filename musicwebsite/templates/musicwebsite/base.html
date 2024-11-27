@@ -17,6 +17,28 @@
     <!-- JQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
+    <style>
+      .ul_left {
+        text-align: left;
+      }
+
+      .h5_left {
+        text-align: left;
+      }
+
+      .ul_right {
+        text-align: left;
+        position: relative;
+        left: 80px;
+      }
+
+      .h5_right {
+        text-align: left;
+        position: relative;
+        left: 80px;
+      }
+    </style>
+
 </head>
 <body>
     {% comment %} Navbar {% endcomment %}
@@ -163,9 +185,9 @@
   </div>
 
   <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-    <h5 class="text-uppercase">Links</h5>
+    <h5 class="text-uppercase" id="h5_left">Links</h5>
 
-    <ul class="list-unstyled mb-0">
+    <ul class="list-unstyled mb-1" id="ul_left">
       <li>
         <a class="text-body" href="{% url 'terms_and_conditions_footer'%}">Terms & Conditions</a>
       </li>
@@ -181,19 +203,16 @@
 
   <!--Grid column-->
   <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-    <h5 class="text-uppercase">Links</h5>
+    <h5 class="text-uppercase" id="h5_right">Links</h5>
 
-    <ul class="list-unstyled mb-0">
-      <li>
-        <a class="text-body" href="#!">Profile</a>
-      </li>
+    <ul2 class="list-unstyled mb-0" id="ul_right">
       <li>
         <a class="text-body" href="#!">Contact Us</a>
       </li>
       <li>
         <a class="text-body" href="{% url 'FAQ'%}">FAQ</a>
       </li>
-    </ul>
+    </ul2>
   </div>
   <!--Grid column-->
 </div>
@@ -229,4 +248,15 @@
       document.documentElement.setAttribute('data-bs-theme','dark');
     }
   }
+
+  const ulLeft = document.getElementById('ul_left')
+  const ulRight = document.getElementById('ul_right')
+  const h5Left = document.getElementById('h5_left')
+  const h5Right = document.getElementById('h5_right')
+
+  ulLeft.classList.add('ul_left')
+  ulRight.classList.add('ul_right')
+  h5Right.classList.add('h5_right')
+  h5Left.classList.add('h5_left')
+
 </script>

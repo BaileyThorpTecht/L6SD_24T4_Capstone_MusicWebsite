@@ -1,67 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Community Guidelines</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-            color: #333;
-        }
-        h1 {
-            text-align: center;
-            font-size: 2.5em;
-            color: #444;
-        }
-        h2 {
-            font-size: 1.5em;
-            color: #555;
-            margin-top: 30px;
-        }
-        p {
-            margin: 15px 0;
-        }
-        ul {
-            list-style-type: disc;
-            margin-left: 20px;
-            padding-left: 20px;
-        }
-        li {
-            margin-bottom: 10px;
-        }
-    </style>
-</head>
-<body>
+{% extends "musicwebsite/base.html" %}
+ 
+{% load crispy_forms_tags %}
+ 
+{% block title %}Contact Us{% endblock  %}
+ 
+{% block content %}
+
+<title>Privacy Policy</title>
+
     <h1>Community Guidelines</h1>
     
-    <h2>Hateful Content</h2>
+    <h3>Hateful Content</h3>
     <p>
         This website does not permit content that incites any violence or hatred towards an individual or group based on race, religion, gender identity or expression, sex, ethnicity, nationality, sexual orientation, veteran status, age, disability, or other characteristics associated with systemic discrimination or marginalization.
     </p>
     
-    <h2>Dangerous Content</h2>
+    <h3>Dangerous Content</h3>
     <p>
         Please don’t encourage others to do anything that could put themselves or anyone else in serious physical harm. This includes, but isn’t limited to, dangerous challenges or acts of suicide and/or self-harm.
     </p>
     
-    <h2>Violent or Graphic Content</h2>
+    <h3>Violent or Graphic Content</h3>
     <p>We don’t allow content that features graphic or gratuitous depictions of violence, gore, or other shocking elements.</p>
     <ul>
         <li>Depictions of graphic acts of violence or abuse</li>
         <li>Gruesome depictions of serious physical injury or trauma</li>
     </ul>
     
-    <h2>Harassment or Cyberbullying</h2>
+    <h3>Harassment or Cyberbullying</h3>
     <p>We don’t allow harassment on Chordial for users.</p>
     <ul>
         <li>Sharing, threatening to share, or encouraging others to share someone’s private information without their consent</li>
         <li>Repeatedly targeting someone with unwanted sexual advances</li>
     </ul>
     
-    <h2>Sexually Explicit Content</h2>
+    <h3>Sexually Explicit Content</h3>
     <p>You should avoid content that contains sexually explicit material such as:</p>
     <ul>
         <li>Pornography and other similar graphic depictions of sexual acts for sexual gratification</li>
@@ -69,22 +42,22 @@
         <li>Advocating or glorifying sexual themes related to rape, incest, or bestiality</li>
     </ul>
     
-    <h2>Infringing Content</h2>
+    <h3>Infringing Content</h3>
     <p>
         We protect creators’ intellectual property so they can be fairly compensated for their work. Any content that is provided to Spotify without rightsholder permission may be removed. The same is true for content that infringes upon the trademarks of others. If you use samples in your music, clear them with the owner first.
     </p>
     
-    <h2>Illegal Content</h2>
+    <h3>Illegal Content</h3>
     <p>
         We require content providers to comply with applicable laws and regulations, including those governing content administered by the U.S. Office of Foreign Assets Control (“OFAC”) and the German Bundesprüfstelle für jugendgefährdende Medien (“BPjM”). Any content in violation of local laws may be removed, and we may withhold related payments if that content is subject to sanctions.
     </p>
     
-    <h2>Impersonation</h2>
+    <h3>Impersonation</h3>
     <p>
         Avoid content that impersonates others in a way that is intended or likely to deceive. This includes posing as or mimicking another person, or misrepresenting your affiliation with a person, brand, or organization.
     </p>
     
-    <h2>Spam</h2>
+    <h3>Spam</h3>
     <p>We don’t allow any kind of spam on Chordial for users. Spam includes, but isn't limited to:</p>
     <ul>
         <li>Content made solely to improve SEO or promote a product or service</li>
@@ -93,7 +66,7 @@
         </li>
     </ul>
     
-    <h2>Monetization Fraud</h2>
+    <h3>Monetization Fraud</h3>
     <p>Fraudulently using our monetization features may result in monetization bans, account removals, and platform bans.</p>
     <ul>
         <li>Using credit cards you don’t own to generate fraudulent Listener Support earnings</li>
@@ -101,9 +74,8 @@
         <li>Enlisting a third party to generate inauthentic Listener Support or Subscription earnings</li>
     </ul>
     
-    <h2>Enforcement</h2>
+    <h3>Enforcement</h3>
     <p>
         Repeated violations of our prohibited content policies can result in losing access to the Spotify platform.
     </p>
-</body>
-</html>
+{% endblock %}
