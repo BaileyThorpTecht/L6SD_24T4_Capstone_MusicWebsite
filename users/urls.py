@@ -20,6 +20,6 @@ urlpatterns = [
     path('privacy-policy-footer/', privacy_policy_footer, name='privacy_policy_footer'),
     path('community-guidelines/', community_guidelines, name='community_guidelines'),
     path('F-A-Q/', FAQ, name='FAQ'),
-    path('contact-us/', contact_us, name='contact-us'),
+    path('contact-us/', contact_us, name='contact_us'),
     path('', include('django.contrib.auth.urls')),
 ]
