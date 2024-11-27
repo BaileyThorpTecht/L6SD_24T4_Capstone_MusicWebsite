@@ -915,28 +915,8 @@ function playCustomChord() {
 
 
 
-{% comment %} // ########################################
-// ##         Loading Screen             ##
-// ########################################
 
-var animation = lottie.loadAnimation({
-  container: document.getElementById('lottie-container'),
-  renderer: 'svg',
-  loop: true,
-  autoplay: true,
-  path: "{% static 'videos/LottieLoadingScreen.json' %}" // Path to your Lottie JSON file
-});
 
-// Extend display time for the loading screen
-window.addEventListener('load', function () {
-  var loadingScreen = document.getElementById('loading-screen');
-  setTimeout(function () {
-      loadingScreen.classList.add('fade-out'); // Add fade-out class after 1.9 seconds
-      setTimeout(function () {
-          loadingScreen.style.display = 'none'; // Hide after fade-out
-      }, 500); // Match CSS transition duration
-  }, 1900); // Delay for 1.9 seconds
-}); {% endcomment %}
 
 
 </script>
