@@ -1,34 +1,38 @@
+{% load filters %}
+
 <!-- Later, add an if statement to only show the chords if not logged in-->
 
 
-{% for chord in chords %}
+{% for chord in custom_chords %}
 
-  {% if chord.isCustom == True %}
   <!-- Later, add here to only show chords of currently logged in user-->
-  <tr>
-    <td>{{ chord.name }}</td>
-    <td>{{ chord.frets }}</td>
 
-    <td><button type="button"
-      data-id="{{ chord.id }}"
-      data-play="true"
-      class="btn btn-primary js-play-chord" >Play</button></td>
+    <tr>
+      <td><button type="button"
+        data-url="{% url 'song_update_from_chords' chord.id %}"
+        class="btn btn-info js-add-chord-to-song">+</button></td>
 
-    <td><button type="button"
-      data-id="{{ chord.id }}"
-      data-play="false"
-      class="btn btn-info js-select-chord" >Select</button></td>
+      <td>{{ chord.name }}</td>
+      <td>{{ chord.frets|clean_array }}</td>
 
-    <td><button type="button"
-      class="btn btn-danger delete-chord-button js-delete-chord"
-      data-url="{% url 'chord_delete' chord.id %}" >DELETE</button></td>
-  </tr>
-  {% endif %}
+      <td><button type="button"
+        data-id="{{ chord.id }}"
+        class="btn btn-primary js-play-chord">Play</button></td>
+
+      <td><button type="button"
+        data-id="{{ chord.id }}"
+        class="btn btn-info js-select-chord">Select</button></td>
+
+      <td><button type="button"
+        class="btn btn-danger delete-chord-button js-delete-chord"
+        data-url="{% url 'chord_delete' chord.id %}">DELETE</button></td>
+    </tr>
+  
+
 
 {% empty %}
 <tr>
-  <td colspan="4" class="text-center bg-warning">No chord</td>
+  <td colspan="4" class="text-center bg-warning">No Custom Chords</td>
 </tr>
-
-
 {% endfor %}
+

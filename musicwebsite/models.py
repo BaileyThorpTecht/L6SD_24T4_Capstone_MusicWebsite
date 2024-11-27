@@ -8,14 +8,10 @@ from django.contrib.auth.models import User
 class Song(models.Model):
     
     # This is the Forgeign Key to User aspect of the model
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='songs')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # These are the fields related to the 'Song' model
     title = models.CharField(max_length=50)
-
-    # These are Timestaps for when the song was created or updated
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return super().__str__()
@@ -41,8 +37,8 @@ class Chord(models.Model):
 class SongChord(models.Model):
 
     # These are the Forgeign Keys to the Song and Chord Models
-    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='songchords')
-    chord = models.ForeignKey(Chord, on_delete=models.CASCADE, related_name='songchords')
+    song = models.ForeignKey(Song, on_delete=models.CASCADE)
+    chord = models.ForeignKey(Chord, on_delete=models.CASCADE)
 
     # These are the fields related to the 'SongChord' model
     position = models.IntegerField()

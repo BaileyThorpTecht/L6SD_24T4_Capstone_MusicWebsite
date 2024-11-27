@@ -15,7 +15,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Scripts -->
-    <script src="{% static '/js/chords.js' %}"></script>
 
 
     <!-- Icon for website tab -->
@@ -109,7 +108,7 @@
 
       <!-- Chord Identification -->
       <div class="row mb-4">
-        <div class="col text-center">
+        <div class="col-4 text-center">
           <div class="card mx-auto" style="width: 100%;">
             <h5 class="card-title mt-3">Chord Identification</h5>
             <h7 class="card-subtitle text-muted">Click on the fretboard to find chords with corresponding notes.</h7>
@@ -124,15 +123,19 @@
 
       <!-- Chord Saving -->
 
-        <div class="col text-center">
+        <div class="col-8 text-center">
           <div class="card mx-auto" style="width: 100%;">
             <h5 class="card-title mt-3">Chord Saving</h5>
             <div class="card-body">
               <table class="table" style="border-collapse:collapse;" id="chord-table">
                 <thead>
                   <tr>
+                    <th class="small">Add To Current Song</th>
                     <th>Name</th>
                     <th>Frets</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -143,44 +146,38 @@
           </div>
           <div id="custom-chord-buttons" class="button-container">
             <input class="js-chord-name-input me-2 align-middle" placeholder="Chord name..."></input>
-            <button class="btn btn-sm btn-secondary me-2 js-create-chord">Save Chord</button>
-            <button class="btn btn-sm btn-secondary me-2">Clear</button>
-            <button class="btn btn-sm btn-secondary">Export</button>
+            <button class="btn btn-sm btn-primary me-2 js-create-chord">Save Chord</button>
           </div>
         </div>
       </div>
 
       <!-- List of Songs -->
-      <div class="text-center mb-5">
+      <div class="text-center mb-5" id="js-song-section">
         <div class="card mx-auto" style="width: 100%;">
           <h5 class="card-title mt-3">List of Songs</h5>
-          <div class="card-body"></div>
-        </div>
-        <div class="button-container">
-          <button class="btn btn-sm btn-primary me-3">Add song</button>
-          <button class="btn btn-sm btn-primary me-3">Delete song</button>
-          <button class="btn btn-sm btn-primary me-3" id="addChord">Add Chord</button>
-          <button class="btn btn-sm btn-primary">Delete Chord</button>
-        </div>
-        <div class="text-center mt-3">
-          <button class="btn btn-lg btn-primary" id="playSong">Play Song</button>
-        </div>
-      </div>
-
-      <!-- Song Playback -->
-      <div class="text-center mb-5">
-        <div class="card mx-auto" style="width: 100%;">
-          <h5 class="card-title mt-3">Song Playback</h5>
-        </div>
-      </div>
-
-
-      <div class="modal fade" id="modal-chord">
-        <div class="modal-dialog">
-          <div class="modal-content">
+          <div class="card-body container" id="js-song-container">
+            {% include 'musicwebsite/partial_song_list.html' %}
           </div>
         </div>
+        <div class="text-center mt-3">
+          <label class="large js-beat-counter" id="playSong">...</label>
+          <button class="btn btn-lg btn-primary js-play-song disabled" id="playSong">Play Song</button>
+          <button class="btn btn-lg btn-primary js-stop-song" style="display:none;">Stop</button>
+
+          <br>
+
+          <label class="mt-4">bpm: </label>
+          <input class="js-bpm-input me-2" placeholder="80"></input>
+          <label>Strum Pattern: </label>
+          <input class="js-pattern-input" placeholder="D X D X D X D X"></input>
+
+          <br>
+
+          <label class="mt-2 text-muted">D for down, U for up, X for rest. Spaces are optional</label>
+          
+        </div>
       </div>
+
       
     </main>
   </body>
@@ -200,7 +197,7 @@
   function loadDatabase() {
 
     $.ajax({
-      url: '/chords/load/',
+      url: '/chords/read/',
       type: 'get',
       dataType: 'json',
       beforeSend: function () {
@@ -275,17 +272,19 @@
     noteSounds.push(strings);
   }
 
-  function Change_Audio(changedFrets) {
+  //input the frets you want to play
+  function getStringSounds(frets) {
 
-    for (let i = 0; i < strings.length; i++) {
-      if (changedFrets[i] > -1) {
-        strings[i] = noteSounds[i][changedFrets[i]];
+    let stringSounds = [null, null, null, null, null, null]
+    for (let i = 0; i < stringSounds.length; i++) {
+      if (frets[i] > -1) {
+        stringSounds[i] = noteSounds[i][frets[i]];
       } else {
         strings[i] = null;
       }
-
     }
-    //loadFretboard();
+
+    return stringSounds;
   }
 
 
@@ -312,16 +311,25 @@
   }
 
   function findNoteOfFret(string, fret) {
-    let noteList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-    let stringTunings = [28, 33, 38, 43, 47, 52]; //how many notes is each string tuned up relative C0
+    if (fret == -1){
+      return {
+        //may be issue of octave returning empty string instead of a number 
+        octave: "",
+        letter: "",
+      }
+    } else{
 
-    let noteNumber = stringTunings[string];
-    noteNumber += fret;
-    let selectedNote = noteList[noteNumber % 12];
-    let octave = Math.floor(noteNumber / 12);
-    return {
-      octave: octave,
-      letter: selectedNote,
+      let noteList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+      let stringTunings = [28, 33, 38, 43, 47, 52]; //how many notes is each string tuned up relative C0
+      
+      let noteNumber = stringTunings[string];
+      noteNumber += fret;
+      let selectedNote = noteList[noteNumber % 12];
+      let octave = Math.floor(noteNumber / 12);
+      return {
+        octave: octave,
+        letter: selectedNote,
+      }
     }
   }
 
@@ -413,8 +421,6 @@
         }
 
     addListenersToFrets();
-    Change_Audio(selectedFretsGlobal);
-
   }
 
 
@@ -592,14 +598,23 @@
 
 
   function changeGlobalFrets(frets, base){
-    for (var k = 0; k < frets.length; k++) {
-      if (frets[k] > -1) {
-        frets[k] += base - 1;
-      }
-    }
+
+    frets = addBaseToFrets(frets, base);
 
     selectedFretsGlobal = frets;
     loadFretboard()
+  }
+
+  function addBaseToFrets(frets, base){
+    newFrets = frets.slice();
+    for (var k = 0; k < newFrets.length; k++) {
+      if (newFrets[k] > 0) {
+        newFrets[k] += base - 1;
+      }
+    }
+
+    return newFrets;
+    
   }
 
 
@@ -615,69 +630,71 @@
 
 
 
+  function playAllStrings(frets) {
 
+    let stringAudioList = getStringSounds(frets);
 
-  function playOneString(i) {
-    const strumDelay = setTimeout(function () {
-      if (strings[i] !== null) {
-        strings[i].play();
-      }
-      if (i < strings.length - 1) {
-        playOneString(i + 1);
-      }
+    //play sounds
+    stringAudioList.forEach((audio, index) => {
+      setTimeout(() =>{
+        noteSounds[index].forEach((fretSound) => {
+          fretSound.pause();
+        })
 
-    }, 40);
+        if(audio){
+          audio.currentTime = 0;
+          audio.play();
+        }
+        }, index * 30);
+    });
 
   }
-  document.getElementById("playbutton").addEventListener("click", function (music) {
-    for (let i = 0; i < strings.length; i++)
-  {
-    if(strings[i] !== null){
-      strings[i].pause();
-      strings[i].currentTime = 0;
-      }
+
+  function playAllStringsReverse(frets) {
+    let stringAudioList = getStringSounds(frets);
+
+    //play sounds
+    stringAudioList.slice().reverse().forEach((audio, index) => {
+      setTimeout(() =>{
+        noteSounds[5-index].forEach((fretSound) => {
+          fretSound.pause();
+        })
+
+        if(audio){
+          audio.currentTime = 0;
+          audio.play();
+        }
+        }, index * 30);
+    });
+  }
+
+  function playOneString(string, fret) {
     
+    let stringAudio = noteSounds[string][fret];
+
+    noteSounds[string].forEach((fretSound) => {
+      fretSound.pause();
+    })
+
+
+    if (stringAudio){
+      stringAudio.currentTime = 0;
+      stringAudio.play();
+    }
+
   }
-    playOneString(0);
+
+
+  document.getElementById("playbutton").addEventListener("click", function (music) {
+    
+    playAllStrings(selectedFretsGlobal);
+    
   }, false);
 
   for (let i = 0; i < stringbuttons.length; i++) {
     document.getElementById(stringbuttons[i]).addEventListener("click", function (music) {
-      //Change_Audio();
-      if (strings[i] !== null) {
-        strings[i].pause();
-        strings[i].currentTime = 0;
-        strings[i].play();
-      }
+        playOneString(i, selectedFretsGlobal[i]);
     }, false);
-  }
-
-  document.getElementById("addChord").addEventListener("click", function (music){
-    songNotes.push([selectedFretsGlobal]);
-  })
-
-  document.getElementById("playSong").addEventListener("click", function (music){
-    songPlayback(0)
-  })
-
-  function songPlayback(songProgress)
-  {
-    for (let i = 0; i < strings.length; i++)
-    {
-      if(strings[i] !== null){
-      strings[i].pause();
-      strings[i].currentTime = 0;
-      }
-    }
-    Change_Audio(songNotes[songProgress][0]);
-    playOneString(0);
-    if (songProgress !== songNotes.length -1)
-    {
-      setTimeout(function() 
-      {
-        songPlayback(songProgress+1);
-      }, 2000);
-    }
   }
 
 
@@ -706,13 +723,22 @@
       (chord.frets[5] + chord.base - 1 == selectedFretsGlobal[5] || (chord.frets[5] == -1 && selectedFretsGlobal[5] == -1)));
 
     let foundChord;
+    let displayText = "";
+
     if (foundChordList.length > 0) {
-      foundChord = foundChordList[0].name;
+      foundChord = foundChordList[0];
+
+      if (foundChord.isCustom){
+        displayText += "Custom: "
+      }
+
+      displayText += foundChord.name;
+
     } else {
-      foundChord = "No Chords Found";
+      displayText = "No Chords Found";
     }
 
-    chordSearchDisplay.innerHTML = foundChord;
+    chordSearchDisplay.innerHTML = displayText;
   }
 
 
@@ -736,6 +762,7 @@ function replaceDigitWithSubscript(num) {
       return subscriptList[num];
     }
   }
+  return num
 }
 
 
@@ -752,14 +779,7 @@ function createCustomChord() {
   //if customName is null or whitespace
   if (!customName || !customName.trim())
   {
-    //have the name just be the list of notes being played
-    defaultCustomName = "";
-    for (i = 0; i < 6; i++){
-      let fullNote = findNoteOfFret(i, customFrets[i]);
-      defaultCustomName +=  fullNote.letter + replaceDigitWithSubscript(fullNote.octave);
-    }
-    customName = defaultCustomName;
-
+    customName = generateDefaultChordName(customFrets);
   }
 
   let customChordData = {
@@ -784,6 +804,17 @@ function createCustomChord() {
   });
 };
 
+function generateDefaultChordName(frets) {
+  //have the name just be the list of notes being played
+  defaultCustomName = "";
+  for (i = 0; i < 6; i++){
+    let fullNote = findNoteOfFret(i, frets[i]);
+    defaultCustomName +=  fullNote.letter + replaceDigitWithSubscript(fullNote.octave);
+  }
+
+  return defaultCustomName
+}
+
 
 
   // ## DELETE CHORDS ##
@@ -800,8 +831,10 @@ function deleteCustomChord(){
     success: function (data) {
       //after the ajax call is done, update the table body to include the new chord
       updateCustomChordList(data.html_chord_list);
+      doSongLoadRequestOneOff();
     }
   });
+
 
 }
 
@@ -818,18 +851,62 @@ function selectCustomChord() {
   let customBase = customChord.base;
 
   changeGlobalFrets(customFrets, customBase);
+  
+}
 
-  if (btn.attr("data-play") == "true"){
-    playOneString(0);
-  }
+
+// ## LOAD ON NEW SONGCHORD CREATION ##
+
+function reloadCustomChords(){
+
+  $.ajax({
+    url: '/chords/load/',
+    type: 'get',
+    dataType: 'json',
+    
+    success: function (data) {
+      
+      updateCustomChordList(data.html_chord_list);
+    }
+  });
 }
 
 // ## PLAY CHORD ##
 
-$("#chord-table").on("click", ".js-play-chord", selectCustomChord);
+$(document).on("click", ".js-play-chord", playCustomChord); //this gets from both the chord list and songchord list
 
+function playCustomChord() {
+  var btn = $(this);
+  let customChordId = btn.attr("data-id");
+  let customChord = databaseChordList.find((chord) => chord.id == customChordId);
+  let customFrets = customChord.frets;
 
+  let customBase = customChord.base;
 
+  let actualFrets = addBaseToFrets(customFrets, customBase);
   
+  playAllStrings(actualFrets);
+
+}
+
+
+
+
+
 </script>
+
+
+
+<!--
+#####################################
+            SAVING SONGS
+#####################################-->
+<script src="{% static '/js/songs.js' %}"></script>
+
+<!--
+#####################################
+            PLAYING SONGS
+#####################################-->
+<script src="{% static '/js/play_songs.js' %}"></script>
+
 {% endblock %}

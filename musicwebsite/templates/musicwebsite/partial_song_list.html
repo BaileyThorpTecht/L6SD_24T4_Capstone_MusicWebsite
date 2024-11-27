@@ -1,0 +1,100 @@
+<!--
+For styling:
+    for the list of songs, have the whole row be clickable instead of having a button
+    have the add song button/input and the delete/add chord buttons be stuck to the bottom
+    have the song list and songchord list be of fixed height and scrollable (both same height)
+
+-->
+
+<div class="row">
+    <div class="col-4 border-end border-2">
+        <table class="table" style="border-collapse:collapse;">
+            <tbody>
+                {% for song in songs %}
+                <tr>
+                    <td>
+                    <button type="button"
+                        data-url="{% url 'song_load' %}"
+                        data-id = {{ song.id }}
+                        class="btn btn-primary js-load-song">{{ song.title }}</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center bg-warning">No Songs</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <hr class="solid">
+
+        <div class="button-container">
+            <input id="js-song-name-input" class="me-2 align-middle" placeholder="Song name..."></input>
+            <button type="button"
+                    data-url="{% url 'song_create' %}"
+                    class="btn btn-sm btn-primary me-3 js-create-song">Create Song</button>
+        </div>
+    </div>
+
+
+
+    <div class="col-8"> 
+    {% if selected_song %}
+     
+    <table class="table" style="border-collapse:collapse;" id="songchord-table">          
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Frets</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for songchord in selected_songchords %}
+        {% with chord=songchord.chord %}
+
+        <tr class="js-songchord-row">
+            <td>{{ chord.name }}</td>
+            <td>{{ chord.frets }}</td>
+        
+            <td><button type="button"
+                data-id="{{ chord.id }}"
+                class="btn btn-primary js-play-chord">Play</button></td>
+        
+            <td><button type="button"
+                data-url="{% url 'song_remove' songchord.id %}"
+                class="btn btn-danger js-remove-song">REMOVE</button>
+            </td>
+              
+            </tr>
+            {% endwith %}
+            {% empty %}
+            <tr>
+            <td colspan="4" class="text-center bg-warning">Song Empty</td>
+            </tr>
+            {% endfor %}
+      </tbody>
+    </table>
+            
+
+
+        <button type="button"
+            data-url="{% url 'song_delete' %}"
+            class="btn btn-primary js-delete-song">Delete Song</button>
+        
+        <button type="button"
+                data-url="{% url 'song_update' %}"
+                class="btn btn-primary js-update-song" id="addChord">Add Chord</button>
+
+
+    {% else %}
+
+    <tr>
+        <td colspan="4" class="text-center bg-warning">No Chosen Song</td>
+    </tr>
+
+    {% endif %}
+
+
+    </div>
+</div>
