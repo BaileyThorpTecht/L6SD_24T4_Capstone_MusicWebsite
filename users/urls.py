@@ -1,7 +1,7 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from . import views
-from .views import terms_and_conditions, privacy_policy, FAQ, terms_and_conditions_footer, privacy_policy_footer, community_guidelines
+from .views import terms_and_conditions, privacy_policy, FAQ, terms_and_conditions_footer, privacy_policy_footer, community_guidelines, contact_us
 
 
 
@@ -20,5 +20,6 @@ urlpatterns = [
     path('privacy-policy-footer/', privacy_policy_footer, name='privacy_policy_footer'),
     path('community-guidelines/', community_guidelines, name='community_guidelines'),
     path('F-A-Q/', FAQ, name='FAQ'),
+    path('contact-us/', contact_us, name='contact-us'),
     path('', include('django.contrib.auth.urls')),
 ]

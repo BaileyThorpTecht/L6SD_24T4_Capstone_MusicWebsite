@@ -108,3 +108,6 @@ def FAQ(request):
 
 def community_guidelines(request):
     return render(request, 'community_guidelines.html')
+
+def contact_us(request):
+    return render(request, 'contact_us.html')
