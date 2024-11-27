@@ -75,6 +75,7 @@ def index(request):
     
     dataJSON = dumps(dictList)
     
+    chords = Chord.objects.all()
     context = {
         'chords' : chords,
         'songs' : Song.objects.all(),
@@ -89,10 +90,23 @@ def chord_list_render(req):
 
     return render_to_string('musicwebsite/partial_chord_list.html', {
         'chords' : chords,
+        'custom_chords' : chords.filter(isCustom=True),
+        
     })
 
 
-
+def chord_read(request):
+    data = dict()
+   
+    chordList = list(Chord.objects.all())
+    dictList = []
+    for x in chordList:
+        dictList.append(model_to_dict(x))
+   
+    chords = dumps(dictList)
+   
+    data['chords'] = chords
+    return JsonResponse(data)
 
 
 def chord_load(request):
@@ -311,13 +325,17 @@ def song_update(request):
  
     #if a chord was not found, make one
     if not matchedChord:
+        
+        base, chosenFrets = getBaseFromFrets(chosenFrets)
+        
         matchedChord = Chord.objects.create(
             name=request.GET.get("default-name"),
-            base=1,
+            base=base,
             frets=chosenFrets,
             fingers=[1,2,3,4,0,0],
             isCustom=True,
             user= User.objects.first(), #CURRENTLY GIVES CHORDS TO THE ADMIN INSTEAD OF LOGGED IN USER ############## ToDo
+            image=chord_draw(chosenFrets,base)
    
         )
    
