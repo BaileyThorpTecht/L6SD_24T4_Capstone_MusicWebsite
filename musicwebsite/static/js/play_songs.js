@@ -50,8 +50,9 @@ function playSong(chords) {
 
 
   let strumsPerChord = strumPattern.length
-  let timeBetweenChords = (60/bpm) * 8 * 1000; //bpm => seconds per beat * 1000 milliseconds per second * 8 beats per bar
-  let timeBetweenStrums = timeBetweenChords / strumsPerChord; //8 strums per bar (per chord)
+  let timeBetweenChords = (60/bpm) * 4 * 1000; //bpm => seconds per beat * 1000 milliseconds per second * 4 beats per bar
+  //let timeBetweenStrums = timeBetweenChords / strumsPerChord; //8 strums per bar (per chord)
+  let timeBetweenStrums = timeBetweenChords / 8; //assuming 4/4 time sig with 2 notes per beat, or 8 beats per bar
 
   let chordIndex = 0;
   let strumIndex = 0;
@@ -59,6 +60,7 @@ function playSong(chords) {
   let frets;
 
   let tableRows = $(".js-songchord-row");
+  let scrollContainer = $("#js-song-scroll");
 
   // ################### playsong
   songInterval = setInterval(function () {
@@ -72,6 +74,9 @@ function playSong(chords) {
 
       tableRows.removeClass("table-warning");
       tableRows.slice(chordIndex, chordIndex + 1).addClass("table-warning");
+
+      //auto scroll to show current chord
+      scrollContainer.scrollTop(chordIndex * tableRows.height());
     }
     
     //if it is meant to strum, play

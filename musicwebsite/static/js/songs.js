@@ -7,17 +7,19 @@ function updateSongList(innerHtml){
     //highlight selected song
     if (selectedSongId){
         let btns = $(".js-load-song")
-        btns.removeClass("btn-danger");
+        btns.removeClass("table-warning");
 
         let selectedButton = btns.filter(function() {
             return $(this).attr("data-id") == selectedSongId
         });
-        selectedButton.addClass("btn-danger");
+        selectedButton.addClass("table-warning");
         
         //disable/enable play button if no song selected
         $(".js-play-song").removeClass("disabled")
+        $(".js-update-song").removeClass("disabled")
       }else{
         $(".js-play-song").addClass("disabled")
+        $(".js-update-song").addClass("disabled")
 
 
       }
@@ -77,7 +79,20 @@ function loadSong(){
 
 }
 
-$("#js-song-container").on("click", ".js-update-song", updateSong)
+$(document).on( "mouseenter", ".js-load-song", hoverColor ).on( "mouseleave", ".js-load-song", hoverUncolor);
+
+function hoverColor(){
+  $(this).addClass("table-secondary");
+}
+
+function hoverUncolor(){
+  $(this).removeClass("table-secondary");
+}
+
+
+
+
+$(document).on("click", ".js-update-song", updateSong)
 
 function updateSong(){
   var btn = $(this);

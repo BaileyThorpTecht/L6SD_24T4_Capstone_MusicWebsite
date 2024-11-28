@@ -96,7 +96,6 @@
     <!-- Guide Section -->
     <div class="text-center mb-5">
       <div class="card mx-auto" style="width: 100%; border: none;">
-        <h5 id="title" class="card-title mt-3">Fretboard</h5>
         <div id="fretboard" class="card-body">
           <!-- Content here -->
         </div>
@@ -108,13 +107,17 @@
       <button class="btn btn-sm btn-primary me-2" id="string3button">Play String 4</button>
       <button class="btn btn-sm btn-primary me-2" id="string4button">Play String 5</button>
       <button class="btn btn-sm btn-primary me-2" id="string5button">Play String 6</button>
+
+      <button type="button"
+            data-url="{% url 'song_update' %}"
+            class="btn btn-sm btn-info js-update-song mb-0 disabled">Add Chord to Song</button>
     </div>
 
       <!-- Chord Section -->
       <div class="text-center mb-5">
         <div class="card mx-auto" style="width: 100%; border: none;">
-          <h5 class="card-title mt-3">Chord Section</h5>
-          <h7 class="card-subtitle text-muted">Please choose a note and a chord type.</h7>
+          <h5 class="card-title mt-3">Chord Selection</h5>
+          <h7 class="card-subtitle text-muted">Choose a note and a chord type.</h7>
           <div class="card-body container">
             <div id="note-select-div" class="row"></div>
             <br>
@@ -126,7 +129,7 @@
       <!-- Chord Identification -->
       <div class="row mb-4">
         <div class="col-4 text-center">
-          <div class="card mx-auto" style="width: 100%; height: 175px; border: none;">
+          <div class="card mx-auto" style="width: 100%; height: 175px;">
             <h5 class="card-title mt-3">Chord Identification</h5>
             <h7 class="card-subtitle text-muted">Click on the fretboard to find chords with corresponding notes.</h7>
             <h1 id="chord-search-display">...</h1>
@@ -141,7 +144,7 @@
       <!-- Chord Saving -->
 
         <div class="col-8 text-center">
-          <div class="card mx-auto" style="width: 100%; height: 350px; border: none;">
+          <div class="card mx-auto" style="width: 100%; height: 420px;">
             <h5 class="card-title mt-3">Chord Saving</h5>
             <div class="card-body overflow-auto">
               <table class="table" style="border-collapse:collapse;" id="chord-table">
@@ -170,9 +173,9 @@
 
       <!-- List of Songs -->
       <div class="text-center mb-5" id="js-song-section">
-        <div class="card mx-auto" style="width: 100%; border: none;">
+        <div class="card mx-auto" style="width: 100%;">
           <h5 class="card-title mt-3">List of Songs</h5>
-          <div class="card-body container" id="js-song-container">
+          <div class="card-body container pe-0" id="js-song-container">
             {% include 'musicwebsite/partial_song_list.html' %}
           </div>
         </div>
@@ -183,14 +186,16 @@
 
           <br>
 
-          <label class="mt-4">bpm: </label>
+          <label class="mt-4">BPM: </label>
           <input class="js-bpm-input me-2" placeholder="80"></input>
           <label>Strum Pattern: </label>
           <input class="js-pattern-input" placeholder="D X D X D X D X"></input>
 
           <br>
 
-          <label class="mt-2 text-muted">D for down, U for up, X for rest. Spaces are optional</label>
+          <label class="mt-2 text-muted">Type "D" for a down strum, "X" for a rest. Spaces are optional</label>
+          <br>
+          <label class="mt-2 text-muted">BPM assumes 2 strums per beat</label>
           
         </div>
       </div>
