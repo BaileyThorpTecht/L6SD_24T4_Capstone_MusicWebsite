@@ -5,6 +5,7 @@ For styling:
     have the song list and songchord list be of fixed height and scrollable (both same height)
 
 -->
+{% if user.is_authenticated %}
 
 <div class="row">
     <div class="col-4 border-end border-2">
@@ -98,3 +99,15 @@ For styling:
 
     </div>
 </div>
+
+{% else %}
+
+<table class="table">
+<tbody>
+<tr>
+    <td class="text-center bg-warning">You must create an account or log in to create songs</td>
+</tr>
+</tbody>
+</table>
+
+{% endif %}

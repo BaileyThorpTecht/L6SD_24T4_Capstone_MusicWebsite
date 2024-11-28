@@ -51,10 +51,15 @@ def index(request):
     dataJSON = dumps(dictList)
     
     chords = Chord.objects.all()
+    user = request.user
+    userId = user.id
+    
     context = {
         'chords' : chords,
-        'songs' : Song.objects.all(),
-        'custom_chords' : chords.filter(isCustom=True),
+        'songs' : Song.objects.filter(user=userId),
+        'custom_chords' : chords.filter(isCustom=True, user=userId),
+        'user' : user
+        
         
     }
     return render(request, 'musicwebsite/index.html', context)
@@ -62,11 +67,14 @@ def index(request):
 #(not a view) generates the html to be put in the custom chord list section of the page. Is used at the end of every chord_* view
 def chord_list_render(req): 
     chords = Chord.objects.all()
+    user = req.user
+    userId = user.id
 
 
     return render_to_string('musicwebsite/partial_chord_list.html', {
         'chords' : chords,
-        'custom_chords' : chords.filter(isCustom=True),
+        'custom_chords' : chords.filter(isCustom=True, user=userId),
+        'user' : user
         
     })
 
@@ -165,7 +173,6 @@ def chord_draw(frets, base):
 
 #creates a chord in database using the fretboard and name input from the page, then reloads custom chord list. Used from the 'save chord' button under the chord list
 def chord_create(request):
-    #pdb.set_trace()
     data = dict()
 
 
@@ -175,17 +182,20 @@ def chord_create(request):
     frets = loads(request.GET.get("frets"))
     fingers = loads(request.GET.get("fingers"))
     isCustom = request.GET.get("isCustom")
+    user = request.user
     
-    base, frets = getBaseFromFrets(frets)
+    if (user.is_authenticated):
     
-    Chord.objects.create(
-                    name=name,
-                    base=base,
-                    frets=frets,
-                    fingers=fingers, 
-                    isCustom=isCustom,
-                    user= User.objects.first(), #CURRENTLY GIVES CHORDS TO THE ADMIN INSTEAD OF LOGGED IN USER ############## ToDo
-                    image=chord_draw(frets,base)
+        base, frets = getBaseFromFrets(frets)
+        
+        Chord.objects.create(
+                        name=name,
+                        base=base,
+                        frets=frets,
+                        fingers=fingers, 
+                        isCustom=isCustom,
+                        user=user,
+                        image=chord_draw(frets,base)
                 )
     
     
@@ -215,16 +225,23 @@ def chord_delete(request, id):
 #(not a view) generates the html to be put in the song list section. Is used at the end of every song_* view
 def song_list_render(req):
     selectedSongId = req.GET.get("song-id")
-    selectedSong = Song.objects.filter(id=selectedSongId).first()
+    
+    user = req.user
+    userId = user.id
+    songs = Song.objects.all()
+    availableSongs = songs.filter(user=userId)
+    
+    selectedSong = availableSongs.filter(id=selectedSongId).first()
     if (selectedSong):
         selectedSongChords = selectedSong.songchord_set.all()
     else:
         selectedSongChords = SongChord.objects.none()
        
     renderContext = {
-        'songs' : Song.objects.all(),
+        'songs' : availableSongs,
         'selected_song' : selectedSong,
         'selected_songchords' : selectedSongChords,
+        'user' : user
     }
     return render_to_string('musicwebsite/partial_song_list.html', renderContext)
    
@@ -233,14 +250,17 @@ def song_list_render(req):
 #creates a song, then reloads the song list. Used from the 'create song' button in the songs list
 def song_create(request):
     data = dict()
+    user = request.user
+    
+    if (user.is_authenticated):
    
-    try:
-        Song.objects.create(
-            title = request.GET.get("song-name"),
-            user = User.objects.first(),
-        )
-    except Exception as e:
-        print(e)
+        try:
+            Song.objects.create(
+                title = request.GET.get("song-name"),
+                user = user
+            )
+        except Exception as e:
+            print(e)
    
    
     data['html_song_list'] = song_list_render(request)  
@@ -258,56 +278,58 @@ def song_load(request):
 #adds a songchord to a song, then reloads the song list. Creates a new custom chord if it doesnt already exist. Used on the 'add chord' button in a song
 def song_update(request):
     data = dict()
-   
-    chosenFrets = loads(request.GET.get("selected-frets"))
-    chords = Chord.objects.all()
-   
-    #check if a chord with those frets already exists
-    matched = False
-    matchedChord = False
-    for chord in chords:
-        checkingFrets = chord.frets
-       
-        for i in range(6):          
-            if ((chosenFrets[i] == checkingFrets[i] + chord.base - 1) or (checkingFrets[i] == chosenFrets[i] == -1)):
-                if (i == 5):
-                    matched = True
+    
+    user = request.user
+    
+    if (user.is_authenticated):
+        chosenFrets = loads(request.GET.get("selected-frets"))
+        chords = Chord.objects.filter(user=user.id)
+
+        #check if a chord with those frets already exists
+        matched = False
+        matchedChord = False
+        for chord in chords:
+            checkingFrets = chord.frets
+        
+            for i in range(6):          
+                if ((chosenFrets[i] == checkingFrets[i] + chord.base - 1) or (checkingFrets[i] == chosenFrets[i] == -1)):
+                    if (i == 5):
+                        matched = True
+                        break
+                else:
                     break
-            else:
+            
+            if (matched):
+                matchedChord = chord
                 break
-           
-        if (matched):
-            matchedChord = chord
-            break
- 
-    #if a chord was not found, make one
-    if not matchedChord:
         
-        base, chosenFrets = getBaseFromFrets(chosenFrets)
+        #if a chord was not found, make one
+        if not matchedChord:
+            
+            base, chosenFrets = getBaseFromFrets(chosenFrets)
+            
+            matchedChord = Chord.objects.create(
+                name=request.GET.get("default-name"),
+                base=base,
+                frets=chosenFrets,
+                fingers=[1,2,3,4,0,0],
+                isCustom=True,
+                user=user,
+                image=chord_draw(chosenFrets,base)
         
-        matchedChord = Chord.objects.create(
-            name=request.GET.get("default-name"),
-            base=base,
-            frets=chosenFrets,
-            fingers=[1,2,3,4,0,0],
-            isCustom=True,
-            user= User.objects.first(), #CURRENTLY GIVES CHORDS TO THE ADMIN INSTEAD OF LOGGED IN USER ############## ToDo
-            image=chord_draw(chosenFrets,base)
-   
+            )
+        #create songchord in song
+        SongChord.objects.create(
+            song=Song.objects.get(id=request.GET.get("song-id")),
+            chord=matchedChord,
+            position=1,
+            length=1,
         )
-    #create songchord in song
-    SongChord.objects.create(
-        song=Song.objects.get(id=request.GET.get("song-id")),
-        chord=matchedChord,
-        position=1,
-        length=1,
-    )
-   
-   
+
     data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
- 
- 
+
+
 #creates a songchord, then reloads the song list. Used from the add chord to current song '+' button in the chord list
 def song_update_from_chords(request, id):
     data = dict()
