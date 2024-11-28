@@ -37,31 +37,6 @@ def getBaseFromFrets(frets):
     
     return base, frets
 
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import numpy
-from PIL import Image
-import io
-import base64   
-
-def getBaseFromFrets(frets):
-    base = 1
-    #the base is the lowest non- 0, non- -1 fret
-    positiveFrets = [fret for fret in frets if fret > 0] #exclude 0 and -1
-    
-    if positiveFrets:
-        base = min(positiveFrets)
-    else:
-        base = 1
-        
-    for i in range(6):
-        if frets[i] > 0:
-            frets[i] = frets[i] - base + 1
-            #change frets to account for the base
-    
-    return base, frets
-
 
 
 # The views.
@@ -84,7 +59,8 @@ def index(request):
     }
     return render(request, 'musicwebsite/index.html', context)
 
-def chord_list_render(req):
+#(not a view) generates the html to be put in the custom chord list section of the page. Is used at the end of every chord_* view
+def chord_list_render(req): 
     chords = Chord.objects.all()
 
 
@@ -94,7 +70,7 @@ def chord_list_render(req):
         
     })
 
-
+#gets chords from database to be put into a javascript variable 
 def chord_read(request):
     data = dict()
    
@@ -109,35 +85,17 @@ def chord_read(request):
     return JsonResponse(data)
 
 
-def chord_load(request):
-    data = dict()
-    
-    chordList = list(Chord.objects.all())
-    dictList = []
-    for x in chordList:
-        dictList.append(model_to_dict(x))
-    
-    chords = dumps(dictList)
-    
-    data['chords'] = chords
-    return JsonResponse(data)
-
-
+#just reloads the custom chord section. Is used when adding a chord which doesnt yet exist to a song, so a new one is created and the list needs to be reloaded
 def chord_load(request):
     data = dict()
     
     #generates the chord list html including any changes, to be sent back to the javascript
     chords = Chord.objects.all()
-    data['html_chord_list'] = render_to_string('musicwebsite/partial_chord_list.html', {
-        'chords' : chords,
-        'custom_chords' : chords.filter(isCustom=True),
-    })
-    
-    
-    
-    
+    data['html_chord_list'] = chord_list_render(request)
+
     return JsonResponse(data)
 
+#(not a view) returns an image representing a chord. Uses frets and base of that chord as input
 def chord_draw(frets, base):
     base = int(base)
     try:
@@ -204,6 +162,8 @@ def chord_draw(frets, base):
 
     return img_src
 
+
+#creates a chord in database using the fretboard and name input from the page, then reloads custom chord list. Used from the 'save chord' button under the chord list
 def chord_create(request):
     #pdb.set_trace()
     data = dict()
@@ -232,13 +192,10 @@ def chord_create(request):
     #generates the chord list html including the newly created chord, to be sent back to the javascript
     data['html_chord_list'] = chord_list_render(request)
 
-    
-    
-    
-    
     return JsonResponse(data)
     
 
+#deletes a chord, then reloads the chord list view. Used from the'DELETE' button from a chord in the custom chord list
 def chord_delete(request, id):
     #pdb.set_trace()
     data = dict()
@@ -246,14 +203,16 @@ def chord_delete(request, id):
     chord = Chord.objects.get(id=id)
     chord.delete()
     
-    #copied code from load_chord view. This is to refresh the table
-    chords = Chord.objects.all()
     data['html_chord_list'] = chord_list_render(request)
-    
     
     return JsonResponse(data)
 
 
+
+
+
+
+#(not a view) generates the html to be put in the song list section. Is used at the end of every song_* view
 def song_list_render(req):
     selectedSongId = req.GET.get("song-id")
     selectedSong = Song.objects.filter(id=selectedSongId).first()
@@ -270,16 +229,10 @@ def song_list_render(req):
     return render_to_string('musicwebsite/partial_song_list.html', renderContext)
    
    
-   
  
- 
- 
- 
- 
- 
+#creates a song, then reloads the song list. Used from the 'create song' button in the songs list
 def song_create(request):
     data = dict()
-    print(request.GET)
    
     try:
         Song.objects.create(
@@ -293,19 +246,23 @@ def song_create(request):
     data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
  
+ 
+#just reloads the song list. Used when selecting a new song
 def song_load(request):
     data = dict()
    
     data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
  
+ 
+#adds a songchord to a song, then reloads the song list. Creates a new custom chord if it doesnt already exist. Used on the 'add chord' button in a song
 def song_update(request):
     data = dict()
    
     chosenFrets = loads(request.GET.get("selected-frets"))
     chords = Chord.objects.all()
    
-    #check if a chord with those frets exists
+    #check if a chord with those frets already exists
     matched = False
     matchedChord = False
     for chord in chords:
@@ -338,7 +295,7 @@ def song_update(request):
             image=chord_draw(chosenFrets,base)
    
         )
-   
+    #create songchord in song
     SongChord.objects.create(
         song=Song.objects.get(id=request.GET.get("song-id")),
         chord=matchedChord,
@@ -350,6 +307,8 @@ def song_update(request):
     data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
  
+ 
+#creates a songchord, then reloads the song list. Used from the add chord to current song '+' button in the chord list
 def song_update_from_chords(request, id):
     data = dict()
    
@@ -363,7 +322,7 @@ def song_update_from_chords(request, id):
     data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
  
- 
+#deletes song then reloads the song list. Used from the 'delete song' button in the song section
 def song_delete(request):
     data = dict()
    
@@ -375,6 +334,7 @@ def song_delete(request):
     data['html_song_list'] = song_list_render(request)  
     return JsonResponse(data)
  
+#deletes a songchord then reloads the song list. Used from the 'DELETE' button on a songchord in the song section
 def song_remove(request, id):
     data = dict()
    
@@ -384,7 +344,7 @@ def song_remove(request, id):
     return JsonResponse(data)
  
  
- 
+#plays the current song.
 def song_play(request):
     data = dict()
     #pdb.set_trace()

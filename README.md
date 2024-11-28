@@ -18,6 +18,8 @@ Pip install packages
 - redis
 - matplotlib
 - numpy
+- captcha
+- django_recaptcha
 
 Extentions Needed:
 - SQLite
