@@ -110,43 +110,43 @@ def chord_draw(frets, base):
         frets = loads(frets)
     except:
         pass
+
+    # Creates a list with nested lists for matplotlib to read fret positions
     chord = []
-
-
-
     for i in range(0,6):
-        chord.append([frets[i]+.5,i])
+        chord.append([frets[i]+.5,i]) 
 
     fig, ax = plt.subplots(figsize=(5, 13))
-
     maxfret = max(base+4, max(frets))
+
     # Draw the fretboard
     ax.set_ylim(base, maxfret+1)
     ax.set_xlim(-1, 6)
     ax.set_yticks(numpy.arange(base, maxfret+1))
-    ylabel = [str('') for i in range(base, maxfret+1)]
+    ylabel = [str('') for i in range(base, maxfret+1)] # Sets empty labels to prevent function from breaking when changing a value
     ylabel[0] = "\n" + str(base) + "fr."
     ax.set_yticklabels(ylabel, fontsize=30)
     ax.set_xticks(numpy.arange(0, 6))
-    ax.set_xticklabels(['', '', '', '', '', ''], fontsize=30)
-    ax.xaxis.tick_top()
+    ax.set_xticklabels(['', '', '', '', '', ''], fontsize=30) # Sets empty labels to prevent function from breaking when changing a value
+    ax.xaxis.tick_top() # Moves X axis labels to top of graph
 
-    # Draw the fret lines
+    # Draw the fret lines and strings
     for i in range(0, 6):
         ax.axvline(i, color='black', lw=3)
-    
     for i in range(base, maxfret+1):
         plt.axhline(i, color='black', lw=3, xmax=.85, xmin=.15)
 
+    # Makes graph borders invisible
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['bottom'].set_visible(False)
     ax.spines['left'].set_visible(False)
 
+    # Flips graph vertically to match actual chord diagrams
     plt.gca().invert_yaxis()
 
 
-    # Plot custom fret positions
+    # Plot custom fret positions and set X or O labels for open or inactive strings
     labels = [item.get_text() for item in ax.get_xticklabels()]
     for fret, string in chord:
         if fret == -0.5:
@@ -155,16 +155,16 @@ def chord_draw(frets, base):
             labels[string] = 'O'
         else:
             ax.plot(string, fret+base-1, 'o', color='black', markersize=30)
-
     ax.set_xticklabels(labels)
 
+    # Set graph size ratio
     fig.set_size_inches(6,4.4)
     
+    # Saves graph as PNG into memory with an equivelant string to save into the Chord object.
     img = io.BytesIO()
     plt.savefig(img, format='PNG', bbox_inches="tight")
     img.seek(0)
     plt.close(fig)
-
     str_equivalent_image = str(base64.b64encode(img.getvalue()).decode())
     img_src = "data:image/png;base64," + str_equivalent_image
 
@@ -174,8 +174,6 @@ def chord_draw(frets, base):
 #creates a chord in database using the fretboard and name input from the page, then reloads custom chord list. Used from the 'save chord' button under the chord list
 def chord_create(request):
     data = dict()
-
-
 
     name = request.GET.get("name")
     base = request.GET.get("base")
@@ -216,11 +214,6 @@ def chord_delete(request, id):
     data['html_chord_list'] = chord_list_render(request)
     
     return JsonResponse(data)
-
-
-
-
-
 
 #(not a view) generates the html to be put in the song list section. Is used at the end of every song_* view
 def song_list_render(req):
