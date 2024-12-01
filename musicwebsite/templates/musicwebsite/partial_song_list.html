@@ -11,7 +11,7 @@ For styling:
 {% if user.is_authenticated %}
 
 <div class="row">
-    <div class="col-4 border-end border-2">
+    <div class="col-4 border-end border-2 pe-0">
         <div class="overflow-auto" style="height: 420px;">
             <table class="table" style="border-collapse:collapse;">
                 <tbody>
@@ -43,13 +43,13 @@ For styling:
 
 
 
-    <div class="col-8" > 
+    <div class="col-8 ps-0" > 
     {% if selected_song %}
     <div id="js-song-scroll"class="overflow-auto" style="height: 420px;">
     
         <table class="table" style="border-collapse:collapse;" id="songchord-table">          
         <thead>
-            <tr>
+            <tr class="border-secondary">
             <th>Name</th>
             <th>Frets</th>
             <th></th>
@@ -60,8 +60,8 @@ For styling:
             {% for songchord in selected_songchords %}
             {% with chord=songchord.chord %}
 
-            <tr class="js-songchord-row align-middle">
-                <td>{{ chord.name }}</td>
+            <tr class="js-songchord-row align-middle border-secondary">
+                <td class="h5">{{ chord.name }}</td>
 
                 <td><img src="{{ chord.image }}" style="width:140px;" alt="{{ chord.name|clean_array }}"></td></td>
             
@@ -87,22 +87,25 @@ For styling:
             
     </div>
 
-    <hr class="solid mt-0 mb-3">
-
-    <button type="button"
-        data-url="{% url 'song_delete' %}"
-        class="btn btn-danger js-delete-song mb-0">Delete Song</button>
     
-    <button type="button"
-            data-url="{% url 'song_update' %}"
-            class="btn btn-info js-update-song mb-0">Add Chord</button>
 
+    <hr class="solid mt-0 mb-2">
+
+        <button type="button"
+        data-url="{% url 'song_delete' %}"
+        class="btn btn-danger js-delete-song">Delete Song</button>
+        
+        <button type="button"
+        data-url="{% url 'song_update' %}"
+        class="btn btn-info js-update-song">Add Chord</button>
+                
 
     {% else %}
-
-    <tr>
-        <td colspan="4" class="text-center bg-warning">No Chosen Song</td>
-    </tr>
+    <table class="table" style="border-collapse:collapse;">
+        <tr>
+            <td colspan="4" class="text-center bg-warning">No Song Selected</td>
+        </tr>
+    </table>
 
     {% endif %}
 

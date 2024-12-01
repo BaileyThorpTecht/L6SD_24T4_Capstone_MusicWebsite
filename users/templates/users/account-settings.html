@@ -13,7 +13,7 @@
             <a href="{% url 'profile' %}" class="btn btn-warning"> &#8592; Back To Profile</a>
             <hr>
             <h3 style="text-align: center">Account Settings</h3>
-            <img src="{% if request.user.member.profile_pic %}{{ request.user.member.profile_pic.url }}{% else %}{{ 'request.user.member.profile-pic-fallback.jpg' }}{% endif %}" 
+            <img src="{% if request.user.member.profile_pic %}{{ request.user.member.profile_pic.url }}{% else %}{% static 'images/profile-pic-fallback.png' %}{% endif %}" 
               alt="Profile Picture" 
               class="profile-pic"
             >

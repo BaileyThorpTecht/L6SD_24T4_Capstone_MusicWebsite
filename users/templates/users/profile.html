@@ -4,6 +4,8 @@
 
 {% block content %}
 
+{% load static %}
+
 <br>
 <div class="row">
     <div class="col-md-3">
@@ -11,7 +13,7 @@
             <a href="{% url 'home' %}" class="btn btn-warning"> &#8592; Back To Home</a>
             <hr>
             <h3 style="text-align: center">Profile</h3>
-            <img src="{% if request.user.member.profile_pic %}{{ request.user.member.profile_pic.url }}{% else %}{{ 'request.user.member.profile-pic-fallback.jpg' }}{% endif %}" 
+            <img src="{% if request.user.member.profile_pic %}{{ request.user.member.profile_pic.url }}{% else %}{% static 'images/profile-pic-fallback.png' %}{% endif %}" 
               alt="Profile Picture" 
               class="profile-pic"
             >
