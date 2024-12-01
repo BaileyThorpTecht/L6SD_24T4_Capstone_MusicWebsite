@@ -1,37 +1,47 @@
 {% load filters %}
 
 <!-- Later, add an if statement to only show the chords if not logged in-->
+{% if user.is_authenticated %}
+
+  {% for chord in custom_chords %}
+
+    <!-- Later, add here to only show chords of currently logged in user-->
+
+      <tr class="align-middle">
+        <td><button type="button"
+          data-url="{% url 'song_update_from_chords' chord.id %}"
+          class="btn btn-lg btn-info js-add-chord-to-song">+</button></td>
+
+        <td>{{ chord.name }}</td>
+        <td><img src="{{ chord.image }}" style="width:140px;" alt="{{ chord.name|clean_array }}"></td>
+
+        <td>
+          <button type="button"
+          data-id="{{ chord.id }}"
+          class="btn btn-lg btn-primary js-play-chord me-2 mb-1">Play</button>
+
+          <button type="button"
+          data-id="{{ chord.id }}"
+          class="btn btn-lg btn-info js-select-chord me-2 mb-1">Select</button>
+
+          <button type="button"
+          class="btn btn-lg btn-danger delete-chord-button js-delete-chord mb-1"
+          data-url="{% url 'chord_delete' chord.id %}">DELETE</button>
+        </td>
+      </tr>
+    
 
 
-{% for chord in custom_chords %}
+  {% empty %}
+  <tr>
+    <td colspan="4" class="text-center bg-warning">No Custom Chords</td>
+  </tr>
+  {% endfor %}
 
-  <!-- Later, add here to only show chords of currently logged in user-->
-
-    <tr>
-      <td><button type="button"
-        data-url="{% url 'song_update_from_chords' chord.id %}"
-        class="btn btn-info js-add-chord-to-song">+</button></td>
-
-      <td>{{ chord.name }}</td>
-      <td><img src="{{ chord.image }}" style="width:140px;" alt="{{ chord.name|clean_array }}"></td>
-      <td><button type="button"
-        data-id="{{ chord.id }}"
-        class="btn btn-primary js-play-chord">Play</button></td>
-
-      <td><button type="button"
-        data-id="{{ chord.id }}"
-        class="btn btn-info js-select-chord">Select</button></td>
-
-      <td><button type="button"
-        class="btn btn-danger delete-chord-button js-delete-chord"
-        data-url="{% url 'chord_delete' chord.id %}">DELETE</button></td>
-    </tr>
-  
-
-
-{% empty %}
+{% else %}
 <tr>
-  <td colspan="4" class="text-center bg-warning">No Custom Chords</td>
+  <td colspan="4" class="text-center bg-warning">You must create an account or log in to save chords</td>
 </tr>
-{% endfor %}
+
+{% endif %}
 

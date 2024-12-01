@@ -42,11 +42,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Third-Party
+    'captcha',
     'crispy_forms',
     'crispy_bootstrap5',
     'django_bootstrap5',
     'django_celery_beat',
     'django_celery_results',
+    'django_recaptcha',
 ]
 
 CRISPY_ALLOWED_TEMPLATES_PACKS = 'bootstrap5'
@@ -169,3 +171,11 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'code.calligraphers@gmail.com'
 EMAIL_HOST_PASSWORD = 'osun eute fuau kbjo'
 DEFAULT_FROM_EMAIL = 'code.calligraphers@gmail.com'
+
+
+# Register ReCaptcha
+REGISTER_RECAPTCHA_PUBLIC_KEY = "6LcEO4sqAAAAAM4wDLrKR4BjMlGYEyKnbAqd3edU"
+REGISTER_RECAPTCHA_PRIVATE_KEY = "6LcEO4sqAAAAAFSTB12JPdsaTMEE5wbv-mF6iJy7"
+
+SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
+RECAPTCHA_USE_SSL = True
