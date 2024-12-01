@@ -9,22 +9,7 @@ from .models import *
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
-    agree_to_terms = forms.BooleanField(
-        required=True,
-        label=mark_safe('I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms & Conditions</a>'),
-        widget=forms.CheckboxInput(attrs={
-            'id' : 'termsCheckbox',
-            'onclick' : 'toggleRegisterButton()'
-            })
-    )
-    agree_to_privacy = forms.BooleanField(
-        required=True,
-        label=mark_safe('I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a>'),
-        widget=forms.CheckboxInput(attrs={
-            'id' : "privacyCheckbox",
-            'onclick' : 'toggleRegisterButton()'
-            })
-    )
+    
     captcha = ReCaptchaField(widget = ReCaptchaV2Checkbox)     
     
         

@@ -383,11 +383,5 @@ def song_play(request):
        
     return JsonResponse(data)
 
-
-
-
 def landing_page(request):
     return render(request, 'musicwebsite/landing_page.html')
-
-def privacy_policy(request):
-    return render(request, 'musicwebsite/privacy_policy.html')

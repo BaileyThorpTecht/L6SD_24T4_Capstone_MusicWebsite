@@ -43,10 +43,10 @@
         </fieldset>
         <p id="main_paragraph">
             You MUST read and accept both our
-            <a href="{% url 'terms_and_conditions' %}" target="_blank" id="view-terms-link">Terms and Conditions</a>
+            <a href="{% url 'terms_and_conditions_footer' %}" target="_blank" id="view-terms-link">Terms and Conditions</a>
             and 
             <a href="{% url 'privacy_policy' %}" target="_blank" id="view-policy-link">Privacy Policy</a>
-            in order to create an account.
+            in order to create an account, once you've read them you can simply return to this page.
             
         </p>
         <div id="terms-section">
@@ -66,42 +66,6 @@
         <a href="{% url 'home' %}" class="text-muted"></a>
     </div>
     <p><a href="{% url 'login'%}" class="btn btn-outline-success">Already Have An Account? Click Here To Login</a></p>
-</div>
-
-{% comment %} Terms & Conditions Modal {% endcomment %}
-<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="termsModalLabel">Terms & Conditions</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Add your Terms & Conditions content here -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% comment %} Privacy Policy Modal {% endcomment %}
-<div class="modal fade" id="privacyModal" tabindex=-1 aria-labelledby="privacyModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
-                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Here goes the Privacy Policy body</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script src="https://www.google.com/recaptcha/enterprise.js?render={{ REGISTER_RECAPTCHA_PUBLIC_KEY }}"></script>
