@@ -6,7 +6,8 @@
 *.pyc
 __pycache__/
 db.sqlite3
-media
+media/*
+!media/profile-pic-fallback.png
 
 # Backup files #
 *.bak
