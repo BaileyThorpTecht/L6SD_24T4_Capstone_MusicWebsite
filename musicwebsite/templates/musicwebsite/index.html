@@ -20,6 +20,8 @@
     <!-- <link rel="icon" type="image/x-icon" href="placeholder_icon.ico"> -->
     <link rel="icon" href="{% static 'Chordial.ico' %}" type="image/x-icon" />
 
+    
+
 
     <!-- Header Styles -->
     <style>
@@ -105,10 +107,11 @@
       <button class="btn btn-sm btn-primary me-2" id="string3button">Play String 4</button>
       <button class="btn btn-sm btn-primary me-2" id="string4button">Play String 5</button>
       <button class="btn btn-sm btn-primary me-2" id="string5button">Play String 6</button>
-      
+
       <button type="button"
             data-url="{% url 'song_update' %}"
             class="btn btn-sm btn-info js-update-song mb-0 disabled">Add Chord to Song</button>
+            <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1"  data-bs-toggle="tooltip" data-bs-html="true" title="Will add the chord on the fretboard to the currently selected song. If the chord does not already exist, it will be saved as a custom chord" />
       <div class="text-muted js-add-chord-alert">You must create and select a song at the bottom of the page to add chords to it</div>
       
     </div>
@@ -131,7 +134,7 @@
         <div class="col-4 text-center">
           <h4 class="card-title mb-3">Chord Identification</h4>
           <div class="card mx-auto" style="width: 100%; height: 175px;">
-            <h7 class="card-subtitle text-muted mt-3">Check if the fretboard matches with any existing chords.</h7>
+            <h7 class="card-subtitle text-muted mt-3">Check if the chord on the fretboard matches with any existing chords.</h7>
             <h1 id="chord-search-display">...</h1>
             <div class="card-body"></div>
           </div>
@@ -164,7 +167,9 @@
           </div>
           <div id="custom-chord-buttons" class="button-container">
             <input class="js-chord-name-input me-2 align-middle" placeholder="Chord name..."></input>
-            <button class="btn btn-sm btn-primary me-2 js-create-chord">Save Chord</button>
+            <button class="btn btn-sm btn-primary js-create-chord">Save Chord</button>
+
+            <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1"  data-bs-toggle="tooltip" data-bs-html="true" title="The chord selected on the fretboard at the top of the page will be saved as a custom chord in the box above.<br>If no name is entered, a default name will be created based on the notes in the chord." />
           </div>
         </div>
       </div>
@@ -178,9 +183,11 @@
           </div>
         </div>
         <div class="text-center mt-3">
-          <label class="large js-beat-counter" id="playSong">...</label>
+          <!--<label class="large js-beat-counter" id="playSong">...</label>-->
           <button class="btn btn-lg btn-primary js-play-song disabled" id="playSong">Play Song</button>
           <button class="btn btn-lg btn-primary js-stop-song" style="display:none;">Stop</button>
+
+          <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1"  data-bs-toggle="tooltip" data-bs-html="true" title="Plays the song" />
 
           <br>
 
@@ -933,5 +940,17 @@ function playCustomChord() {
             PLAYING SONGS
 #####################################-->
 <script src="{% static '/js/play_songs.js' %}"></script>
+
+
+
+
+<!-- enable tooltips -->
+<script>
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
+</script>
+
 
 {% endblock %}

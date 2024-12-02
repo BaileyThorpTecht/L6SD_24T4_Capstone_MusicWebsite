@@ -65,7 +65,7 @@ function playSong(chords) {
   // ################### playsong
   songInterval = setInterval(function () {
 
-    $(".js-beat-counter").html(strumIndex + 1);  
+    //$(".js-beat-counter").html(strumIndex + 1);  
 
     //if its the start of a new chord, change the chord
     if (strumIndex == 0) {
@@ -110,6 +110,6 @@ function stopSong() {
   $(".js-stop-song").css("display","none");
 
   $(".js-songchord-row").removeClass("table-warning");
-  $(".js-beat-counter").html("...");  
+  //$(".js-beat-counter").html("...");  
 
 }
