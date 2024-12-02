@@ -64,3 +64,24 @@ def delete_account(request):
         messages.success(request, "Your account has been deleted successfully.")
         return redirect('home')
     return redirect('profile')
+
+def terms_and_conditions(request):
+    return render(request, 'terms_and_conditions.html')
+
+def terms_and_conditions_footer(request):
+    return render(request, 'terms_and_conditions_footer.html')
+
+def privacy_policy(request):
+    return render(request, 'privacy_policy.html')
+
+def privacy_policy_footer(request):
+    return render(request, 'privacy_policy_footer.html')
+
+def FAQ(request):
+    return render(request, 'FAQ.html')
+
+def community_guidelines(request):
+    return render(request, 'community_guidelines.html')
+
+def contact_us(request):
+    return render(request, 'contact_us.html')
