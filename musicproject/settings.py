@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'django_celery_beat',
     'django_celery_results',
-    'django_recaptcha',
+    # 'django_recaptcha',
 ]
 
 CRISPY_ALLOWED_TEMPLATES_PACKS = 'bootstrap5'
@@ -174,8 +174,10 @@ DEFAULT_FROM_EMAIL = 'code.calligraphers@gmail.com'
 
 
 # Register ReCaptcha
-REGISTER_RECAPTCHA_PUBLIC_KEY = "6LcEO4sqAAAAAM4wDLrKR4BjMlGYEyKnbAqd3edU"
-REGISTER_RECAPTCHA_PRIVATE_KEY = "6LcEO4sqAAAAAFSTB12JPdsaTMEE5wbv-mF6iJy7"
+# REGISTER_RECAPTCHA_PUBLIC_KEY = "6LdLJo8qAAAAAP3IEjonJWEl4ZeGmMPmBVdSYSrN"
+# REGISTER_RECAPTCHA_PRIVATE_KEY = "6LdLJo8qAAAAAH7eq0cGM_6Pf7nzEc0vk2H_uPJC"
 
-SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
-RECAPTCHA_USE_SSL = True
+# RECAPTCHA_PROJECT_URL = "https://recaptchaenterprise.googleapis.com/v1/projects/chordial-1732668797411/assessments?key="
+
+# SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
+# RECAPTCHA_USE_SSL = True
