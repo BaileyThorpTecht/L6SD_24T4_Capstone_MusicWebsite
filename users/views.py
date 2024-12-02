@@ -43,18 +43,42 @@ def logout_page(request):
 def profile_page(request):
     return render(request, 'profile.html')
 
+# @login_required()
+# def accountSettings(request):
+#     member = request.user.member
+#     form = MemberForm(instance=member)
+    
+#     if request.method == 'POST':
+#         form = MemberForm(request.POST, request.FILES, instance=member)
+#         if form.is_valid():
+#             form.save()
+    
+#     context = {'form': form}
+#     return render(request, 'users/account-settings.html', context)
+
 @login_required()
 def accountSettings(request):
     member = request.user.member
-    form = MemberForm(instance=member)
+    user = request.user 
+    member_form = MemberForm(instance=member)
     
     if request.method == 'POST':
-        form = MemberForm(request.POST, request.FILES, instance=member)
-        if form.is_valid():
-            form.save()
+        member_form = MemberForm(request.POST, request.FILES, instance=member)
+        if member_form.is_valid():
+            member_form.save()
+
+        # Update User fields (username and email)
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        if username:
+            user.username = username
+        if email:
+            user.email = email
+        user.save()
     
-    context = {'form': form}
+    context = {'form': member_form, 'user': user, 'member': member}
     return render(request, 'users/account-settings.html', context)
+
 
 @login_required
 def delete_account(request):
