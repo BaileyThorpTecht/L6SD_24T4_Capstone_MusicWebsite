@@ -15,11 +15,14 @@ function updateSongList(innerHtml){
         selectedButton.addClass("table-warning");
         
         //disable/enable play button if no song selected
-        $(".js-play-song").removeClass("disabled")
-        $(".js-update-song").removeClass("disabled")
+        $(".js-play-song").removeClass("disabled");
+        $(".js-update-song").removeClass("disabled");
+        $(".js-add-chord-alert").addClass("d-none");
       }else{
-        $(".js-play-song").addClass("disabled")
-        $(".js-update-song").addClass("disabled")
+        $(".js-play-song").addClass("disabled");
+        $(".js-update-song").addClass("disabled");
+        $(".js-add-chord-alert").removeClass("d-none");
+
 
 
       }

@@ -105,10 +105,12 @@
       <button class="btn btn-sm btn-primary me-2" id="string3button">Play String 4</button>
       <button class="btn btn-sm btn-primary me-2" id="string4button">Play String 5</button>
       <button class="btn btn-sm btn-primary me-2" id="string5button">Play String 6</button>
-
+      
       <button type="button"
             data-url="{% url 'song_update' %}"
             class="btn btn-sm btn-info js-update-song mb-0 disabled">Add Chord to Song</button>
+      <div class="text-muted js-add-chord-alert">You must create and select a song at the bottom of the page to add chords to it</div>
+      
     </div>
 
       <!-- Chord Section -->
@@ -151,8 +153,6 @@
                     <th class="small">Add To Current Song</th>
                     <th>Name</th>
                     <th>Frets</th>
-                    <th></th>
-                    <th></th>
                     <th></th>
                   </tr>
                 </thead>
