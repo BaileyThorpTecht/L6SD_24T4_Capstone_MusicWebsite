@@ -53,7 +53,9 @@
   <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
     <div class="container-fluid">
         <!-- Logo -->
-        <a class="navbar-brand" href="{% url 'home' %}">Logo</a>
+        <a class="navbar-brand" href="{% url 'home' %}">
+          <img src="{% static 'Chordial_whole_png.png' %}" alt="Choridal Logo" style="width: 100px; height: auto;">
+        </a>
 
         <!-- Light/Dark Mode Button -->
         <button class="btn btn-light mx-3" onclick="lightingmode()">◑</button>
