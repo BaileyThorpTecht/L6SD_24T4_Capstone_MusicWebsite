@@ -13,11 +13,10 @@ For styling:
 
 <!-- enable tooltips -->
 <script>
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
-  </script>
+  $(document).ready(function() {
+    $('.hover-tooltip').tooltip();
+  });
+</script>
 
 <div class="row">
     <div class="col-4 border-end border-2 pe-0">
@@ -107,7 +106,7 @@ For styling:
         <button type="button"
         data-url="{% url 'song_update' %}"
         class="btn btn-info js-update-song">Add Chord</button>
-        <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1 ms-1"  data-bs-toggle="tooltip" data-bs-html="true" title="This will add the chord from the fretboard (at the top of the page) to this song." />
+        <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1 ms-1 hover-tooltip"  data-bs-toggle="tooltip" data-bs-html="true" title="This will add the chord from the fretboard (at the top of the page) to this song." />
                 
 
     {% else %}
