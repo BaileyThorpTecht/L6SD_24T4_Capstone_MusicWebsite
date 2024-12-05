@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
+from django.db.models import Q
 from .models import *
 
 from django.core import serializers
@@ -186,6 +187,36 @@ def chord_create(request):
     
         base, frets = getBaseFromFrets(frets)
         
+        
+        #check for existing chord
+        chosenFrets = frets
+
+        chords = Chord.objects.filter(isCustom=False)
+
+        matched = False
+        matchedChord = False
+        for chord in chords:
+            checkingFrets = chord.frets
+        
+            for i in range(6):          
+                if ((chosenFrets[i] == checkingFrets[i] + chord.base - 1) or (checkingFrets[i] == chosenFrets[i] == -1)):
+                    if (i == 5):
+                        matched = True
+                        break
+                else:
+                    break
+            
+            if (matched):
+                matchedChord = chord
+                break
+        
+        if (matchedChord):
+            name = matchedChord.name
+        
+        
+        
+        
+        
         Chord.objects.create(
                         name=name,
                         base=base,
@@ -276,7 +307,8 @@ def song_update(request):
     
     if (user.is_authenticated):
         chosenFrets = loads(request.GET.get("selected-frets"))
-        chords = Chord.objects.filter(user=user.id)
+
+        chords = Chord.objects.filter(Q(user=user.id) | Q(isCustom=False))
 
         #check if a chord with those frets already exists
         matched = False

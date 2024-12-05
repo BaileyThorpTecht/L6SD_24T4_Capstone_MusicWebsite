@@ -111,8 +111,8 @@
       <button type="button"
             data-url="{% url 'song_update' %}"
             class="btn btn-sm btn-info js-update-song mb-0 disabled">Add Chord to Song</button>
-      <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1 ms-1"  data-bs-toggle="tooltip" data-bs-html="true" title="This will the chord on the fretboard to the currently selected song. If the chord does not already exist, it will be saved as a custom chord" />
-      <p class="mt-2 text-black js-add-chord-alert">You must create and select a song at the bottom of the page before you can add chords to one</p>
+      <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1 ms-1"  data-bs-toggle="tooltip" data-bs-html="true" title="This will add the chord on the fretboard to the currently selected song. If the chord does not already exist, it will be saved as a custom chord." />
+      <p class="mt-2 text-info js-add-chord-alert">You must create and select a song at the bottom of the page before you can add chords to one</p>
       
     </div>
 
