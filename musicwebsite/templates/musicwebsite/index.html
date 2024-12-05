@@ -111,8 +111,8 @@
       <button type="button"
             data-url="{% url 'song_update' %}"
             class="btn btn-sm btn-info js-update-song mb-0 disabled">Add Chord to Song</button>
-            <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1"  data-bs-toggle="tooltip" data-bs-html="true" title="Will add the chord on the fretboard to the currently selected song. If the chord does not already exist, it will be saved as a custom chord" />
-      <div class="text-muted js-add-chord-alert">You must create and select a song at the bottom of the page to add chords to it</div>
+      <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1 ms-1"  data-bs-toggle="tooltip" data-bs-html="true" title="This will the chord on the fretboard to the currently selected song. If the chord does not already exist, it will be saved as a custom chord" />
+      <p class="mt-2 text-black js-add-chord-alert">You must create and select a song at the bottom of the page before you can add chords to one</p>
       
     </div>
 
@@ -169,7 +169,7 @@
             <input class="js-chord-name-input me-2 align-middle" placeholder="Chord name..."></input>
             <button class="btn btn-sm btn-primary js-create-chord">Save Chord</button>
 
-            <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1"  data-bs-toggle="tooltip" data-bs-html="true" title="The chord selected on the fretboard at the top of the page will be saved as a custom chord in the box above.<br>If no name is entered, a default name will be created based on the notes in the chord." />
+            <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1 ms-1"  data-bs-toggle="tooltip" data-bs-html="true" title="The chord selected on the fretboard at the top of the page will be saved as a custom chord in the box above.<br>If no name is entered, a default name will be created based on the notes in the chord." />
           </div>
         </div>
       </div>
@@ -187,7 +187,7 @@
           <button class="btn btn-lg btn-primary js-play-song disabled" id="playSong">Play Song</button>
           <button class="btn btn-lg btn-primary js-stop-song" style="display:none;">Stop</button>
 
-          <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1"  data-bs-toggle="tooltip" data-bs-html="true" title="Plays the song" />
+          <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1 ms-1"  data-bs-toggle="tooltip" data-bs-html="true" title="Plays all chords in the song in order. The strum pattern is played once for each chord before moving onto the next chord."/>
 
           <br>
 
@@ -195,12 +195,7 @@
           <input class="js-bpm-input me-2" placeholder="80"></input>
           <label>Strum Pattern: </label>
           <input class="js-pattern-input" placeholder="D X D X D X D X"></input>
-
-          <br>
-
-          <label class="mt-2">Type "D" for a down strum, or "X" for a rest. Spaces are optional</label>
-          <br>
-          <label class="mt-2">BPM assumes 2 strums per beat</label>
+          <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1 ms-1"  data-bs-toggle="tooltip" data-bs-html="true" title='This is the order of strums and rests each chord will play. Type "D" for a down strum, or "X" for a rest. Spaces are optional. Try playing with the default value!'/>
           
         </div>
       </div>
