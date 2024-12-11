@@ -11,7 +11,15 @@ Pip install packages
 - django-bootstrap5
 - pillow
 - django-crispy-forms
-- crispy_bootstrap5
+- celery
+- django-celery-beat
+- django-celery-results
+- eventlet
+- redis
+- matplotlib
+- numpy
+- captcha
+- django_recaptcha
 
 Extentions Needed:
 - SQLite

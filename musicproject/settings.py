@@ -26,7 +26,13 @@ SECRET_KEY = 'django-insecure-f#uc7fho(n#0i42e1l5-5-h6#wj^30-+c*7a$-lk-w7k=1gdkm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'f1d3-103-237-41-28.ngrok-free.app',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://f1d3-103-237-41-28.ngrok-free.app'
+]
 
 
 # Application definition
@@ -42,9 +48,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Third-Party
+    'captcha',
     'crispy_forms',
     'crispy_bootstrap5',
     'django_bootstrap5',
+    'django_celery_beat',
+    'django_celery_results',
+    # 'django_recaptcha',
 ]
 
 CRISPY_ALLOWED_TEMPLATES_PACKS = 'bootstrap5'
@@ -129,6 +139,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -137,6 +153,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = '/'
+
+
+
+# Celery
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
+
+# Celery Beat Scheduler
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# Celery Logs
+CELERY_TASK_ALWAYS_EAGER = False
+CELERY_TASK_EAGER_PROPAGATES = True
+
 
 # SMTP Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -146,3 +177,13 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'code.calligraphers@gmail.com'
 EMAIL_HOST_PASSWORD = 'osun eute fuau kbjo'
 DEFAULT_FROM_EMAIL = 'code.calligraphers@gmail.com'
+
+
+# Register ReCaptcha
+# REGISTER_RECAPTCHA_PUBLIC_KEY = "6LdLJo8qAAAAAP3IEjonJWEl4ZeGmMPmBVdSYSrN"
+# REGISTER_RECAPTCHA_PRIVATE_KEY = "6LdLJo8qAAAAAH7eq0cGM_6Pf7nzEc0vk2H_uPJC"
+
+# RECAPTCHA_PROJECT_URL = "https://recaptchaenterprise.googleapis.com/v1/projects/chordial-1732668797411/assessments?key="
+
+# SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
+# RECAPTCHA_USE_SSL = True

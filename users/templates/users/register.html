@@ -5,23 +5,159 @@
 {% block title %} Registration {% endblock %}
 
 {% block content %}
+<!--All the style code here-->
+<style>
+    .transparent-checkbox {
+        opacity: 0.3; /* Make the checkbox appear faded */
+        pointer-events: none; /* Prevent clicking or interaction */
+    }
 
+    .active-checkbox {
+        opacity: 1; /* Restore normal appearance */
+        pointer-events: auto; /* Allow interaction */
+    }
+
+    .transparent-label {
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    .active-label {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .bigger-words {
+        font-size: larger;
+    }
+</style>
+
+<!--All the main frontend code here-->
 <div>
-    <form action="" method="POST">
+    <form id="register-form" action="" method="POST">
         {% csrf_token %}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Registration</legend>
             {{ form|crispy }}
         </fieldset>
+        <p id="main_paragraph">
+            You MUST read and accept both our
+            <a href="{% url 'terms_and_conditions_footer' %}" target="_blank" id="view-terms-link">Terms and Conditions</a>
+            and 
+            <a href="{% url 'privacy_policy' %}" target="_blank" id="view-policy-link">Privacy Policy</a>
+            in order to create an account, once you've read them you can simply return to this page.
+            
+        </p>
+        <div id="terms-section">
+            <input type="checkbox" id="id_agree_to_terms" name="agree_to_terms">
+            <label id="terms_label" for="id_agree_to_terms">I agree to the Terms & Conditions</label>
+        </div>
+        <div id="policy-section" >
+            <input type="checkbox" id="id_agree_to_policy" name="agree_to_policy">
+            <label id="policy_label" for="id_agree_to_policy">I agree to the Privacy Policy</label>
+        </div>
         <div class="form-group py-3">
-            <input type="submit" class="btn btn-outline-primary" value="Register">
-            <a href="{% url 'home'%}" class="btn btn-outline-danger">Cancel</a>
+            <input type="submit" class="btn btn-outline-primary" value="Register" id="submit-btn" disabled>
+            <a href="{% url 'home' %}" class="btn btn-outline-danger">Cancel</a>
         </div>
     </form>
-    <div class="border-top pt-3">
-        <a href="{% url 'home' %}" class="text-muted"></a>
-    </div>
-    <p><a href="{% url 'login'%}" class="btn btn-outline-success">Already Have An Account? Click Here To Login</a></p>
+    <p><a href="{% url 'login' %}" class="btn btn-outline-success">Already Have An Account? Click Here To Login</a></p>
 </div>
+
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel">Terms & Conditions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Add your Terms & Conditions content here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Here goes the Privacy Policy body</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Enable the Register button if both checkboxes are selected
+    function toggleRegisterButton() {
+        const termsCheckbox = document.getElementById("termsCheckbox");
+        const privacyCheckbox = document.getElementById("privacyCheckbox");
+        const registerButton = document.getElementById("registerButton");
+
+        registerButton.disabled = !(termsCheckbox.checked && privacyCheckbox.checked);
+    }
+
+    document.getElementById("termsCheckbox").addEventListener("change", toggleRegisterButton);
+    document.getElementById("privacyCheckbox").addEventListener("change", toggleRegisterButton);
+</script>
+
+<!--All the javascript backend code here-->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const termsLink = document.getElementById('view-terms-link');
+        const policyLink = document.getElementById('view-policy-link');
+        const termsSection = document.getElementById('terms-section');
+        const policySection = document.getElementById('policy-section');
+        const termsCheckbox = document.getElementById('id_agree_to_terms');
+        const policyCheckbox = document.getElementById('id_agree_to_policy')
+        const submitBtn = document.getElementById('submit-btn');
+        const mainParagraph = document.getElementById('main_paragraph');
+        const termsLabel = document.getElementById('terms_label');
+        const policyLabel = document.getElementById('policy_label');
+
+        // Make the checkboxes less visble
+        termsCheckbox.classList.add('transparent-checkbox');
+        policyCheckbox.classList.add('transparent-checkbox');
+
+        // Make the checkboxes text less visble
+        termsLabel.classList.add('transparent-label');
+        policyLabel.classList.add('transparent-label');
+
+        // Make the paragraph bigger
+        mainParagraph.classList.add('bigger-words');
+
+        // Listen for clicks on the Terms and Conditions link
+        termsLink.addEventListener('click', function (event) {
+            // Show the checkbox after clicking the link
+            termsCheckbox.classList.remove('transparent-checkbox');
+            termsLabel.classList.remove('transparent-label');
+            termsCheckbox.classList.add('active-checkbox');
+            termsCheckbox.classList.add('active-label');
+        });
+
+        // Listen for clicks on the Privacy Policy Link
+        policyLink.addEventListener('click', function (event) {
+            // Show the checkbox after clicking the link
+            policyCheckbox.classList.remove('transparent-checkbox');
+            policyLabel.classList.remove('transparent-label');
+            policyCheckbox.classList.add('active-checkbox');
+            policyLabel.classList.add('active-label');
+        });
+
+        // Enable the submit button when both checkboxes are ticked
+        function updateSubmitButtonState() {
+            submitBtn.disabled = !(termsCheckbox.checked && policyCheckbox.checked);
+        }
+
+        // Add change event listeners to both checkboxes
+        termsCheckbox.addEventListener('change', updateSubmitButtonState);
+        policyCheckbox.addEventListener('change', updateSubmitButtonState);
+    });
+</script>
 
 {% endblock content %}
