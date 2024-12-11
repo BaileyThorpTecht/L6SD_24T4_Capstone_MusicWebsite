@@ -1,0 +1,135 @@
+<!--
+For styling:
+    for the list of songs, have the whole row be clickable instead of having a button
+    have the add song button/input and the delete/add chord buttons be stuck to the bottom
+    have the song list and songchord list be of fixed height and scrollable (both same height)
+
+-->
+
+{% load filters %}
+{% load static %}
+
+{% if user.is_authenticated %}
+
+<!-- enable tooltips -->
+<script>
+  $(document).ready(function() {
+    $('.hover-tooltip').tooltip();
+  });
+</script>
+
+<div class="row">
+    <div class="col-4 border-end border-2 pe-0">
+        <div class="overflow-auto" style="height: 420px;">
+            <table class="table" style="border-collapse:collapse;">
+                <tbody>
+                    {% for song in songs %}
+                    <tr style="cursor: pointer;"
+                        data-url="{% url 'song_load' %}"
+                        data-id = {{ song.id }}
+                        class="js-load-song">
+                        <td>{{ song.title }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center bg-warning">No Songs</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <hr class="solid mt-0 mb-3">
+
+        <div class="button-container">
+            <input id="js-song-name-input" class="me-2 align-middle" placeholder="Song name..."></input>
+            <button type="button"
+                    data-url="{% url 'song_create' %}"
+                    class="btn btn-sm btn-primary me-3 js-create-song">Create Song</button>
+        </div>
+    </div>
+
+
+
+    <div class="col-8 ps-0" > 
+    {% if selected_song %}
+    <div id="js-song-scroll"class="overflow-auto" style="height: 420px;">
+    
+        <table class="table" style="border-collapse:collapse;" id="songchord-table">          
+        <thead>
+            <tr class="border-secondary">
+            <th>Name</th>
+            <th>Frets</th>
+            <th></th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for songchord in selected_songchords %}
+            {% with chord=songchord.chord %}
+
+            <tr class="js-songchord-row align-middle border-secondary">
+                <td class="h5">{{ chord.name }}</td>
+
+                <td><img src="{{ chord.image }}" style="width:140px;" alt="{{ chord.name|clean_array }}"></td></td>
+            
+                <td class="text-end">
+                    <button type="button"
+                    data-id="{{ chord.id }}"
+                    class="btn btn-lg btn-primary js-play-chord me-3 mb-1">Play</button>
+            
+                    <button type="button"
+                    data-url="{% url 'song_remove' songchord.id %}"
+                    class="btn btn-lg btn-danger js-remove-song me-2 mb-1">REMOVE</button>
+                </td>
+                
+                </tr>
+                {% endwith %}
+                {% empty %}
+                <tr>
+                <td colspan="4" class="text-center bg-warning">Song Empty</td>
+                </tr>
+                {% endfor %}
+        </tbody>
+        </table>
+            
+    </div>
+
+    
+
+    <hr class="solid mt-0 mb-2">
+
+        <button type="button"
+        data-url="{% url 'song_delete' %}"
+        class="btn btn-danger js-delete-song">Delete Song</button>
+        
+        <button type="button"
+        data-url="{% url 'song_update' %}"
+        class="btn btn-info js-update-song">Add Chord</button>
+        <img src="{% static '/images/tooltip-img.png' %}" class="bg-secondary rounded-circle text-black text-h1 ms-1 hover-tooltip"  data-bs-toggle="tooltip" data-bs-html="true" title="This will add the chord from the fretboard (at the top of the page) to this song." />
+                
+
+    {% else %}
+    <table class="table" style="border-collapse:collapse;">
+        <tr>
+            <td colspan="4" class="text-center bg-warning">No Song Selected</td>
+        </tr>
+    </table>
+
+    {% endif %}
+
+
+    </div>
+</div>
+
+{% else %}
+
+<table class="table mb-0">
+<tbody>
+<tr>
+    <td class="text-center bg-warning">You must create an account or log in to create songs</td>
+</tr>
+</tbody>
+</table>
+
+{% endif %}

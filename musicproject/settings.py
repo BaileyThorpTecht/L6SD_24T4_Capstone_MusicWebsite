@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,20 +26,40 @@ SECRET_KEY = 'django-insecure-f#uc7fho(n#0i42e1l5-5-h6#wj^30-+c*7a$-lk-w7k=1gdkm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'f1d3-103-237-41-28.ngrok-free.app',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://f1d3-103-237-41-28.ngrok-free.app'
+]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    # Local Apps
+    'musicwebsite.apps.MusicwebsiteConfig',
+    'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'musicwebsite.apps.MusicwebsiteConfig'
+    # Third-Party
+    'captcha',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'django_bootstrap5',
+    'django_celery_beat',
+    'django_celery_results',
+    # 'django_recaptcha',
 ]
+
+CRISPY_ALLOWED_TEMPLATES_PACKS = 'bootstrap5'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -55,7 +76,10 @@ ROOT_URLCONF = 'musicproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'musicwebsite', 'templates', 'musicwebsite'),
+            os.path.join(BASE_DIR, 'users', 'templates', 'users'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -77,10 +101,9 @@ WSGI_APPLICATION = 'musicproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3', 
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -100,7 +123,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -117,8 +139,51 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = '/'
+
+
+
+# Celery
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
+
+# Celery Beat Scheduler
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# Celery Logs
+CELERY_TASK_ALWAYS_EAGER = False
+CELERY_TASK_EAGER_PROPAGATES = True
+
+
+# SMTP Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'code.calligraphers@gmail.com'
+EMAIL_HOST_PASSWORD = 'osun eute fuau kbjo'
+DEFAULT_FROM_EMAIL = 'code.calligraphers@gmail.com'
+
+
+# Register ReCaptcha
+# REGISTER_RECAPTCHA_PUBLIC_KEY = "6LdLJo8qAAAAAP3IEjonJWEl4ZeGmMPmBVdSYSrN"
+# REGISTER_RECAPTCHA_PRIVATE_KEY = "6LdLJo8qAAAAAH7eq0cGM_6Pf7nzEc0vk2H_uPJC"
+
+# RECAPTCHA_PROJECT_URL = "https://recaptchaenterprise.googleapis.com/v1/projects/chordial-1732668797411/assessments?key="
+
+# SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
+# RECAPTCHA_USE_SSL = True

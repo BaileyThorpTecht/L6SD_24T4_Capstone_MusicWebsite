@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang"en" data-bs-theme="Light" id="lighting">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% comment %} Title {% endcomment %}
+
+    {% load static %}
+
+    {% comment %} External Styling Sheets {% endcomment %}
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static "css/styling.css" %}">
+    <!-- Bootstrap -->
+    {% comment %} <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> {% endcomment %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Bootstrap JS for functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+    ></script>
+    <!-- United theme from Bootswatch -->
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/united/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/5ff9c3e5b6.js" crossorigin="anonymous"></script>
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <style>
+      .ul_left {
+        text-align: left;
+      }
+
+      .h5_left {
+        text-align: left;
+      }
+
+      .ul_right {
+        text-align: left;
+        position: relative;
+        left: 80px;
+      }
+
+      .h5_right {
+        text-align: left;
+        position: relative;
+        left: 80px;
+      }
+    </style>
+
+</head>
+<body>
+  {% comment %} Navbar {% endcomment %}
+  <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand" href="{% url 'home' %}">
+          <img src="{% static 'Chordial_whole_png.png' %}" alt="Choridal Logo" style="width: 100px; height: auto;">
+        </a>
+
+        <!-- Light/Dark Mode Button -->
+        <button class="btn btn-light mx-3" onclick="lightingmode()">◑</button>
+
+        <!-- Hamburger Menu for Small Screens -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Links and Profile Picture -->
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav me-auto">
+                <!-- Add other navbar items here if needed -->
+            </ul>
+            {% if user.is_authenticated %}
+                <!-- Profile Picture and Dropdown -->
+                <li class="nav-item dropdown ms-auto d-flex align-items-center">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{% if request.user.member.profile_pic %}{{ request.user.member.profile_pic.url }}{% else %}{% static 'images/profile-pic-fallback.png' %}{% endif %}" alt="Profile Picture" class="nav-profile-pic">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
+                        {% if user.is_superuser %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/admin">Admin</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% else %}
+                <div class="navbar-nav ms-auto">
+                    <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
+                    <a href="{% url 'register' %}" class="nav-item nav-link">Register</a>
+                </div>
+
+            {% endif %}
+        </div>
+    </div>
+  </nav>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; align-items: center; justify-content: center; z-index: 9999;">
+    <div id="lottie-container" style="width: 300px; height: 300px;"></div>
+  </div>
+
+  <!-- Include Lottie Web -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.11.0/lottie.min.js"></script>
+
+  {% comment %} Content {% endcomment %}
+  <div class="container mt-4">
+    {% if messages %} {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %} {% endif %} {% block content %} {% endblock %}
+  </div>
+
+    {% comment %} Footer {% endcomment %}
+    <!-- Footer -->
+<footer class="bg-body-tertiary text-center">
+  <!-- Grid container -->
+  <div class="container p-4 pb-0 mb-4">
+    <!-- Section: Social media -->
+    <section class="mb-4">
+      <!-- Facebook -->
+      <a
+      data-mdb-ripple-init
+        class="btn text-white btn-floating m-1"
+        style="background-color: #3b5998;"
+        href="https://www.facebook.com/profile.php?id=61569750811565&sk=photos"
+        role="button"
+        ><i class="fab fa-facebook-f"></i
+      ></a>
+
+      <!-- X -->
+      <a
+        data-mdb-ripple-init
+        class="btn text-white btn-floating m-1"
+        style="background-color: #333333;"
+        href="https://x.com/ChordialMusic"
+        role="button"
+        ><i class="fa-brands fa-x-twitter"></i
+      ></a>
+
+      <!-- Google -->
+      <a
+      data-mdb-ripple-init
+        class="btn text-white btn-floating m-1"
+        style="background-color: #c61414;"
+        href="https://nz.pinterest.com/chordial85/"
+        role="button"
+        ><i class="fab fa-pinterest"></i
+      ></a>
+
+      <!-- Instagram -->
+      <a
+        data-mdb-ripple-init
+        class="btn text-white btn-floating m-1"
+        style="background-color: #ac2bac;"
+        href="https://www.instagram.com/chordialcorporation/"
+        role="button"
+        ><i class="fab fa-instagram"></i
+      ></a>
+
+      <!-- BlueSky -->
+      <a
+        data-mdb-ripple-init
+        class="btn text-white btn-floating m-1"
+        style="background-color: #55acee;"
+        href="https://bsky.app/profile/chordialmusic.bsky.social"
+        role="button"
+        ><i class="fa-brands fa-bluesky"></i
+      ></a>      
+
+      <!-- Github -->
+      <a
+        data-mdb-ripple-init
+        class="btn text-white btn-floating m-1"
+        style="background-color: #333333;"
+        href="https://github.com/BaileyThorpTecht/L6SD_24T4_Capstone_MusicWebsite"
+        role="button"
+        ><i class="fab fa-github"></i
+      ></a>
+      <ul>
+
+<!-- Section: Links -->
+<section class="mt-4">
+<!--Grid row-->
+<div class="row">
+  <!--Grid column-->
+  <div class="col-lg-3 col-md-6 mb-4 mb-md-0" style="visibility: hidden;">
+    <h5 class="text-uppercase">Links</h5>
+
+    <ul class="list-unstyled mb-0">
+      <li>
+        <a class="text-body" href="{% url 'terms_and_conditions_footer'%}">Terms & Conditions</a>
+      </li>
+      <li>
+        <a class="text-body" href="{% url 'privacy_policy_footer'%}">Privacy Policy</a>
+      </li>
+      <li>
+        <a class="text-body" href="{% url 'community_guidelines'%}">Community Guidelines</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+    <h5 class="text-uppercase" id="h5_left">Links</h5>
+
+    <ul class="list-unstyled mb-1" id="ul_left">
+      <li>
+        <a class="text-body" href="{% url 'terms_and_conditions_footer'%}">Terms & Conditions</a>
+      </li>
+      <li>
+        <a class="text-body" href="{% url 'privacy_policy_footer'%}">Privacy Policy</a>
+      </li>
+      <li>
+        <a class="text-body" href="{% url 'community_guidelines'%}">Community Guidelines</a>
+      </li>
+    </ul>
+  </div>
+  <!--Grid column-->
+
+  <!--Grid column-->
+  <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+    <h5 class="text-uppercase" id="h5_right">Links</h5>
+
+    <ul2 class="list-unstyled mb-0" id="ul_right">
+      <li>
+        <a class="text-body" href="{% url 'contact_us'%}">Contact Us</a>
+      </li>
+      <li>
+        <a class="text-body" href="{% url 'FAQ'%}">FAQ</a>
+      </li>
+    </ul2>
+  </div>
+  <!--Grid column-->
+</div>
+<!--Grid row-->
+</section>
+<!-- Section: Links -->
+</div>
+<!-- Grid container -->
+
+    <!-- Copyright -->
+    <!-- Copyright -->
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
+      © 2024 Copyright:
+      <a class="text-body" href="http://127.0.0.1:8000/">Chordial.</a>
+      All Rights Reserved
+    </div>
+    <!-- Copyright -->
+  </footer>
+  <!-- Footer -->
+  {% comment %} <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>   {% endcomment %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+pP5OGMhkB3JzEKYXcD8Z1lgQk75kt1+qBpeEvO8RP25GzknV2KtF6BqM0U2Ls" crossorigin="anonymous"></script>
+</body>
+</html>
+
+<script>
+  function lightingmode()
+  {
+    if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
+      document.documentElement.setAttribute('data-bs-theme','light');
+    }
+    else
+    {
+      document.documentElement.setAttribute('data-bs-theme','dark');
+    }
+  }
+
+  // ########################################
+  // ##         Loading Screen             ##
+  // ########################################
+
+  var animation = lottie.loadAnimation({
+    container: document.getElementById('lottie-container'),
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    path: "{% static 'videos/LottieLoadingScreen.json' %}" // Path to your Lottie JSON file
+  });
+
+  // Extend display time for the loading screen
+  window.addEventListener('load', function () {
+    var loadingScreen = document.getElementById('loading-screen');
+    setTimeout(function () {
+        loadingScreen.classList.add('fade-out'); // Add fade-out class after 150 milliseconds
+        setTimeout(function () {
+            loadingScreen.style.display = 'none'; // Hide after fade-out
+        }, 500); // Match CSS transition duration
+    }, 150); // Delay for 150 milliseconds
+  });
+
+  const ulLeft = document.getElementById('ul_left')
+  const ulRight = document.getElementById('ul_right')
+  const h5Left = document.getElementById('h5_left')
+  const h5Right = document.getElementById('h5_right')
+
+  ulLeft.classList.add('ul_left')
+  ulRight.classList.add('ul_right')
+  h5Right.classList.add('h5_right')
+  h5Left.classList.add('h5_left')
+
+</script>

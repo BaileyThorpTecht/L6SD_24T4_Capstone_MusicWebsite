@@ -1,0 +1,135 @@
+{% extends "musicwebsite/base.html" %}
+
+{% block title %} Profile {% endblock %}
+
+{% block content %}
+
+{% load static %}
+
+<br>
+<div class="row">
+    <div class="col-md-3">
+        <div class="card card-body">
+            <a href="{% url 'home' %}" class="btn btn-warning"> &#8592; Back To Home</a>
+            <hr>
+            <h3 style="text-align: center">Profile</h3>
+            <img src="{% if request.user.member.profile_pic %}{{ request.user.member.profile_pic.url }}{% else %}{% static 'images/profile-pic-fallback.png' %}{% endif %}" 
+              alt="Profile Picture" 
+              class="profile-pic"
+            >
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card card-body" style="text-align: left;">
+          <form action="">
+                <h3>Username:</h3>
+                <p>{{ user.username }}</p>
+                <br><br>
+                <h3>Email:</h3>
+                <p>{{ user.email }}</p>
+                <a href="{% url 'account-settings'%}" class="btn btn-outline-primary">Account Settings</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    button:hover {
+      opacity:1;
+    }
+    
+    /* Add padding and center-align text to the container */
+    .container {
+      padding: 16px;
+      text-align: center;
+    }
+    
+    /* The Delete (background) */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: #474e5d;
+      padding-top: 50px;
+    }
+    
+    /* Modal Content/Box */
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+      border: 1px solid #888;
+      width: 80%; /* Could be more or less, depending on screen size */
+    }
+    
+    /* Style the horizontal ruler */
+    hr {
+      border: 1px solid #f1f1f1;
+      margin-bottom: 25px;
+    }
+     
+    /* The Modal Close Button (x) */
+    .close {
+      position: absolute;
+      right: 35px;
+      top: 15px;
+      font-size: 40px;
+      font-weight: bold;
+      color: #f1f1f1;
+    }
+    
+    .close:hover,
+    .close:focus {
+      color: #f44336;
+      cursor: pointer;
+    }
+    
+    /* Clear floats */
+    .clearfix::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+    
+    /* Change styles for cancel button and delete button on extra small screens */
+    @media screen and (max-width: 300px) {
+      .cancelbtn, .deletebtn {
+         width: 100%;
+      }
+    }
+    </style>
+<h2>ACCOUNT REMOVAL</h2>
+<button class="btn btn-sm btn-primary me-3 mb-4" onclick="document.getElementById('id01').style.display='block'">
+    Delete Account
+</button>
+
+<div id="id01" class="modal">
+  <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+  <form method="POST" action="{% url 'delete_account' %}" class="modal-content">
+    {% csrf_token %}
+    <div class="container">
+      <h1>Delete Account</h1>
+      <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+
+      <div class="clearfix">
+        <button type="button" class="btn btn-sm btn-secondary me-3 mb-4" 
+                onclick="document.getElementById('id01').style.display='none'">
+            Cancel
+        </button>
+        <button type="submit" class="btn btn-sm btn-danger me-3 mb-4">
+            Delete
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<style>
+/* Include your CSS here */
+</style>
+
+{% endblock content %}

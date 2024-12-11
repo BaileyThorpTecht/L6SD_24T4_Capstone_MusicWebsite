@@ -1,0 +1,66 @@
+{% extends "musicwebsite/base.html" %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Account Settings{% endblock %}
+
+{% block content %}
+
+<br>
+<div class="row">
+    <div class="col-md-3">
+        <div class="card card-body">
+            <a href="{% url 'profile' %}" class="btn btn-warning"> &#8592; Back To Profile</a>
+            <hr>
+            <h3 style="text-align: center">Account Settings</h3>
+            <img src="{% if request.user.member.profile_pic %}{{ request.user.member.profile_pic.url }}{% else %}{% static 'images/profile-pic-fallback.png' %}{% endif %}" 
+              alt="Profile Picture" 
+              class="profile-pic"
+            >
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+            
+                <!-- Username -->
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" value="{{ user.username }}" class="form-control">
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" value="{{ user.email }}" class="form-control">
+                </div>
+
+                <!-- Profile Picture -->
+                <div class="form-group mb-5">
+                        <label for="profile_pic">Profile Picture</label>
+                
+                        <!-- Display Current Profile Picture -->
+                        {% if member.profile_pic %}
+                        <div class="current-picture mt-3">
+                            <label>Current Picture:</label>
+                            <img src="{{ member.profile_pic.url }}" alt="Profile Picture" class="img-thumbnail" width="150">
+                        </div>
+                        {% else %}
+                        <p class="text-muted">No profile picture uploaded.</p>
+                        {% endif %}
+                
+                        <!-- File Input for Updating Profile Picture -->
+                        <input type="file" name="profile_pic" id="profile_pic" class="form-control mt-3">
+                </div>
+            
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+            
+        </div>
+    </div>
+</div>
+
+{% endblock %}
