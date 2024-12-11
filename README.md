@@ -5,6 +5,7 @@
 - Type ">Python: Create Enviroment..."
 - Select venv
 - Select your python installation
+- Start server with: py manage.py runserver
 
 Pip install packages
 - django

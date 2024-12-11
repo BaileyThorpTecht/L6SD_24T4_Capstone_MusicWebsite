@@ -187,36 +187,6 @@ def chord_create(request):
     
         base, frets = getBaseFromFrets(frets)
         
-        
-        #check for existing chord
-        chosenFrets = frets
-
-        chords = Chord.objects.filter(isCustom=False)
-
-        matched = False
-        matchedChord = False
-        for chord in chords:
-            checkingFrets = chord.frets
-        
-            for i in range(6):          
-                if ((chosenFrets[i] == checkingFrets[i] + chord.base - 1) or (checkingFrets[i] == chosenFrets[i] == -1)):
-                    if (i == 5):
-                        matched = True
-                        break
-                else:
-                    break
-            
-            if (matched):
-                matchedChord = chord
-                break
-        
-        if (matchedChord):
-            name = matchedChord.name
-        
-        
-        
-        
-        
         Chord.objects.create(
                         name=name,
                         base=base,
